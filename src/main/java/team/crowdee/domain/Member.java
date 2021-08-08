@@ -1,9 +1,6 @@
 package team.crowdee.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import team.crowdee.domain.valuetype.Address;
 
 import javax.persistence.*;
@@ -16,6 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Setter
 public class Member {
 
     @Id
@@ -41,12 +39,21 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Grade rank;
 
-//    @OneToMany(mappedBy = "member")
-//    @Builder.Default
-//    private List<Follow> followers = new ArrayList<>(); // follow 다시 생각해봐
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    @Builder.Default
+    private List<Follow> following = new ArrayList<>(); // follow 다시 생각해봐
 
     @OneToMany(mappedBy = "member")
     @Builder.Default
     private List<Order> orders = new ArrayList<>();
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "creator_id")
+    private Creator creator;
+
+    public void joinCreator(Creator creator) {
+        this.creator = creator;
+        creator.setMember(this);
+
+    }
 }

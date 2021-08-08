@@ -1,12 +1,10 @@
 package team.crowdee.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import team.crowdee.domain.valuetype.AccountInfo;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -14,6 +12,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Setter
 public class Creator {
 
     @Id
@@ -21,15 +20,23 @@ public class Creator {
     @Column(name = "creator_id")
     private Long creatorId;
 
-    @OneToOne
-    @JoinColumn(name = "member_id")
+    private String BusinessNumber;
+
+    @OneToOne(mappedBy = "creator")
     private Member member;
+
+    @OneToMany(mappedBy = "creator")
+    @Builder.Default
+    private List<Follow> follows = new ArrayList<>();
+
 
     @OneToMany(mappedBy = "creator")
     private List<Funding> fundings;//이건 creator 로 이동할것
 
     @Embedded
     private AccountInfo accountInfo;
+
+
 
 //    @OneToOne
 //    @JoinColumn(name = "creator_inspection_id")
