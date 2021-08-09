@@ -58,7 +58,6 @@ public class MemberController {
             //실패 : 멤버가 없기 때문에 예외
             return new ResponseEntity<>(member, HttpStatus.BAD_REQUEST);
         }
-
         return new ResponseEntity<>(member, HttpStatus.OK);
 
     }
