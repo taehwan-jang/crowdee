@@ -1,9 +1,6 @@
 package team.crowdee.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import team.crowdee.domain.valuetype.Address;
 import team.crowdee.domain.valuetype.Coordinate;
 
@@ -14,7 +11,7 @@ import java.util.List;
 @Entity
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 public class Funding {
 
@@ -30,7 +27,7 @@ public class Funding {
     private String title;
     private int targetAmount;//목표금액
     private int minAmount;//최소금액
-    private LocalDateTime registDate;//등록일
+    private LocalDateTime postDate;//등록일
     private LocalDateTime expiredDate;//만료일
     private int maxBacker;//최대후원자수
 

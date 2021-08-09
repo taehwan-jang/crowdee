@@ -20,17 +20,18 @@ public class Member {
     @GeneratedValue
     @Column(name = "member_id")
     private Long memberId;
-
-    private String userId;
+    //회원가입할때 아이디 패스워드 검증
+    private String userId;//디비랑 중복검사
+    private String password;
     private String userName;
-    private String nickName;
+    private String nickName;//중복검사
     private String gender;
     private int age;
     private String birth;
     private String phone;
     private String mobile;
     private String email;
-    private LocalDateTime registDate;
+    private LocalDateTime postDate;
     private LocalDateTime secessionDate;
 
     @Embedded

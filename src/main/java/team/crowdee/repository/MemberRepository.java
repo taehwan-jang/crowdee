@@ -8,7 +8,6 @@ import team.crowdee.domain.Member;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.lang.management.LockInfo;
 import java.util.List;
 
 @Repository
@@ -18,9 +17,21 @@ public class MemberRepository {
     @PersistenceContext
     private final EntityManager em;
 
+
     public Long save(Member member) {
         em.persist(member);
         return member.getMemberId();
+    }
+
+    public Member login(String userId, String password) {
+        List<Member> resultList = em.createQuery("select m from Member m where m.userId=:userId and m.password=:password", Member.class)
+                .setParameter("userId",userId)
+                .setParameter("password",password)
+                .getResultList();
+        if (resultList.isEmpty()) {
+            return null;
+        }
+        return resultList.get(0);
     }
 
     public Member findById(Long id) {
