@@ -69,7 +69,7 @@ class MemberControllerTest {
                     .userId("testId" + i)
                     .gender("남자")
                     .mobile("010-1234-123" + i)
-                    .rank(Grade.BRONZE)
+                    .grade(Grade.BRONZE)
                     .build()
             );
         }
