@@ -38,6 +38,16 @@ public class MemberRepository {
         return em.find(Member.class, id);
     }
 
+    public Member findByUserId(String userId) {
+        List<Member> resultList = em.createQuery("select m from Member m where m.userId=:userId", Member.class)
+                .setParameter("userId", userId)
+                .getResultList();
+        if (resultList.isEmpty()) {
+            return null;
+        }
+        return resultList.get(0);
+    }
+
     public List<Member> findMemberWithFollow(Long id) {
         return em.createQuery("select m from Member m join fetch m.following", Member.class).getResultList();
     }
