@@ -8,7 +8,6 @@ import team.crowdee.domain.Member;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.lang.management.LockInfo;
 import java.util.List;
 
 @Repository
@@ -19,7 +18,7 @@ public class MemberRepository {
     private final EntityManager em;
 
     public Long save(Member member) {
-        em.persist(member);//주석 안넣어도 된다
+        em.persist(member);
         return member.getMemberId();
     }
 

@@ -30,7 +30,7 @@ public class Member {
     private String phone;
     private String mobile;
     private String email;
-    private LocalDateTime registDate;
+    private LocalDateTime postDate;
     private LocalDateTime secessionDate;
 
     @Embedded

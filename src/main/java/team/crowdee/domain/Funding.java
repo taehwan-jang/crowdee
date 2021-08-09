@@ -30,7 +30,7 @@ public class Funding {
     private String title;
     private int targetAmount;//목표금액
     private int minAmount;//최소금액
-    private LocalDateTime registDate;//등록일
+    private LocalDateTime postDate;//등록일
     private LocalDateTime expiredDate;//만료일
     private int maxBacker;//최대후원자수
 
@@ -44,7 +44,7 @@ public class Funding {
     private Address address;//공연장 주소
     @Embedded
     private Coordinate coordinate;//지도 api전용 위/경도
-    @OneToOne(mappedBy = "funding")
+    @OneToOne(mappedBy = "funding",cascade = CascadeType.ALL)
     private FundingStatus status;//상태 엔티티
 
     @OneToMany(mappedBy = "funding")
