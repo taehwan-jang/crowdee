@@ -19,7 +19,7 @@ public class MemberRepository {
     private final EntityManager em;
 
     public Long save(Member member) {
-        em.persist(member);//hhghg
+        em.persist(member);//주석 안넣어도 된다
         return member.getMemberId();
     }
 
