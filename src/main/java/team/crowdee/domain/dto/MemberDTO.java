@@ -18,7 +18,6 @@ public class MemberDTO {
     private String phone;
     private String mobile;
     private String email;
-    private LocalDateTime registDate;
 
     private String zonecode;
     private String roadAddress;
