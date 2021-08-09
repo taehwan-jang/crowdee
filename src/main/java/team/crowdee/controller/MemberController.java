@@ -12,6 +12,8 @@ import team.crowdee.domain.valuetype.Address;
 import team.crowdee.repository.MemberRepository;
 import team.crowdee.service.MemberService;
 
+import java.time.LocalDateTime;
+
 @RestController
 @Controller
 @CrossOrigin
@@ -38,6 +40,7 @@ public class MemberController {
                 .age(memberDTO.getAge())
                 .birth(memberDTO.getBirth())
                 .phone(memberDTO.getPhone())
+                .registDate(LocalDateTime.now())
                 .mobile(memberDTO.getMobile())
                 .email(memberDTO.getEmail())
                 .build();
