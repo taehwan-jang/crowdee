@@ -11,9 +11,8 @@ import java.util.List;
 @Entity
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Setter
 public class Member {
 
     @Id
@@ -22,6 +21,7 @@ public class Member {
     private Long memberId;
 
     private String userId;
+    private String password;
     private String userName;
     private String nickName;
     private String gender;
@@ -37,9 +37,9 @@ public class Member {
     private Address address;
 
     @Enumerated(EnumType.STRING)
-    private Grade rank;
+    private Grade grade;
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "member")
     @Builder.Default
     private List<Follow> following = new ArrayList<>(); // follow 다시 생각해봐
 

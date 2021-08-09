@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -30,5 +31,7 @@ public class Order {
     @OneToOne
     @JoinColumn(name = "payment_id")
     private Payment payment;
+
+    private LocalDateTime orderDate;
 
 }

@@ -1,9 +1,6 @@
 package team.crowdee.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import team.crowdee.domain.valuetype.Address;
 import team.crowdee.domain.valuetype.Coordinate;
 
@@ -14,7 +11,7 @@ import java.util.List;
 @Entity
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 public class Funding {
 
@@ -44,7 +41,7 @@ public class Funding {
     private Address address;//공연장 주소
     @Embedded
     private Coordinate coordinate;//지도 api전용 위/경도
-    @OneToOne(mappedBy = "funding",cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "funding")
     private FundingStatus status;//상태 엔티티
 
     @OneToMany(mappedBy = "funding")

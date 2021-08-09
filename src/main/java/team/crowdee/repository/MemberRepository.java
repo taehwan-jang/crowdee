@@ -22,6 +22,17 @@ public class MemberRepository {
         return member.getMemberId();
     }
 
+    public Member login(String userId, String password) {
+        List<Member> resultList = em.createQuery("select m from Member m where m.userId=:userId and m.password=:password", Member.class)
+                .setParameter("userId",userId)
+                .setParameter("password",password)
+                .getResultList();
+        if (resultList.isEmpty()) {
+            return null;
+        }
+        return resultList.get(0);
+    }
+
     public Member findById(Long id) {
         return em.find(Member.class, id);
     }
