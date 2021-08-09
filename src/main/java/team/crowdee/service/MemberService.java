@@ -3,6 +3,7 @@ package team.crowdee.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import team.crowdee.domain.Member;
+import team.crowdee.domain.dto.LoginDTO;
 import team.crowdee.repository.MemberRepository;
 
 import java.util.regex.Matcher;
@@ -14,7 +15,7 @@ public class MemberService {
 
     private MemberRepository memberRepository;
 
-    private Member join(Member member) {
+    public Member join(Member member) {
         this.validation(member);
         memberRepository.save(member);
         return member;
@@ -33,6 +34,11 @@ public class MemberService {
        return false;
    }
 
+    public Member memberLogin(LoginDTO loginDTO) {
+        Member login = memberRepository.login(loginDTO.getUserId(), loginDTO.getPassword());
+        return login;
+
+    }
 }
 
 
