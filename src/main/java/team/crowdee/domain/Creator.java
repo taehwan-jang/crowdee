@@ -36,6 +36,8 @@ public class Creator {
     @Embedded
     private AccountInfo accountInfo;
 
+    //푸쉬테스트
+
 
 
 //    @OneToOne
