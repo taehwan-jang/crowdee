@@ -11,19 +11,20 @@ import java.util.List;
 @Entity
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @Getter
+@Setter
 public class Member {
 
     @Id
     @GeneratedValue
     @Column(name = "member_id")
     private Long memberId;
-
-    private String userId;
+    //회원가입할때 아이디 패스워드 검증
+    private String userId;//디비랑 중복검사
     private String password;
     private String userName;
-    private String nickName;
+    private String nickName;//중복검사
     private String gender;
     private int age;
     private String birth;
@@ -37,9 +38,9 @@ public class Member {
     private Address address;
 
     @Enumerated(EnumType.STRING)
-    private Grade grade;
+    private Grade rank;
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     @Builder.Default
     private List<Follow> following = new ArrayList<>(); // follow 다시 생각해봐
 

@@ -9,13 +9,18 @@ import team.crowdee.repository.MemberRepository;
 @RequiredArgsConstructor
 public class MemberService {
 
-    private final MemberRepository memberRepository;
+    private MemberRepository memberRepository;
 
-    public long join(Member member) {
-
+    private Member join(Member member) {
+        //this.validate(member);
         memberRepository.save(member);
-        return member.getMemberId();
+        return member;
+
     }
+
+  /*  private Boolean validate(Member member) {
+
+    }*/
 
 
 
