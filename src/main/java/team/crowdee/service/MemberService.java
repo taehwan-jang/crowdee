@@ -6,11 +6,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import team.crowdee.domain.Authorities;
 import team.crowdee.domain.Member;
+import team.crowdee.domain.dto.ChangePassDTO;
 import team.crowdee.domain.dto.LoginDTO;
+import team.crowdee.domain.dto.MemberDTO;
+import team.crowdee.domain.valuetype.Address;
 import team.crowdee.repository.MemberRepository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -72,19 +77,71 @@ public class MemberService {
         return true;
     }
 
+    @Transactional(readOnly = true)
+    public boolean doubleCheck(String nickName) {
+        List<Member> byNickName = memberRepository.findByParam("userId", nickName);
+        if (!byNickName.isEmpty()) {
+            return false;
+        }
+        return true;
+    }
+
+
     public Member findId(Member member) {
        return memberRepository.findById(member.getMemberId());
     }
 
-/*
-    public Member findPass(Member member) {
-        //return memberRepository.findByParam("")
+
+    //회원 정보 수정
+    @Transactional
+    public Member memberEdit(MemberDTO memberDTO) {
+
+        Member member = memberRepository.findById(memberDTO.getMemberId());
+        String encodePass = passwordEncoder.encode(memberDTO.getPass());
+
+        Address address = new Address();
+        address.setZonecode(memberDTO.getZonecode());
+        address.setRestAddress(memberDTO.getRestAddress());
+        address.setRoadAddress(memberDTO.getRoadAddress());
+
+        member.changeNickName(member.getNickName());
+        member.changePhone(member.getPhone());
+        member.changeAddress(member.getAddress());
+        member.changeMobile(member.getMobile());
+        member.changePassword(encodePass);
+
+        return member;
+
     }
-*/
+    
+    //비밀번호 수정
+    @Transactional
+    public Member memberChangPass(ChangePassDTO changePassDTO) {
 
+        Member member = memberRepository.findById(changePassDTO.getMemberId());
 
+        boolean matches = passwordEncoder.matches(changePassDTO.getOldPassword(), member.getPassword());
+        if(matches) {
+            String encodePass = passwordEncoder.encode(changePassDTO.getNewPassword());
+            member.changePassword(encodePass);
+        }
+        else {
+            return null;
+        }
+        return member;
+    }
 
-
+    @Transactional
+    public Member signUpConfirm(Map<String, String> map) {
+        List<Member> members = memberRepository.findToConfirm(map.get("email"), map.get("authKey"));
+        if (!members.isEmpty()) {
+            return null;
+        }
+        Member member = members.get(0);
+        member.setEmailCert("Y");
+        member.setAuthorities(Authorities.backer);
+        return member;
+    }
 }
 
 

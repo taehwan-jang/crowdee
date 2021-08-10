@@ -2,6 +2,6 @@ package team.crowdee.domain;
 
 public enum Authorities {
 
-    backer,creator,admin
+    backer,creator,admin,guest
 
 }
