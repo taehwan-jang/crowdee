@@ -38,9 +38,11 @@ public class MemberRepository {
         return em.find(Member.class, id);
     }
 
-    public Member findByUserId(String userId) {
-        List<Member> resultList = em.createQuery("select m from Member m where m.userId=:userId", Member.class)
-                .setParameter("userId", userId)
+    public Member findByParam(String target,String param) {
+
+        String query = "select m from Member m where m." + target + "=:param";
+        List<Member> resultList = em.createQuery(query, Member.class)
+                .setParameter("param", param)
                 .getResultList();
         if (resultList.isEmpty()) {
             return null;

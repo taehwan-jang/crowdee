@@ -21,7 +21,9 @@ public class Member {
     @Column(name = "member_id")
     private Long memberId;
     //회원가입할때 아이디 패스워드 검증
+    @Column(unique = true,length = 20,nullable = false)
     private String userId;//디비랑 중복검사
+    @Column(length = 16,nullable = false)
     private String password;
     private String userName;
     private String nickName;//중복검사

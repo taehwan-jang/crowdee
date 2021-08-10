@@ -62,6 +62,5 @@ public class MemberController {
             return new ResponseEntity<>(member, HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(member, HttpStatus.OK);
-
     }
 }
