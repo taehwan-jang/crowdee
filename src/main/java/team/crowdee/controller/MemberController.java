@@ -25,7 +25,7 @@ public class MemberController {
     private final MemberRepository memberRepository;
 
     //회원가입
-    @PostMapping("/member/regist")
+    @PostMapping("/signUp")
     public ResponseEntity<?> signUp(@RequestBody MemberDTO memberDTO) {
 
         Address address = new Address();
@@ -52,7 +52,7 @@ public class MemberController {
     }
 
     //로그인
-    @PostMapping("/member/login")
+    @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO) {
         Member member = memberService.memberLogin(loginDTO);
 
@@ -61,5 +61,13 @@ public class MemberController {
             return new ResponseEntity<>(member, HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(member, HttpStatus.OK);
+    }
+
+    //비밀번호 찾기/변경
+    @PostMapping("/findPass")
+    public ResponseEntity<?> lostPassword(@RequestBody ) {
+
+
+
     }
 }

@@ -33,6 +33,7 @@ public class Member {
     private String phone;
     private String mobile;
     private String email;
+    private String emailCert;
     private LocalDateTime registDate;
     private LocalDateTime secessionDate;
 
