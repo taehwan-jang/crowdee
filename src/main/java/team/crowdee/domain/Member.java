@@ -33,6 +33,7 @@ public class Member {
     private String phone;
     private String mobile;
     private String email;
+    private String emailCert;
     private LocalDateTime registDate;
     private LocalDateTime secessionDate;
 
@@ -61,5 +62,9 @@ public class Member {
         this.creator = creator;
         creator.setMember(this);
 
+    }
+
+    public void changePassword(String password) {
+        this.password = password;
     }
 }
