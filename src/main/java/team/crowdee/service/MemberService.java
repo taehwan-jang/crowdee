@@ -7,7 +7,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team.crowdee.domain.Member;
+import team.crowdee.domain.dto.ChangePassDTO;
 import team.crowdee.domain.dto.LoginDTO;
+import team.crowdee.domain.dto.MemberDTO;
+import team.crowdee.domain.valuetype.Address;
 import team.crowdee.repository.MemberRepository;
 
 import java.util.List;
@@ -39,7 +42,6 @@ public class MemberService {
         //DB에 암호화된 패스워드와 입력한 패스워드가 일치하는지 확인하는 과정
         boolean matches = passwordEncoder.matches(loginDTO.getPassword(), findMember.getPassword());
         return matches ? findMember : null;//결과값에 따라 return값 결정
-
     }
 
     // 회원 ID 검증
@@ -72,6 +74,16 @@ public class MemberService {
         return true;
     }
 
+    @Transactional(readOnly = true)
+    public boolean doubleCheck(String nickName) {
+        List<Member> byNickName = memberRepository.findByParam("userId", nickName);
+        if (!byNickName.isEmpty()) {
+            return false;
+        }
+        return true;
+    }
+
+
     public Member findId(Member member) {
        return memberRepository.findById(member.getMemberId());
     }
@@ -81,6 +93,45 @@ public class MemberService {
         //return memberRepository.findByParam("")
     }
 */
+
+    //회원 정보 수정
+    @Transactional
+    public Member memberEdit(MemberDTO memberDTO) {
+
+        Member member = memberRepository.findById(memberDTO.getMemberId());
+        String encodePass = passwordEncoder.encode(memberDTO.getPass());
+
+        Address address = new Address();
+        address.setZonecode(memberDTO.getZonecode());
+        address.setRestAddress(memberDTO.getRestAddress());
+        address.setRoadAddress(memberDTO.getRoadAddress());
+
+        member.changeNickName(member.getNickName());
+        member.changePhone(member.getPhone());
+        member.changeAddress(member.getAddress());
+        member.changeMobile(member.getMobile());
+        member.changePassword(encodePass);
+
+        return member;
+
+    }
+    
+    //비밀번호 수정
+    @Transactional
+    public Member memberChangPass(ChangePassDTO changePassDTO) {
+
+        Member member = memberRepository.findById(changePassDTO.getMemberId());
+
+        boolean matches = passwordEncoder.matches(changePassDTO.getOldPassword(), member.getPassword());
+        if(matches) {
+            String encodePass = passwordEncoder.encode(changePassDTO.getNewPassword());
+            member.changePassword(encodePass);
+        }
+        else {
+            return null;
+        }
+        return member;
+    }
 
 
 
