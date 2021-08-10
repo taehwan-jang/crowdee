@@ -25,6 +25,8 @@ public class FundingStatus {
 
     private int visitCount;
     private int likeCount;
+
+    @Enumerated(EnumType.STRING)
     private Status status;
 
     private int amountStatus;

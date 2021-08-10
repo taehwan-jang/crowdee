@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import team.crowdee.domain.Authorities;
 import team.crowdee.domain.Member;
 import team.crowdee.domain.dto.ChangePassDTO;
 import team.crowdee.domain.dto.LoginDTO;
@@ -14,6 +15,7 @@ import team.crowdee.domain.valuetype.Address;
 import team.crowdee.repository.MemberRepository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -88,11 +90,6 @@ public class MemberService {
        return memberRepository.findById(member.getMemberId());
     }
 
-/*
-    public Member findPass(Member member) {
-        //return memberRepository.findByParam("")
-    }
-*/
 
     //회원 정보 수정
     @Transactional
@@ -133,9 +130,17 @@ public class MemberService {
         return member;
     }
 
-
-
-
+    @Transactional
+    public Member signUpConfirm(Map<String, String> map) {
+        List<Member> members = memberRepository.findToConfirm(map.get("email"), map.get("authKey"));
+        if (!members.isEmpty()) {
+            return null;
+        }
+        Member member = members.get(0);
+        member.setEmailCert("Y");
+        member.setAuthorities(Authorities.backer);
+        return member;
+    }
 }
 
 

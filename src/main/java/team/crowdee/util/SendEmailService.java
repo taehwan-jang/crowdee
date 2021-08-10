@@ -10,8 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import team.crowdee.domain.Member;
 import team.crowdee.domain.dto.MailDTO;
 import team.crowdee.repository.MemberRepository;
-
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -62,6 +60,5 @@ public class SendEmailService {
         String temp = uuid.toString();
         return temp;
     }
-
 
 }
