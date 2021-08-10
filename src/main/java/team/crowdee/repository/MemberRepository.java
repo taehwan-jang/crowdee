@@ -1,6 +1,7 @@
 package team.crowdee.repository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import team.crowdee.domain.Creator;
 import team.crowdee.domain.Follow;
@@ -12,6 +13,7 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
+@Slf4j
 public class MemberRepository {
 
     @PersistenceContext
@@ -44,6 +46,7 @@ public class MemberRepository {
         List<Member> resultList = em.createQuery(query, Member.class)
                 .setParameter("param", param)
                 .getResultList();
+        log.info("find members userId ={}", resultList.get(0).getUserId());
         if (resultList.isEmpty()) {
             return null;
         }

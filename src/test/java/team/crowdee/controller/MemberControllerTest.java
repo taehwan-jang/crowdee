@@ -64,7 +64,7 @@ class MemberControllerTest {
                     .nickName("테스트" + i)
                     .email("mail" + i + "@mail.com")
                     .userName("user" + i)
-                    .postDate(LocalDateTime.now())
+                    .registDate(LocalDateTime.now())
                     .age(20 + i)
                     .userId("testId" + i)
                     .gender("남자")
