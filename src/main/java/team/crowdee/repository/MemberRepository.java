@@ -1,6 +1,7 @@
 package team.crowdee.repository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import team.crowdee.domain.Creator;
 import team.crowdee.domain.Follow;
@@ -12,6 +13,7 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
+@Slf4j
 public class MemberRepository {
 
     @PersistenceContext
@@ -23,10 +25,9 @@ public class MemberRepository {
         return member.getMemberId();
     }
 
-    public Member login(String userId, String password) {
-        List<Member> resultList = em.createQuery("select m from Member m where m.userId=:userId and m.password=:password", Member.class)
+    public Member login(String userId) {
+        List<Member> resultList = em.createQuery("select m from Member m where m.userId=:userId", Member.class)
                 .setParameter("userId",userId)
-                .setParameter("password",password)
                 .getResultList();
         if (resultList.isEmpty()) {
             return null;
@@ -38,14 +39,20 @@ public class MemberRepository {
         return em.find(Member.class, id);
     }
 
-    public Member findByUserId(String userId) {
-        List<Member> resultList = em.createQuery("select m from Member m where m.userId=:userId", Member.class)
-                .setParameter("userId", userId)
+    public List<Member> findByParam(String target,String param) {
+
+        String query = "select m from Member m where m." + target + "=:param";
+        return em.createQuery(query, Member.class)
+                .setParameter("param", param)
                 .getResultList();
-        if (resultList.isEmpty()) {
-            return null;
-        }
-        return resultList.get(0);
+
+    }
+
+    public List<Member> findByEmailAndUserId(String userId,String email) {
+        return em.createQuery("select m from Member m where m.userId=:userId and m.email=:email", Member.class)
+                .setParameter("userId", userId)
+                .setParameter("email", email)
+                .getResultList();
     }
 
     public List<Member> findMemberWithFollow(Long id) {
@@ -53,7 +60,7 @@ public class MemberRepository {
     }
 
     public List<Member> findAll() {
-        return em.createQuery("select m from Member m join fetch m.orders",Member.class).getResultList();
+        return em.createQuery("select m from Member m",Member.class).getResultList();
     }
 
     public Long saveCreator(Creator creator) {

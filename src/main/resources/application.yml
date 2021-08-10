@@ -11,6 +11,18 @@ spring:
       hibernate:
         #        show_sql: true sysout으로 출력된다.
         format_sql: true
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: jth0602@gmail.com
+    password: qmyulnhfjycqsoau
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 logging:
   level:
     org.hibernate.SQL: debug

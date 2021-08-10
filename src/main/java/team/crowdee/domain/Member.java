@@ -31,6 +31,7 @@ public class Member {
     private String phone;
     private String mobile;
     private String email;
+    private String emailCert;
     private LocalDateTime registDate;
     private LocalDateTime secessionDate;
 
@@ -39,6 +40,9 @@ public class Member {
 
     @Enumerated(EnumType.STRING)
     private Grade rank;
+
+    @Enumerated(EnumType.STRING)
+    private Authorities authorities;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     @Builder.Default
@@ -56,5 +60,9 @@ public class Member {
         this.creator = creator;
         creator.setMember(this);
 
+    }
+
+    public void changePassword(String password) {
+        this.password = password;
     }
 }
