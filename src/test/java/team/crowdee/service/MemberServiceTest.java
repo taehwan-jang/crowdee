@@ -77,9 +77,9 @@ class MemberServiceTest {
         boolean valiId3 = memberService.validationId(sampleId3);
 
         //then
-        System.out.println("valiId1 = " + valiId1);
-        System.out.println("valiId2 = " + valiId2);
-        System.out.println("valiId3 = " + valiId3);
+        Assertions.assertThat(valiId1).isEqualTo(false);
+        Assertions.assertThat(valiId2).isEqualTo(false);
+        Assertions.assertThat(valiId3).isEqualTo(true);
     }
 
     @Test
@@ -96,22 +96,18 @@ class MemberServiceTest {
         Member samplePw5 = new Member();
         samplePw5.setPassword("Gksthf1234@"); //조건에 충족하는 값
 
-
-        Pattern p = Pattern.compile("\"^(?=.*[a-z])(?=.*\\d)[a-z\\d]{8,16}$\"\n");
-        Matcher m = p.matcher(samplePw4.getPassword());
-
-//        boolean valiPw1 = memberService.validationPw(samplePw1);
-//        boolean valiPw2 = memberService.validationPw(samplePw2);
-//        boolean valiPw3 = memberService.validationPw(samplePw3);
-//        boolean valiPw4 = memberService.validationPw(samplePw4);
-//        boolean valiPw5 = memberService.validationPw(samplePw5);
+        boolean valiPw1 = memberService.validationPw(samplePw1);
+        boolean valiPw2 = memberService.validationPw(samplePw2);
+        boolean valiPw3 = memberService.validationPw(samplePw3);
+        boolean valiPw4 = memberService.validationPw(samplePw4);
+        boolean valiPw5 = memberService.validationPw(samplePw5);
 
         //then
-//        System.out.println("valiPw1 = " + valiPw1);
-//        System.out.println("valiPw2 = " + valiPw2);
-//        System.out.println("valiPw3 = " + valiPw3);
-//        System.out.println("valiPw4 = " + valiPw4);
-        System.out.println("Matcher = " + m.matches());
+        Assertions.assertThat(valiPw1).isEqualTo(false);
+        Assertions.assertThat(valiPw2).isEqualTo(false);
+        Assertions.assertThat(valiPw3).isEqualTo(false);
+        Assertions.assertThat(valiPw4).isEqualTo(false);
+        Assertions.assertThat(valiPw5).isEqualTo(true);
 
     }
 
