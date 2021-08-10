@@ -42,6 +42,9 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Grade rank;
 
+    @Enumerated(EnumType.STRING)
+    private Authorities authorities;
+
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     @Builder.Default
     private List<Follow> following = new ArrayList<>(); // follow 다시 생각해봐
