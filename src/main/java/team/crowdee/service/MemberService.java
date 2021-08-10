@@ -3,6 +3,7 @@ package team.crowdee.service;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team.crowdee.domain.Member;
@@ -18,18 +19,24 @@ import java.util.regex.Pattern;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public Member join(Member member) {
         this.validation(member);
         this.doubleCheck(member.getUserId(),member.getNickName());
+        String encodePass = passwordEncoder.encode(member.getPassword());//패스워드 암호화
+        member.setPassword(encodePass);//암호화된 패스워드 저장
         memberRepository.save(member);
         return member;
 
     }
     @Transactional(readOnly = true)
     public Member memberLogin(LoginDTO loginDTO) {
-        return  memberRepository.login(loginDTO.getUserId(), loginDTO.getPassword());
+        Member findMember = memberRepository.login(loginDTO.getUserId());
+        //DB에 암호화된 패스워드와 입력한 패스워드가 일치하는지 확인하는 과정
+        boolean matches = passwordEncoder.matches(loginDTO.getPassword(), findMember.getPassword());
+        return matches ? findMember : null;//결과값에 따라 return값 결정
 
     }
     public boolean validation(Member member){
