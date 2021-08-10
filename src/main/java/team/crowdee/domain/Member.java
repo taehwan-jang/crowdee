@@ -63,4 +63,8 @@ public class Member {
         creator.setMember(this);
 
     }
+
+    public void changePassword(String password) {
+        this.password = password;
+    }
 }

@@ -49,12 +49,19 @@ public class MemberRepository {
 
     }
 
+    public List<Member> findByEmailAndUserId(String userId,String email) {
+        return em.createQuery("select m from Member m where m.userId=:userId and m.email=:email", Member.class)
+                .setParameter("userId", userId)
+                .setParameter("email", email)
+                .getResultList();
+    }
+
     public List<Member> findMemberWithFollow(Long id) {
         return em.createQuery("select m from Member m join fetch m.following", Member.class).getResultList();
     }
 
     public List<Member> findAll() {
-        return em.createQuery("select m from Member m join fetch m.orders",Member.class).getResultList();
+        return em.createQuery("select m from Member m",Member.class).getResultList();
     }
 
     public Long saveCreator(Creator creator) {
