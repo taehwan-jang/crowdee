@@ -30,7 +30,6 @@ public class MemberService {
         member.setPassword(encodePass);//암호화된 패스워드 저장
         memberRepository.save(member);
         return member;
-
     }
 
     @Transactional(readOnly = true)
@@ -39,12 +38,13 @@ public class MemberService {
         //DB에 암호화된 패스워드와 입력한 패스워드가 일치하는지 확인하는 과정
         boolean matches = passwordEncoder.matches(loginDTO.getPassword(), findMember.getPassword());
         return matches ? findMember : null;//결과값에 따라 return값 결정
-
     }
 
     // 회원 ID 검증
     @Transactional
     public boolean validationId(Member member){
+        System.out.println(member.getUserId());
+
         if(member.getUserId().length()<4 || member.getUserId().length()>20){
             return false;
         }
