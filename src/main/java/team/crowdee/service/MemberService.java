@@ -54,9 +54,8 @@ public class MemberService {
     // 회원 Password 검증
     @Transactional
     public boolean validationPw(Member member){
-        Pattern p = Pattern.compile("\"^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&])[A-Za-z\\d$@$!%*#?&]{8,16}$\"\n");
+        Pattern p = Pattern.compile("^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[$@$!%*#?&])[A-Za-z[0-9]$@$!%*#?&]{8,16}$");
         Matcher m = p.matcher(member.getPassword());
-
         if(m.matches()){
             return true;
         }
