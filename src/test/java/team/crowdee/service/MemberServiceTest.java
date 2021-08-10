@@ -71,7 +71,7 @@ class MemberServiceTest {
 
     }
     @Test
-    public void 유저아이디유저닉네임중복확인() throws Exception {
+    public void 유저아이디유저닉네임중복확인() {
         //given
 //        Member member0 = memberRepository.findById(1L);
 //        String userId = member0.getUserId();
@@ -85,10 +85,10 @@ class MemberServiceTest {
         nickCheck.setUserId("testId0");
         nickCheck.setNickName("테스트01");
         //when
-        boolean result = memberService.doubleCheck("testId0", "123");
-
+        boolean idResult = memberService.doubleCheck("testId0", "123");
+        boolean nickResult = memberService.doubleCheck("testId0", "123");
         //then
-        assertThat(result).isEqualTo(false);
+        assertThat(idResult).isEqualTo(nickResult).isEqualTo(false);
     }
 
 

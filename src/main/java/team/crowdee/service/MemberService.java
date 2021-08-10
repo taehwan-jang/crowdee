@@ -8,6 +8,7 @@ import team.crowdee.domain.Member;
 import team.crowdee.domain.dto.LoginDTO;
 import team.crowdee.repository.MemberRepository;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,7 +16,8 @@ import java.util.regex.Pattern;
 @RequiredArgsConstructor
 public class MemberService {
 
-    private static MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
+
     @Transactional
     public Member join(Member member) {
         this.validation(member);
@@ -43,10 +45,9 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public boolean doubleCheck(String userId, String nickName) {
-        Member byUserId = memberRepository.findByParam("userId",userId);
-        System.out.println("byUserId"+byUserId);
-        Member byNickName = memberRepository.findByParam("nickName",nickName);
-        if (byUserId != null || byNickName !=null) {
+        List<Member> byUserId = memberRepository.findByParam("userId", userId);
+        List<Member> byNickName = memberRepository.findByParam("userId", nickName);
+        if (byUserId.isEmpty() || byNickName.isEmpty()) {
             return false;
         }
         return true;

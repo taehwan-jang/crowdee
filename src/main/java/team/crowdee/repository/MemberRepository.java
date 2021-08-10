@@ -40,17 +40,13 @@ public class MemberRepository {
         return em.find(Member.class, id);
     }
 
-    public Member findByParam(String target,String param) {
+    public List<Member> findByParam(String target,String param) {
 
         String query = "select m from Member m where m." + target + "=:param";
-        List<Member> resultList = em.createQuery(query, Member.class)
+        return em.createQuery(query, Member.class)
                 .setParameter("param", param)
                 .getResultList();
-        log.info("find members userId ={}", resultList.get(0).getUserId());
-        if (resultList.isEmpty()) {
-            return null;
-        }
-        return resultList.get(0);
+
     }
 
     public List<Member> findMemberWithFollow(Long id) {
