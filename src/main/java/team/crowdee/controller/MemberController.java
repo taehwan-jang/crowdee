@@ -54,7 +54,6 @@ public class MemberController {
     //로그인
     @PostMapping("/member/login")
     public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO) {
-
         Member member = memberService.memberLogin(loginDTO);
 
         if(member == null) {
@@ -62,6 +61,5 @@ public class MemberController {
             return new ResponseEntity<>(member, HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(member, HttpStatus.OK);
-
     }
 }

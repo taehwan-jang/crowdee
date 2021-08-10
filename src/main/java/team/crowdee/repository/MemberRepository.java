@@ -1,6 +1,7 @@
 package team.crowdee.repository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import team.crowdee.domain.Creator;
 import team.crowdee.domain.Follow;
@@ -12,6 +13,7 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
+@Slf4j
 public class MemberRepository {
 
     @PersistenceContext
@@ -38,14 +40,13 @@ public class MemberRepository {
         return em.find(Member.class, id);
     }
 
-    public Member findByUserId(String userId) {
-        List<Member> resultList = em.createQuery("select m from Member m where m.userId=:userId", Member.class)
-                .setParameter("userId", userId)
+    public List<Member> findByParam(String target,String param) {
+
+        String query = "select m from Member m where m." + target + "=:param";
+        return em.createQuery(query, Member.class)
+                .setParameter("param", param)
                 .getResultList();
-        if (resultList.isEmpty()) {
-            return null;
-        }
-        return resultList.get(0);
+
     }
 
     public List<Member> findMemberWithFollow(Long id) {
