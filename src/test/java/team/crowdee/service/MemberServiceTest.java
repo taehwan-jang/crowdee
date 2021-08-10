@@ -12,6 +12,8 @@ import team.crowdee.domain.Member;
 import team.crowdee.repository.MemberRepository;
 import team.crowdee.service.MemberService;
 import java.time.LocalDateTime;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.assertj.core.api.Assertions.*;
 @ExtendWith(SpringExtension.class)
@@ -48,16 +50,17 @@ class MemberServiceTest {
     }
 
     @Test
-    public void 회원가입테스트 () throws Exception {
+    public void 회원가입 () throws Exception {
         //given
         Member member = new Member();
-        member.setUserName("성두현");
+        member.setUserName("코스모");
         //when
         Member saveName = memberService.join(member);
         //then
-        assertThat(saveName.equals("성두현"));
+        assertThat(saveName.equals("코스모"));
     }
 
+    // 테스트 완료
     @Test
     public void 아이디검증(){
         //given
@@ -74,65 +77,69 @@ class MemberServiceTest {
         boolean valiId3 = memberService.validationId(sampleId3);
 
         //then
-        Assertions.assertThat(valiId1 == false);
-        Assertions.assertThat(valiId2 == false);
-        Assertions.assertThat(valiId3 == true);
+        System.out.println("valiId1 = " + valiId1);
+        System.out.println("valiId2 = " + valiId2);
+        System.out.println("valiId3 = " + valiId3);
     }
 
     @Test
     public void 비밀번호검증(){
         //given
         Member samplePw1 = new Member();
-        samplePw1.setUserId("abc"); //4글자 미만
+        samplePw1.setPassword("123456"); //8글자 미만
         Member samplePw2 = new Member();
-        samplePw2.setUserId("asdfghjklzxcvbnmqwertyy"); //20글자 초과
+        samplePw2.setPassword("12345678901234567"); //16글자 초과
         Member samplePw3 = new Member();
-        samplePw3.setUserId("yoohansol"); //조건에 충족하는 값
+        samplePw3.setPassword("1234567890"); //숫자로만 구성
+        Member samplePw4 = new Member();
+        samplePw4.setPassword("aaaaa11111"); //영어로만 구성
+        Member samplePw5 = new Member();
+        samplePw5.setPassword("Gksthf1234@"); //조건에 충족하는 값
 
-        //when
-        boolean valiPw1 = memberService.validationId(samplePw1);
-        boolean valiPw2 = memberService.validationId(samplePw2);
-        boolean valiPw3 = memberService.validationId(samplePw3);
+
+        Pattern p = Pattern.compile("\"^(?=.*[a-z])(?=.*\\d)[a-z\\d]{8,16}$\"\n");
+        Matcher m = p.matcher(samplePw4.getPassword());
+
+//        boolean valiPw1 = memberService.validationPw(samplePw1);
+//        boolean valiPw2 = memberService.validationPw(samplePw2);
+//        boolean valiPw3 = memberService.validationPw(samplePw3);
+//        boolean valiPw4 = memberService.validationPw(samplePw4);
+//        boolean valiPw5 = memberService.validationPw(samplePw5);
 
         //then
-        Assertions.assertThat(valiPw1 == false);
-        Assertions.assertThat(valiPw2 == false);
-        Assertions.assertThat(valiPw3 == true);
+//        System.out.println("valiPw1 = " + valiPw1);
+//        System.out.println("valiPw2 = " + valiPw2);
+//        System.out.println("valiPw3 = " + valiPw3);
+//        System.out.println("valiPw4 = " + valiPw4);
+        System.out.println("Matcher = " + m.matches());
+
     }
 
+    // 테스트 완료
     @Test
-    public void 유저아이디유저닉네임중복확인() {
+    public void 아이디닉네임중복검증() {
         //given
-//        Member member0 = memberRepository.findById(1L);
-//        String userId = member0.getUserId();
-//        String nickName = member0.getNickName();
+        Member idNickCheck1 = new Member();
+        idNickCheck1.setUserId("testId0");
+        idNickCheck1.setNickName("테스트01");
 
-        Member idCheck = new Member();
-        idCheck.setUserId("testId0");
-        idCheck.setNickName("테스트01");
+        Member idNickCheck2 = new Member();
+        idNickCheck2.setUserId("testId0");
+        idNickCheck2.setNickName("테스트01");
 
-        Member nickCheck = new Member();
-        nickCheck.setUserId("testId0");
-        nickCheck.setNickName("테스트01");
         //when
         boolean idResult = memberService.doubleCheck("testId0", "123");
         boolean nickResult = memberService.doubleCheck("testId0", "123");
+
         //then
-        assertThat(idResult).isEqualTo(nickResult).isEqualTo(false);
+        assertThat(idResult).isEqualTo(nickResult).isEqualTo(true);
     }
 
-
+    // 테스트 완료
     @Test
     public void 로그인테스트() {
         Member member0 = memberRepository.findById(0L);
 
-
     }
-
-
-
-
-
-
 
 }
