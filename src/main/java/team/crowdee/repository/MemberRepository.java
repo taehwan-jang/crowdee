@@ -19,7 +19,6 @@ public class MemberRepository {
     @PersistenceContext
     private final EntityManager em;
 
-
     public Long save(Member member) {
         em.persist(member);
         return member.getMemberId();
@@ -82,6 +81,11 @@ public class MemberRepository {
     public Long saveFollow(Follow follow) {
         em.persist(follow);
         return follow.getFollowId();
+    }
+
+    public void delete(String userId, String pass) {
+        em.createQuery("DELETE  from Member m WHERE m.userId=:userId and m.password=:pass ");
+
     }
 
 }

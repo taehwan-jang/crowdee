@@ -86,7 +86,6 @@ public class MemberService {
         return true;
     }
 
-
     public Member findId(Member member) {
        return memberRepository.findById(member.getMemberId());
     }
@@ -117,9 +116,7 @@ public class MemberService {
     //비밀번호 수정
     @Transactional
     public Member memberChangPass(ChangePassDTO changePassDTO) {
-
         Member member = memberRepository.findById(changePassDTO.getMemberId());
-
         boolean matches = passwordEncoder.matches(changePassDTO.getOldPassword(), member.getPassword());
         if(matches) {
             String encodePass = passwordEncoder.encode(changePassDTO.getNewPassword());
@@ -141,6 +138,19 @@ public class MemberService {
         member.setEmailCert("Y");
         member.setAuthorities(Authorities.backer);
         return member;
+    }
+    //회원탈퇴
+    @Transactional
+    public Member deleteMember(MemberDTO memberDTO) {
+        Member member = memberRepository.findById(memberDTO.getMemberId());
+        String userId = member.getUserId(); //아이디는그대로
+        String password = member.getPassword();
+        String encodePass = passwordEncoder.encode(password);
+        memberRepository.delete(userId, encodePass);
+
+        return member;
+
+
     }
 }
 
