@@ -39,9 +39,6 @@ public class Member {
     private Address address;
 
     @Enumerated(EnumType.STRING)
-    private Grade rank;
-
-    @Enumerated(EnumType.STRING)
     private Authorities authorities;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
@@ -58,11 +55,42 @@ public class Member {
 
     public void joinCreator(Creator creator) {
         this.creator = creator;
+        this.authorities = Authorities.creator;
         creator.setMember(this);
 
     }
-
-    public void changePassword(String password) {
-        this.password = password;
+    public void secessionMember(LocalDateTime secessionDate) {
+        this.secessionDate = secessionDate;
     }
+
+    //=====수정을 위한 패턴=====//
+
+    public Member changePassword(String password) {
+        this.password = password;
+        return this;
+    }
+
+    public Member changeNickName(String nickName) {
+        this.nickName = nickName;
+        return this;
+    }
+
+    public Member changePhone(String phone) {
+        this.phone = phone;
+        return this;
+    }
+
+    public Member changeMobile(String mobile) {
+        this.mobile = mobile;
+        return this;
+    }
+
+    public Member changeAddress(Address address) {
+        this.address = address;
+        return this;
+    }
+
+
+
+
 }

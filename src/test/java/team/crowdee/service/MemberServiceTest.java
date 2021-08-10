@@ -7,10 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
-import team.crowdee.domain.Grade;
 import team.crowdee.domain.Member;
 import team.crowdee.repository.MemberRepository;
-import team.crowdee.service.MemberService;
+
 import java.time.LocalDateTime;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -43,7 +42,6 @@ class MemberServiceTest {
                             .userId("testId"+i)
                             .gender("남자")
                             .mobile("010-1234-123"+i)
-                            .rank(Grade.BRONZE)
                             .build()
             );
         }
