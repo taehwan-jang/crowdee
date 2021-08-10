@@ -79,9 +79,9 @@ public class MemberController {
         return new ResponseEntity<>("이메일 발송되었습니다.", HttpStatus.OK);
     }
 
-//    @PostMapping("/changePass")
-//    public ResponseEntity<?> changePass(@RequestBody ChangePassDTO changePassDTO) {
-//
-//    }
+    @PostMapping("/")
+    public ResponseEntity<?> changePass(@RequestBody ChangePassDTO changePassDTO) {
+
+    }
 
 }

@@ -1,7 +1,5 @@
 package team.crowdee.controller;
 
-import org.apache.tomcat.jni.Local;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,17 +8,13 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 import team.crowdee.domain.Creator;
-import team.crowdee.domain.Follow;
-import team.crowdee.domain.Grade;
 import team.crowdee.domain.Member;
 import team.crowdee.repository.MemberRepository;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -69,7 +63,6 @@ class MemberControllerTest {
                     .userId("testId" + i)
                     .gender("남자")
                     .mobile("010-1234-123" + i)
-                    .rank(Grade.BRONZE)
                     .build()
             );
         }
