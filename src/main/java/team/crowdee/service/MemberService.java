@@ -1,5 +1,6 @@
 package team.crowdee.service;
 
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -47,11 +48,22 @@ public class MemberService {
     public boolean doubleCheck(String userId, String nickName) {
         List<Member> byUserId = memberRepository.findByParam("userId", userId);
         List<Member> byNickName = memberRepository.findByParam("userId", nickName);
-        if (byUserId.isEmpty() || byNickName.isEmpty()) {
+        if (!byUserId.isEmpty() || !byNickName.isEmpty()) {
             return false;
         }
         return true;
     }
+
+    public Member findId(Member member) {
+       return memberRepository.findById(member.getMemberId());
+    }
+
+/*
+    public Member findPass(Member member) {
+        //return memberRepository.findByParam("")
+    }
+*/
+
 
 
 
