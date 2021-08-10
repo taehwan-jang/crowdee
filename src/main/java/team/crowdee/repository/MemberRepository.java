@@ -25,10 +25,9 @@ public class MemberRepository {
         return member.getMemberId();
     }
 
-    public Member login(String userId, String password) {
-        List<Member> resultList = em.createQuery("select m from Member m where m.userId=:userId and m.password=:password", Member.class)
+    public Member login(String userId) {
+        List<Member> resultList = em.createQuery("select m from Member m where m.userId=:userId", Member.class)
                 .setParameter("userId",userId)
-                .setParameter("password",password)
                 .getResultList();
         if (resultList.isEmpty()) {
             return null;

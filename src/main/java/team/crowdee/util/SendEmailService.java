@@ -17,6 +17,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class SendEmailService {
 
     private final MemberRepository memberRepository;
@@ -24,22 +25,24 @@ public class SendEmailService {
     private final JavaMailSender jms;
     private static final String SEND_EMAIL_ADDRESS = "Crowdee";
 
-    public MailDTO createMailAndChangePass(String email, String userName) {
+    public MailDTO createMailAndChangePass(String email, String userName,Long memberId) {
         String str = getTempPass();
         MailDTO dto = new MailDTO();
         dto.setEmail(email);
         dto.setTitle(userName + " 님의 임시번호 안내 이메일입니다");
         dto.setMessage("안녕하세요. [Crowdee] 임시 비밀번호 안내 이메일 입니다. " + "[ " + userName + " ] 님의 임시 비밀번호는 [" +
                 str + "] 입니다. 로그인 후 꼭 변경해주세요");
-        updatePassword(str, email);
+        updatePassword(str, memberId);
         return dto;
     }
 
-    @Transactional
-    public void updatePassword(String str, String email) {
-        List<Member> findMember = memberRepository.findByParam("email", email);
+    public void updatePassword(String str, Long memberId) {
+        Member findMember = memberRepository.findById(memberId);
         String encryptPass = passwordEncoder.encode(str);
-        findMember.get(0).changePassword(encryptPass);
+        findMember.changePassword(encryptPass);
+        log.info("변경된 비밀번호 확인={}",findMember.getPassword());
+        Member findMember2 = memberRepository.findById(memberId);
+        log.info("다시 찾아왔다={}",findMember2.getPassword());
     }
 
     public void sendMail(MailDTO mailDTO) {

@@ -6,10 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import team.crowdee.domain.Member;
-import team.crowdee.domain.dto.FindMailDTO;
-import team.crowdee.domain.dto.LoginDTO;
-import team.crowdee.domain.dto.MailDTO;
-import team.crowdee.domain.dto.MemberDTO;
+import team.crowdee.domain.dto.*;
 import team.crowdee.domain.valuetype.Address;
 import team.crowdee.repository.MemberRepository;
 import team.crowdee.service.MemberService;
@@ -63,12 +60,12 @@ public class MemberController {
 
         if(member == null) {
             //실패 : 멤버가 없기 때문에 예외
-            return new ResponseEntity<>(member, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("아이디 패스워드를 다시 확인해주세요.", HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(member, HttpStatus.OK);
     }
 
-    //비밀번호 찾기/변경
+    //비밀번호 찾기
     @PostMapping("/findPass")
     public ResponseEntity<?> lostPassword(@RequestBody FindMailDTO findMailDTO) {
         List<Member> findMember = memberRepository
@@ -77,8 +74,14 @@ public class MemberController {
             return new ResponseEntity<>("아이디와 이메일을 다시 확인해주세요", HttpStatus.BAD_REQUEST);
         }
         Member member = findMember.get(0);
-        MailDTO mailDTO = sendEmailService.createMailAndChangePass(member.getEmail(), member.getUserName());
+        MailDTO mailDTO = sendEmailService.createMailAndChangePass(member.getEmail(), member.getUserName(), member.getMemberId());
         sendEmailService.sendMail(mailDTO);
         return new ResponseEntity<>("이메일 발송되었습니다.", HttpStatus.OK);
     }
+
+//    @PostMapping("/changePass")
+//    public ResponseEntity<?> changePass(@RequestBody ChangePassDTO changePassDTO) {
+//
+//    }
+
 }
