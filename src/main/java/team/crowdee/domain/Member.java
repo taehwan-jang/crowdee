@@ -22,16 +22,16 @@ public class Member {
     private Long memberId;
     //회원가입할때 아이디 패스워드 검증
     private String userId;//디비랑 중복검사
-    private String password;
-    private String userName;
-    private String nickName;//중복검사
-    private String gender;
-    private int age;
-    private String birth;
-    private String phone;
-    private String mobile;
-    private String email;
-    private String emailCert;
+    private String password; //o
+    private String userName; //x
+    private String nickName;//중복검사 o
+    private String gender; //x
+    private int age; //x
+    private String birth; //x
+    private String phone; //o
+    private String mobile; //o
+    private String email; //x --애매한 부분
+    private String emailCert; //이메일 인증 받았을때 //o
     private LocalDateTime registDate;
     private LocalDateTime secessionDate;
 

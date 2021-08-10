@@ -12,11 +12,11 @@ import team.crowdee.repository.MemberRepository;
 import team.crowdee.service.MemberService;
 import team.crowdee.util.SendEmailService;
 
+import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@Controller
 @CrossOrigin
 @RequiredArgsConstructor
 @RequestMapping("/member")
@@ -50,7 +50,6 @@ public class MemberController {
         Member memberJoin = memberService.join(member);
 
         return new ResponseEntity<>(memberJoin, HttpStatus.OK);
-
     }
 
     //로그인
@@ -78,10 +77,24 @@ public class MemberController {
         sendEmailService.sendMail(mailDTO);
         return new ResponseEntity<>("이메일 발송되었습니다.", HttpStatus.OK);
     }
-
-    @PostMapping("/")
+    
+    //비밀번호 수정
+    @PostMapping("/changePass")
     public ResponseEntity<?> changePass(@RequestBody ChangePassDTO changePassDTO) {
+        Member member = memberService.memberChangPass(changePassDTO);
+        if(member == null) {
+            return new ResponseEntity<>("패스워드를 다시 확인해주세요.", HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(member, HttpStatus.OK);
+    }
 
+    //회원 정보 수정
+    @PostMapping("/edit")
+    public ResponseEntity<?> edit(@RequestBody MemberDTO memberDTO) {
+
+        Member member = memberService.memberEdit(memberDTO);
+
+        return new ResponseEntity<>("정보가 수정되었습니다",HttpStatus.OK);
     }
 
 }
