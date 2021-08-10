@@ -23,7 +23,8 @@ public class MemberService {
 
     @Transactional
     public Member join(Member member) {
-        this.validation(member);
+        this.validationId(member);
+        this.validationPw(member);
         this.doubleCheck(member.getUserId(),member.getNickName());
         String encodePass = passwordEncoder.encode(member.getPassword());//패스워드 암호화
         member.setPassword(encodePass);//암호화된 패스워드 저장
@@ -31,6 +32,7 @@ public class MemberService {
         return member;
 
     }
+
     @Transactional(readOnly = true)
     public Member memberLogin(LoginDTO loginDTO) {
         Member findMember = memberRepository.login(loginDTO.getUserId());
@@ -39,16 +41,26 @@ public class MemberService {
         return matches ? findMember : null;//결과값에 따라 return값 결정
 
     }
-    public boolean validation(Member member){
-       Pattern p = Pattern.compile("\"^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&])[A-Za-z\\d$@$!%*#?&]{8,16}$\"\n");
-       Matcher m = p.matcher(member.getPassword());
-       if(member.getUserId().length()<4 || member.getUserId().length()>20) {
-           return false;
-       }
-       if(m.matches()){
-           return true;
-       }
-       return false;
+
+    // 회원 ID 검증
+    @Transactional
+    public boolean validationId(Member member){
+        if(member.getUserId().length()<4 || member.getUserId().length()>20){
+            return false;
+        }
+        return true;
+    }
+
+    // 회원 Password 검증
+    @Transactional
+    public boolean validationPw(Member member){
+        Pattern p = Pattern.compile("\"^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&])[A-Za-z\\d$@$!%*#?&]{8,16}$\"\n");
+        Matcher m = p.matcher(member.getPassword());
+
+        if(m.matches()){
+            return true;
+        }
+        return false;
     }
 
     @Transactional(readOnly = true)

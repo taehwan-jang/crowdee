@@ -1,5 +1,6 @@
 package team.crowdee.service;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,21 +56,50 @@ class MemberServiceTest {
         Member saveName = memberService.join(member);
         //then
         assertThat(saveName.equals("성두현"));
-
     }
-    @Test //8-16자리 대문자소문자특수문자 포함
-    public void 비밀번호검증() throws  Exception {
+
+    @Test
+    public void 아이디검증(){
         //given
-        Member member0 = new Member();
-        member0.setPassword("1");
-        Member member1 = new Member();
-        member1.setPassword("11111111111111111111111111");
+        Member sampleId1 = new Member();
+        sampleId1.setUserId("abc"); //4글자 미만
+        Member sampleId2 = new Member();
+        sampleId2.setUserId("asdfghjklzxcvbnmqwertyy"); //20글자 초과
+        Member sampleId3 = new Member();
+        sampleId3.setUserId("yoohansol"); //조건에 충족하는 값
 
         //when
+        boolean valiId1 = memberService.validationId(sampleId1);
+        boolean valiId2 = memberService.validationId(sampleId2);
+        boolean valiId3 = memberService.validationId(sampleId3);
 
         //then
-
+        Assertions.assertThat(valiId1 == false);
+        Assertions.assertThat(valiId2 == false);
+        Assertions.assertThat(valiId3 == true);
     }
+
+    @Test
+    public void 비밀번호검증(){
+        //given
+        Member samplePw1 = new Member();
+        samplePw1.setUserId("abc"); //4글자 미만
+        Member samplePw2 = new Member();
+        samplePw2.setUserId("asdfghjklzxcvbnmqwertyy"); //20글자 초과
+        Member samplePw3 = new Member();
+        samplePw3.setUserId("yoohansol"); //조건에 충족하는 값
+
+        //when
+        boolean valiPw1 = memberService.validationId(samplePw1);
+        boolean valiPw2 = memberService.validationId(samplePw2);
+        boolean valiPw3 = memberService.validationId(samplePw3);
+
+        //then
+        Assertions.assertThat(valiPw1 == false);
+        Assertions.assertThat(valiPw2 == false);
+        Assertions.assertThat(valiPw3 == true);
+    }
+
     @Test
     public void 유저아이디유저닉네임중복확인() {
         //given
