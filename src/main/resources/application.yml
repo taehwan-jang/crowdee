@@ -6,7 +6,7 @@ spring:
     driver-class-name: org.h2.Driver
   jpa:
     hibernate:
-      ddl-auto: update #이 옵션은 애플리케이션 실행 시점에서 다시 생성?
+      ddl-auto: update #create -> 서버 재실행마다 table 드롭하고 새로 생성 / update -> 기존 테이블에 덮어씌움
     properties:
       hibernate:
         #        show_sql: true sysout으로 출력된다.
