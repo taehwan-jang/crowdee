@@ -1,6 +1,7 @@
 package team.crowdee.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -24,6 +25,7 @@ import java.util.Map;
 @CrossOrigin
 @RequiredArgsConstructor
 @RequestMapping("/member")
+@Slf4j
 public class MemberController {
 
     private final SendEmailService sendEmailService;
@@ -41,6 +43,8 @@ public class MemberController {
         address.setRoadAddress(memberDTO.getRoadAddress());
         String authKey = mimeEmailService.sendAuthMail(memberDTO.getEmail());
         Member member = Member.builder()
+                .userId(memberDTO.getUserId())
+                .password(memberDTO.getPassword())
                 .userName(memberDTO.getUserName())
                 .nickName(memberDTO.getNickName())
                 .gender(memberDTO.getGender())
@@ -55,13 +59,15 @@ public class MemberController {
                 .build();
 
         Member memberJoin = memberService.join(member);
-        return new ResponseEntity<>(memberJoin, HttpStatus.OK);
+        return new ResponseEntity<>("인증이메일을 확인해 주세요.", HttpStatus.CREATED);
     }
 
     @GetMapping("/signUpConfirm")
-    public ResponseEntity<?> signUpConfirm(@RequestParam Map<String, String> map) {
-        Member member = memberService.signUpConfirm(map);
-        return new ResponseEntity<>(member.getNickName(), HttpStatus.OK);
+    public ResponseEntity<?> signUpConfirm(@RequestParam String email, @RequestParam String authKey) {
+        log.info("파라미터 값={}",email);
+        log.info("파라미터 값={}",authKey);
+        Member member = memberService.signUpConfirm(email,authKey);
+        return new ResponseEntity<>("인증이 완료되었습니다.", HttpStatus.OK);
     }
 
 
