@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import team.crowdee.domain.Authorities;
 import team.crowdee.domain.Member;
@@ -16,10 +15,8 @@ import team.crowdee.util.MimeEmailService;
 import team.crowdee.util.SendEmailService;
 
 import javax.mail.MessagingException;
-import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @CrossOrigin
@@ -64,10 +61,11 @@ public class MemberController {
 
     @GetMapping("/signUpConfirm")
     public ResponseEntity<?> signUpConfirm(@RequestParam String email, @RequestParam String authKey) {
-        log.info("파라미터 값={}",email);
-        log.info("파라미터 값={}",authKey);
         Member member = memberService.signUpConfirm(email,authKey);
-        return new ResponseEntity<>("인증이 완료되었습니다.", HttpStatus.OK);
+        if (member != null) {
+            return new ResponseEntity<>("인증이 완료되었습니다.", HttpStatus.OK);
+        }
+        return new ResponseEntity<>("인증에 실패했습니다.", HttpStatus.BAD_REQUEST);
     }
 
 

@@ -31,8 +31,8 @@ class MemberServiceTest {
         for (int i = 0; i < 10; i++) {
             memberRepository.save(
                     Member.builder()
-                            .userName("sdh30113"+i)
-                            .password("tjdengus1!"+i)
+                            .userName("장태환"+i)
+                            .password("1q2w3e4r!"+i)
                             .birth("1992/"+i)
                             .nickName("테스트"+i)
                             .email("mail"+i+ "@mail.com")

@@ -24,6 +24,7 @@ import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MemberService {
 
     private final MemberRepository memberRepository;
@@ -136,13 +137,12 @@ public class MemberService {
     @Transactional
     public Member signUpConfirm(String email, String authKey) {
         List<Member> members = memberRepository.findToConfirm(email,authKey);
-        if (!members.isEmpty()) {
+        if (members.isEmpty()) {
             return null;
         }
         Member member = members.get(0);
         member.setEmailCert("Y");
         member.setAuthorities(Authorities.backer);
-        memberRepository.flush();
         return member;
     }
     //회원탈퇴
