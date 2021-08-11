@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 import team.crowdee.domain.Authorities;
 import team.crowdee.domain.Member;
@@ -14,6 +15,8 @@ import team.crowdee.domain.dto.MemberDTO;
 import team.crowdee.domain.valuetype.Address;
 import team.crowdee.repository.MemberRepository;
 
+import javax.persistence.EntityManagerFactory;
+import javax.swing.text.html.parser.Entity;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -26,10 +29,12 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
+
+    // 로직 수정 필요
     @Transactional
     public Member join(Member member) {
         this.validationId(member);
-        this.validationPw(member);
+//        this.validationPw(member);
         this.doubleCheck(member.getUserId(),member.getNickName());
         String encodePass = passwordEncoder.encode(member.getPassword());//패스워드 암호화
         member.setPassword(encodePass);//암호화된 패스워드 저장
@@ -96,7 +101,7 @@ public class MemberService {
     public Member memberEdit(MemberDTO memberDTO) {
 
         Member member = memberRepository.findById(memberDTO.getMemberId());
-        String encodePass = passwordEncoder.encode(memberDTO.getPass());
+        String encodePass = passwordEncoder.encode(memberDTO.getPassword());
 
         Address address = new Address();
         address.setZonecode(memberDTO.getZonecode());
@@ -131,14 +136,15 @@ public class MemberService {
     }
 
     @Transactional
-    public Member signUpConfirm(Map<String, String> map) {
-        List<Member> members = memberRepository.findToConfirm(map.get("email"), map.get("authKey"));
+    public Member signUpConfirm(String email, String authKey) {
+        List<Member> members = memberRepository.findToConfirm(email,authKey);
         if (!members.isEmpty()) {
             return null;
         }
         Member member = members.get(0);
         member.setEmailCert("Y");
         member.setAuthorities(Authorities.backer);
+        memberRepository.flush();
         return member;
     }
 }

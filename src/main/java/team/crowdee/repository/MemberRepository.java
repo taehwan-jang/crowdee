@@ -84,4 +84,8 @@ public class MemberRepository {
         return follow.getFollowId();
     }
 
+    public void flush() {
+        em.flush();
+    }
+
 }
