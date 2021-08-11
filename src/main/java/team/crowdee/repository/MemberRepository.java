@@ -55,6 +55,13 @@ public class MemberRepository {
                 .getResultList();
     }
 
+    public List<Member> findToConfirm(String email, String emailCert) {
+        return em.createQuery("select m from Member m where m.email=:email and m.emailCert=:emailCert", Member.class)
+                .setParameter("email",email)
+                .setParameter("emailCert",emailCert)
+                .getResultList();
+    }
+
     public List<Member> findMemberWithFollow(Long id) {
         return em.createQuery("select m from Member m join fetch m.following", Member.class).getResultList();
     }
@@ -75,6 +82,10 @@ public class MemberRepository {
     public Long saveFollow(Follow follow) {
         em.persist(follow);
         return follow.getFollowId();
+    }
+
+    public void flush() {
+        em.flush();
     }
 
 }

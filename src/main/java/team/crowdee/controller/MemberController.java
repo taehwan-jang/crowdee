@@ -1,18 +1,20 @@
 package team.crowdee.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import team.crowdee.domain.Authorities;
 import team.crowdee.domain.Member;
 import team.crowdee.domain.dto.*;
 import team.crowdee.domain.valuetype.Address;
 import team.crowdee.repository.MemberRepository;
 import team.crowdee.service.MemberService;
+import team.crowdee.util.MimeEmailService;
 import team.crowdee.util.SendEmailService;
 
-import javax.persistence.EntityManager;
+import javax.mail.MessagingException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -20,22 +22,26 @@ import java.util.List;
 @CrossOrigin
 @RequiredArgsConstructor
 @RequestMapping("/member")
+@Slf4j
 public class MemberController {
 
     private final SendEmailService sendEmailService;
+    private final MimeEmailService mimeEmailService;
     private final MemberService memberService;
     private final MemberRepository memberRepository;
 
     //회원가입
     @PostMapping("/signUp")
-    public ResponseEntity<?> signUp(@RequestBody MemberDTO memberDTO) {
+    public ResponseEntity<?> signUp(@RequestBody MemberDTO memberDTO) throws MessagingException {
 
         Address address = new Address();
         address.setZonecode(memberDTO.getZonecode());
         address.setRestAddress(memberDTO.getRestAddress());
         address.setRoadAddress(memberDTO.getRoadAddress());
-
+        String authKey = mimeEmailService.sendAuthMail(memberDTO.getEmail());
         Member member = Member.builder()
+                .userId(memberDTO.getUserId())
+                .password(memberDTO.getPassword())
                 .userName(memberDTO.getUserName())
                 .nickName(memberDTO.getNickName())
                 .gender(memberDTO.getGender())
@@ -45,12 +51,23 @@ public class MemberController {
                 .registDate(LocalDateTime.now())
                 .mobile(memberDTO.getMobile())
                 .email(memberDTO.getEmail())
+                .authorities(Authorities.guest)
+                .emailCert(authKey)
                 .build();
 
         Member memberJoin = memberService.join(member);
-
-        return new ResponseEntity<>(memberJoin, HttpStatus.OK);
+        return new ResponseEntity<>("인증이메일을 확인해 주세요.", HttpStatus.CREATED);
     }
+
+    @GetMapping("/signUpConfirm")
+    public ResponseEntity<?> signUpConfirm(@RequestParam String email, @RequestParam String authKey) {
+        Member member = memberService.signUpConfirm(email,authKey);
+        if (member != null) {
+            return new ResponseEntity<>("인증이 완료되었습니다.", HttpStatus.OK);
+        }
+        return new ResponseEntity<>("인증에 실패했습니다.", HttpStatus.BAD_REQUEST);
+    }
+
 
     //로그인
     @PostMapping("/login")
