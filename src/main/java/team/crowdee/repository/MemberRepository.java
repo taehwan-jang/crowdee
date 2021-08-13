@@ -35,6 +35,14 @@ public class MemberRepository {
         return resultList.get(0);
     }
 
+    public String delete(Long memberId) {
+        Member deleteMember = findById(memberId);
+        String userId = deleteMember.getUserId();
+        em.createQuery("delete from Member m where m.userId=:userId")
+                .setParameter("userId", userId);
+        return "삭제되엇습니다.";
+    }
+
     public Member findById(Long id) {
         return em.find(Member.class, id);
     }

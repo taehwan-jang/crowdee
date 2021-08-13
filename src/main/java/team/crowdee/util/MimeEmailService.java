@@ -40,8 +40,6 @@ public class MimeEmailService {
         return authKey;
     }
 
-
-
     private String getKey() {
         StringBuffer buffer = new StringBuffer();
         char[] chars =
@@ -51,6 +49,5 @@ public class MimeEmailService {
         }
         return buffer.toString();
     }
-
 
 }
