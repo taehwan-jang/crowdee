@@ -19,10 +19,12 @@ public class MemberDTO {
     private String phone;
     private String mobile;
     private String email;
-
+    private LocalDateTime registDate;
+    private LocalDateTime secessionDate;
     private String zonecode;
     private String roadAddress;
     private String restAddress;
+
 
     /**
      * 아이디

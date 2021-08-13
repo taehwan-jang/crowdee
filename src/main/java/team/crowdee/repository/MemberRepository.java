@@ -9,6 +9,8 @@ import team.crowdee.domain.Member;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -33,6 +35,16 @@ public class MemberRepository {
             return null;
         }
         return resultList.get(0);
+    }
+
+    public void delete(Member member) {
+        /*
+        Member deleteMember = findById(memberId);
+        String userId = deleteMember.getUserId();
+        em.createQuery("delete from Member m where m.userId=:userId")
+                .setParameter("userId", userId);
+         */
+        em.remove(member);
     }
 
     public Member findById(Long id) {
@@ -69,6 +81,12 @@ public class MemberRepository {
     public List<Member> findAll() {
         return em.createQuery("select m from Member m",Member.class).getResultList();
     }
+
+//    public List<Member> findSecessionMember(LocalDateTime today) {
+//        return em.createQuery("select m from Member m where m.secessionDate=:today", Member.class)
+//                .setParameter("today", today)
+//                .getResultList();
+//    }
 
     public Long saveCreator(Creator creator) {
         em.persist(creator);

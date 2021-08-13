@@ -13,6 +13,7 @@ import team.crowdee.repository.MemberRepository;
 import team.crowdee.service.MemberService;
 import team.crowdee.util.MimeEmailService;
 import team.crowdee.util.SendEmailService;
+import team.crowdee.util.Utils;
 
 import javax.mail.MessagingException;
 import java.time.LocalDateTime;
@@ -24,16 +25,14 @@ import java.util.List;
 @RequestMapping("/member")
 @Slf4j
 public class MemberController {
-
     private final SendEmailService sendEmailService;
     private final MimeEmailService mimeEmailService;
     private final MemberService memberService;
     private final MemberRepository memberRepository;
 
-    //회원가입
+    //회원가입 추가할내용:회원탈퇴시에 회원존속여부 set해야함
     @PostMapping("/signUp")
     public ResponseEntity<?> signUp(@RequestBody MemberDTO memberDTO) throws MessagingException {
-
         Address address = new Address();
         address.setZonecode(memberDTO.getZonecode());
         address.setRestAddress(memberDTO.getRestAddress());
@@ -74,9 +73,13 @@ public class MemberController {
     public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO) {
         Member member = memberService.memberLogin(loginDTO);
 
-        if(member == null) {
+        if (member == null) {
             //실패 : 멤버가 없기 때문에 예외
             return new ResponseEntity<>("아이디 패스워드를 다시 확인해주세요.", HttpStatus.BAD_REQUEST);
+        }
+        boolean isSecession = member.getSecessionDate().equals(Utils.getTodayString());
+        if(isSecession){
+            return new ResponseEntity<>("탈퇴한 회원입니다.", HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(member, HttpStatus.OK);
     }
@@ -94,12 +97,12 @@ public class MemberController {
         sendEmailService.sendMail(mailDTO);
         return new ResponseEntity<>("이메일 발송되었습니다.", HttpStatus.OK);
     }
-    
+
     //비밀번호 수정
     @PostMapping("/changePass")
     public ResponseEntity<?> changePass(@RequestBody ChangePassDTO changePassDTO) {
         Member member = memberService.memberChangPass(changePassDTO);
-        if(member == null) {
+        if (member == null) {
             return new ResponseEntity<>("패스워드를 다시 확인해주세요.", HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(member, HttpStatus.OK);
@@ -111,7 +114,15 @@ public class MemberController {
 
         Member member = memberService.memberEdit(memberDTO);
 
-        return new ResponseEntity<>("정보가 수정되었습니다",HttpStatus.OK);
+        return new ResponseEntity<>("정보가 수정되었습니다", HttpStatus.OK);
     }
 
+    @PostMapping("/delete")
+    public ResponseEntity<?> delete(@RequestBody MemberDTO memberDTO) {
+        Member member = memberService.deleteMember(memberDTO);
+        if(member == null){
+            return new ResponseEntity<>("탈퇴에 실패했습니다.", HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>("탈퇴 되었습니다^^", HttpStatus.OK);
+    }
 }

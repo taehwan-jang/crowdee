@@ -33,7 +33,7 @@ public class Member {
     private String email; //x --애매한 부분
     private String emailCert; //이메일 인증 받았을때 //o
     private LocalDateTime registDate;
-    private LocalDateTime secessionDate;
+    private String secessionDate;
 
     @Embedded
     private Address address;
@@ -53,13 +53,14 @@ public class Member {
     @JoinColumn(name = "creator_id")
     private Creator creator;
 
+
     public void joinCreator(Creator creator) {
         this.creator = creator;
         this.authorities = Authorities.creator;
         creator.setMember(this);
 
     }
-    public void secessionMember(LocalDateTime secessionDate) {
+    public void secessionMember(String secessionDate) {
         this.secessionDate = secessionDate;
     }
 
