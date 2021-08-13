@@ -61,10 +61,10 @@ public class MemberController {
     @GetMapping("/signUpConfirm")
     public ResponseEntity<?> signUpConfirm(@RequestParam String email, @RequestParam String authKey) {
         Member member = memberService.signUpConfirm(email,authKey);
-        if (member != null) {
-            return new ResponseEntity<>("인증이 완료되었습니다.", HttpStatus.OK);
+        if (member == null) {
+            return new ResponseEntity<>("인증에 실패했습니다.", HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>("인증에 실패했습니다.", HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>("인증이 완료되었습니다.", HttpStatus.OK);
     }
 
 
