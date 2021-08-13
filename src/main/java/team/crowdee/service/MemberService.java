@@ -26,11 +26,12 @@ import java.util.regex.Pattern;
 @RequiredArgsConstructor
 @Slf4j
 @EnableScheduling
+@Transactional(readOnly = true)
 public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
-    // 로직 수정 필요 멤버 DTO로 받는지 아니면 멤버로받는지 물어보고 바꾸기
+    // 회원가입시 멤버 아이디 중복확인 어디?
     @Transactional
     public Member join(
             Member member) {
@@ -38,13 +39,11 @@ public class MemberService {
         this.validationPw(member);
         this.doubleCheck(member.getUserId(),member.getNickName());
         String encodePass = passwordEncoder.encode(member.getPassword());//패스워드 암호화
-        member.setPassword(encodePass);//암호화된 패스워드 저장
+        member.changePassword(encodePass);//로직명 변경(명시적으로)
         memberRepository.save(member);
         return member;
-
     }
 
-    @Transactional(readOnly = true)
     public Member memberLogin(LoginDTO loginDTO) {
 
         Member findMember = memberRepository.login(loginDTO.getUserId());
@@ -66,7 +65,6 @@ public class MemberService {
     }
 
     // 회원 ID 검증
-    @Transactional
     public boolean validationId(Member member){
         if(member.getUserId().length()<4 || member.getUserId().length()>20){
             return false;
@@ -75,7 +73,6 @@ public class MemberService {
     }
 
     // 회원 Password 검증
-    @Transactional
     public boolean validationPw(Member member){
         Pattern p = Pattern.compile("^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[$@$!%*#?&])[A-Za-z[0-9]$@$!%*#?&]{8,16}$");
         Matcher m = p.matcher(member.getPassword());
@@ -85,7 +82,6 @@ public class MemberService {
         return false;
     }
 
-    @Transactional(readOnly = true)
     public boolean doubleCheck(String userId, String nickName) {
         List<Member> byUserId = memberRepository.findByParam("userId", userId);
         List<Member> byNickName = memberRepository.findByParam("userId", nickName);
@@ -96,7 +92,6 @@ public class MemberService {
         return true;
     }
 
-    @Transactional(readOnly = true)
     public boolean doubleCheck(String nickName) {
         List<Member> byNickName = memberRepository.findByParam("userId", nickName);
         if (!byNickName.isEmpty()) {
@@ -165,11 +160,14 @@ public class MemberService {
     }
 
     @Scheduled(cron = "0 0 1 * * *") //0 0 1 * * *로 변경하면 하루마다 메소드 시작.
+    @Transactional
     public void timeDelete() {
         String today= Utils.getTodayString();
         List<Member> SecessionMember = memberRepository.findByParam("secessionDate",today);
         for (Member member : SecessionMember) {
-            log.info("탈퇴 회원 리스트={}",member.getUserId());
+            log.info("탈퇴 회원 아이디={}",member.getUserId());
+            log.info("탈퇴 회원 이름={}",member.getUserName());
+            log.info("탈퇴 회원 패스워드={}",member.getPassword());
             memberRepository.delete(member);
         }
 
