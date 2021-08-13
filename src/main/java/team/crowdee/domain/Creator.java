@@ -22,7 +22,7 @@ public class Creator {
 
     private String BusinessNumber;
 
-    @OneToOne(mappedBy = "creator")
+    @OneToOne(mappedBy = "creator", cascade = CascadeType.ALL)
     private Member member;
 
     @OneToMany(mappedBy = "creator")
