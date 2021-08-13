@@ -55,6 +55,9 @@ public class MemberController {
                 .build();
 
         Member memberJoin = memberService.join(member);
+        if (memberJoin == null) {
+            return new ResponseEntity<>("회원가입에 실패했습니다.", HttpStatus.BAD_REQUEST);
+        }
         return new ResponseEntity<>("인증이메일을 확인해 주세요.", HttpStatus.CREATED);
     }
 
