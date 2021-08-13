@@ -2,7 +2,10 @@ package team.crowdee.domain.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import team.crowdee.domain.Withdrawal;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import java.time.LocalDateTime;
 
 @Getter @Setter
@@ -19,10 +22,13 @@ public class MemberDTO {
     private String phone;
     private String mobile;
     private String email;
-
+    private LocalDateTime registDate;
+    private LocalDateTime secessionDate;
     private String zonecode;
     private String roadAddress;
     private String restAddress;
+    private Withdrawal withdrawal;
+
 
     /**
      * 아이디

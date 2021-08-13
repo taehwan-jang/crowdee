@@ -14,4 +14,11 @@ public class Address {
     private String roadAddress;
     private String restAddress;
 
+    public void updateAddress(Address address) {
+        this.zonecode=zonecode;
+        this.roadAddress = roadAddress;
+        this.restAddress = restAddress;
+
+    }
+
 }

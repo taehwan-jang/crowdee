@@ -24,16 +24,14 @@ import java.util.List;
 @RequestMapping("/member")
 @Slf4j
 public class MemberController {
-
     private final SendEmailService sendEmailService;
     private final MimeEmailService mimeEmailService;
     private final MemberService memberService;
     private final MemberRepository memberRepository;
 
-    //회원가입
+    //회원가입 추가할내용:회원탈퇴시에 회원존속여부 set해야함
     @PostMapping("/signUp")
     public ResponseEntity<?> signUp(@RequestBody MemberDTO memberDTO) throws MessagingException {
-
         Address address = new Address();
         address.setZonecode(memberDTO.getZonecode());
         address.setRestAddress(memberDTO.getRestAddress());
@@ -54,7 +52,6 @@ public class MemberController {
                 .authorities(Authorities.guest)
                 .emailCert(authKey)
                 .build();
-
         Member memberJoin = memberService.join(member);
         return new ResponseEntity<>("인증이메일을 확인해 주세요.", HttpStatus.CREATED);
     }
@@ -116,8 +113,7 @@ public class MemberController {
 
     @PostMapping("/delete")
     public ResponseEntity<?> delete(@RequestBody MemberDTO memberDTO) {
-        Member member = memberService.deleteMember(memberDTO);
-        String userId = member.getUserId();
-        return new ResponseEntity<>(userId+"님탈퇴되었습니다^^", HttpStatus.OK);
+        memberService.deleteMember(memberDTO);
+        return new ResponseEntity<>("탈퇴되었습니다^^", HttpStatus.OK);
     }
 }

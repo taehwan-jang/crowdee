@@ -35,6 +35,9 @@ public class Member {
     private LocalDateTime registDate;
     private LocalDateTime secessionDate;
 
+    @Enumerated(EnumType.STRING)
+    private Withdrawal withdrawal;
+
     @Embedded
     private Address address;
 
