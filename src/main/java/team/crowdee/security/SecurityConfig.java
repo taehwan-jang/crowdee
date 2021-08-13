@@ -28,20 +28,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.httpBasic().disable()
-                .csrf()
-                .disable()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .authorizeRequests()
-                .antMatchers("/*")
-                .permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .cors()
-                .and();
-
+        http.
+                httpBasic().disable()
+                .cors().disable()
+                .csrf().disable();
 
     }
     @Bean
