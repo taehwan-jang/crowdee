@@ -14,7 +14,6 @@ import team.crowdee.service.MemberService;
 import team.crowdee.util.MimeEmailService;
 import team.crowdee.util.SendEmailService;
 import team.crowdee.util.Utils;
-
 import javax.mail.MessagingException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -58,7 +57,7 @@ public class MemberController {
         if (memberJoin == null) {
             return new ResponseEntity<>("회원가입에 실패했습니다.", HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>("인증이메일을 확인해 주세요.", HttpStatus.CREATED);
+        return new ResponseEntity<>(memberJoin, HttpStatus.CREATED);
     }
 
     @GetMapping("/signUpConfirm")
@@ -126,6 +125,6 @@ public class MemberController {
         if(member == null){
             return new ResponseEntity<>("탈퇴에 실패했습니다.", HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>("탈퇴 되었습니다^^", HttpStatus.OK);
+        return new ResponseEntity<>("탈퇴 되었습니다", HttpStatus.OK);
     }
 }

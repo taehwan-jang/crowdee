@@ -12,5 +12,5 @@ public class AccountInfo {
 
     private String accountNumber;
     private String bankName;
-    private String accountImageUrl;
+    private String bankBookImageUrl;
 }
