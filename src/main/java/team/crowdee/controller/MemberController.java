@@ -13,6 +13,7 @@ import team.crowdee.repository.MemberRepository;
 import team.crowdee.service.MemberService;
 import team.crowdee.util.MimeEmailService;
 import team.crowdee.util.SendEmailService;
+import team.crowdee.util.Utils;
 
 import javax.mail.MessagingException;
 import java.time.LocalDateTime;
@@ -52,6 +53,7 @@ public class MemberController {
                 .authorities(Authorities.guest)
                 .emailCert(authKey)
                 .build();
+
         Member memberJoin = memberService.join(member);
         return new ResponseEntity<>("인증이메일을 확인해 주세요.", HttpStatus.CREATED);
     }
@@ -74,6 +76,10 @@ public class MemberController {
         if (member == null) {
             //실패 : 멤버가 없기 때문에 예외
             return new ResponseEntity<>("아이디 패스워드를 다시 확인해주세요.", HttpStatus.BAD_REQUEST);
+        }
+        boolean isSecession = member.getSecessionDate().equals(Utils.getTodayString());
+        if(isSecession){
+            return new ResponseEntity<>("탈퇴한 회원입니다.", HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(member, HttpStatus.OK);
     }
@@ -113,7 +119,10 @@ public class MemberController {
 
     @PostMapping("/delete")
     public ResponseEntity<?> delete(@RequestBody MemberDTO memberDTO) {
-        memberService.deleteMember(memberDTO);
-        return new ResponseEntity<>("탈퇴되었습니다^^", HttpStatus.OK);
+        Member member = memberService.deleteMember(memberDTO);
+        if(member == null){
+            return new ResponseEntity<>("탈퇴에 실패했습니다.", HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>("탈퇴 되었습니다^^", HttpStatus.OK);
     }
 }

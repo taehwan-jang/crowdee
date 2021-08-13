@@ -9,15 +9,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team.crowdee.domain.Authorities;
 import team.crowdee.domain.Member;
-import team.crowdee.domain.Withdrawal;
 import team.crowdee.domain.dto.ChangePassDTO;
 import team.crowdee.domain.dto.LoginDTO;
 import team.crowdee.domain.dto.MemberDTO;
 import team.crowdee.domain.valuetype.Address;
 import team.crowdee.repository.MemberRepository;
-import team.crowdee.repository.MemberRepositoryDohyun;
+import team.crowdee.util.Utils;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,13 +27,13 @@ import java.util.regex.Pattern;
 @Slf4j
 @EnableScheduling
 public class MemberService {
-    private final MemberRepositoryDohyun memberRepositoryDohyun;
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
     // 로직 수정 필요 멤버 DTO로 받는지 아니면 멤버로받는지 물어보고 바꾸기
     @Transactional
-    public Member join(Member member) {
+    public Member join(
+            Member member) {
         this.validationId(member);
         this.validationPw(member);
         this.doubleCheck(member.getUserId(),member.getNickName());
@@ -46,16 +46,21 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public Member memberLogin(LoginDTO loginDTO) {
-        if(loginDTO.getWithdrawal()==Withdrawal.existence){
-            Member findMember = memberRepository.login(loginDTO.getUserId());
-            //DB에 암호화된 패스워드와 입력한 패스워드가 일치하는지 확인하는 과정
-            boolean matches = passwordEncoder.matches(loginDTO.getPassword(), findMember.getPassword());
-            System.out.println(matches);
-            return matches ? findMember : null;//결과값에 따라 return값 결정
-        }
-        else {
-            return null;
-        }
+
+        Member findMember = memberRepository.login(loginDTO.getUserId());
+        boolean matches = passwordEncoder.matches(loginDTO.getPassword(), findMember.getPassword());
+        return matches ? findMember : null;//결과값에 따라 return값 결정
+
+
+
+//        if(loginDTO.getWithdrawal()==Withdrawal.existence){
+//            Member findMember = memberRepository.login(loginDTO.getUserId());
+//            //DB에 암호화된 패스워드와 입력한 패스워드가 일치하는지 확인하는 과정
+//            System.out.println(matches);
+//        }
+//        else {
+//            return null;
+//        }
 
 
     }
@@ -151,22 +156,25 @@ public class MemberService {
     @Transactional
     public Member deleteMember(MemberDTO memberDTO) { //비번 값을 보내준다고 가정
         Member member = memberRepository.findById(memberDTO.getMemberId());
-        String userId = member.getUserId(); //아이디는그대로
-        String password = member.getPassword();
-        if (memberDTO.getUserId().equals(userId) && passwordEncoder.matches(memberDTO.getPassword(), password)) {
-            member.setWithdrawal(Withdrawal.unexistaence);
-        }
+
         LocalDateTime currentDate= LocalDateTime.now();
-        LocalDateTime plusMonths = currentDate.plusMonths(1L);
-        member.setRegistDate(currentDate);
+        String plusMonths = currentDate.plusMonths(1L).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        log.info("탈퇴 신청 후 한달 이후 날짜 ={}", plusMonths);
         member.setSecessionDate(plusMonths);
-        timeDelete();
         return member;
     }
+
     @Scheduled(cron = "0 0 1 * * *") //0 0 1 * * *로 변경하면 하루마다 메소드 시작.
     public void timeDelete() {
-        List<Member> allMember = memberRepository.findAll();
-        LocalDateTime currentDate= LocalDateTime.now();
+        String today= Utils.getTodayString();
+        List<Member> SecessionMember = memberRepository.findByParam("secessionDate",today);
+        for (Member member : SecessionMember) {
+            log.info("탈퇴 회원 리스트={}",member.getUserId());
+            memberRepository.delete(member);
+        }
+
+
+        /*
         for (int i=0; i<allMember.size(); i++) {
             //현재날짜가 탈퇴에서한달더한날짜를 초과한순간 true이니까 삭제시키면된다.
             if (allMember.get(i).getWithdrawal() == Withdrawal.unexistaence) {
@@ -175,15 +183,18 @@ public class MemberService {
                 }
             }
             //미주코드
-            /*if(allMember.get(i).getRegistDate()==Withdrawal.unexistaence) {
+            if(allMember.get(i).getRegistDate()==Withdrawal.unexistaence) {
                 if (currentDate.plusMonths(1).isAfter(allMember.get(i).getRegistDate().plusMonths(1))) {
                     Long longId = new Long((i+1));
                     memberRepository.delete(longId);
                 }
-            }*/
+            }
         }
+         */
 
     }
+
+
 }
 
 

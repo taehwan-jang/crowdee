@@ -10,18 +10,12 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 import team.crowdee.domain.Member;
-import team.crowdee.domain.Withdrawal;
 import team.crowdee.domain.dto.ChangePassDTO;
 import team.crowdee.domain.dto.LoginDTO;
 import team.crowdee.domain.dto.MemberDTO;
 import team.crowdee.repository.MemberRepository;
-import team.crowdee.repository.MemberRepositoryDohyun;
 
 import java.time.LocalDateTime;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static org.assertj.core.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -34,8 +28,8 @@ class MemberServiceTest {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    /* @Test
-     @Rollback(value = false)*/
+    @Test
+    @Rollback(value = false)
     public void 더미데이터_삽입() {
         for (int i = 0; i < 10; i++) {
             memberService.join(
@@ -60,7 +54,6 @@ class MemberServiceTest {
     public void 회원가입() throws Exception {
         //given
         Member member = memberRepository.findById(1L);
-        member.setWithdrawal(Withdrawal.existence);
         //when
         Member join = memberService.join(member);
         //then
@@ -154,8 +147,6 @@ class MemberServiceTest {
         LoginDTO loginMember = new LoginDTO();
         loginMember.setUserId(member.getUserId());
         loginMember.setPassword("1q2w3e4r!0");
-        loginMember.setWithdrawal(Withdrawal.existence);
-        System.out.println(loginMember.getWithdrawal());
         System.out.println(loginMember.getUserId());
         //when
         Member memberLogin = memberService.memberLogin(loginMember);
@@ -222,15 +213,15 @@ class MemberServiceTest {
     }
 
     @Test
-    public void 회원탈퇴(){
-        Member savemember = memberRepository.findById(1l);
+    @Rollback(value = false)
+    public void 회원탈퇴_SecessionDate_확인(){
         MemberDTO memberDTO = new MemberDTO();
-        memberDTO.setMemberId(1L);
-        memberDTO.setUserId(savemember.getUserId());
-        memberDTO.setPassword(passwordEncoder.encode(savemember.getPassword()));
+        memberDTO.setMemberId(5L);
         Member member = memberService.deleteMember(memberDTO);
-
-        Assertions.assertThat(member.getMemberId()).isNotNull();
+        System.out.println("member.getUserName() = " + member.getUserName());
+        String secessionDate = member.getSecessionDate();
+        System.out.println("secessionDate = " + secessionDate);
+        Assertions.assertThat(secessionDate).isNotNull();
 
     }
 }
