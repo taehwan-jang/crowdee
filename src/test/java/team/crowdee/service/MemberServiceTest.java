@@ -34,7 +34,7 @@ class MemberServiceTest {
     private PasswordEncoder passwordEncoder;
 
     @Test
-    @Rollback(value = false)
+   // @Rollback(value = false)
     public void 더미데이터_삽입() {
         for (int i = 0; i < 10; i++) {
             memberService.join(
@@ -61,6 +61,9 @@ class MemberServiceTest {
         //given
         Member member = memberRepository.findById(1L);
         //when
+        member.setMemberId(51L);
+        member.setNickName("미주짱짱");
+        member.setUserId("asdf1234");
         Member join = memberService.join(member);
         //then
         assertThat(join).isNotNull();
@@ -237,7 +240,6 @@ class MemberServiceTest {
         Member member = memberRepository.findById(1L);
         member.setEmailCert("ABC");
         memberService.signUpConfirm("mail0@mail.com", "ABC");
-
         assertThat(member.getEmailCert()).isEqualTo("Y");
         assertThat(member.getAuthorities()).isEqualTo(Authorities.backer);
         assertThat(member).isNotNull();

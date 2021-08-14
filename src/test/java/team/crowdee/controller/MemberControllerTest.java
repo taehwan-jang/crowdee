@@ -13,7 +13,9 @@ import team.crowdee.domain.Member;
 import team.crowdee.domain.dto.LoginDTO;
 import team.crowdee.domain.dto.MemberDTO;
 import team.crowdee.repository.MemberRepository;
+import team.crowdee.service.MemberService;
 
+import javax.mail.MessagingException;
 import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
 
@@ -24,7 +26,9 @@ import static org.assertj.core.api.Assertions.*;
 @Transactional
 class MemberControllerTest {
     @Autowired
-    MemberController memberController;
+    private MemberService memberService;
+    @Autowired
+    private MemberController memberController;
     @Autowired
     private MemberRepository memberRepository;
     @Autowired
@@ -61,7 +65,6 @@ class MemberControllerTest {
                     .email("mail" + i + "@mail.com")
                     .userName("user" + i)
                     .registDate(LocalDateTime.now())
-
                     .age(20 + i)
                     .userId("testId" + i)
                     .gender("남자")
@@ -77,14 +80,31 @@ class MemberControllerTest {
         loginDTO.setUserId("testId0");
         loginDTO.setPassword("1q2w3e4r!0");
         ResponseEntity<?> login = memberController.login(loginDTO);
-
         assertThat(login).isEqualTo(true);
 
     }
 
     @Test
-    public void 테스트_회원가입() {
-        MemberDTO memberDTO = new MemberDTO();
+    public void 테스트_회원가입() throws MessagingException {
+        int i = 25;
+        MemberDTO memberDTO1 = MemberDTO.builder()
+                .userName("장태환" + i)
+                .password("1q2w3e4r!" + i)
+                .birth("1992/" + i)
+                .nickName("테스트" + i)
+                .email("mail" + i + "@mail.com")
+                .userName("user" + i)
+                .registDate(LocalDateTime.now())
+                .secessionDate(LocalDateTime.now().plusDays(5))
+                .age(20 + i)
+                .userId("testId" + i)
+                .gender("남자")
+                .mobile("010-1234-123" + i)
+                .build();
+        memberController.signUp(memberDTO1);
+
+
+
 
 
 

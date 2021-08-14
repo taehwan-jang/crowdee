@@ -37,7 +37,7 @@ class MemberRepositoryTest {
         //when
         //Long save = memberRepository.save(member);
         for (int i = 0; i < 5; i++) {
-            Long member = memberRepository.save(Member.builder()
+            Member member = memberRepository.save(Member.builder()
                     .userName("장태환" + i)
                     .password("1q2w3e4r!"+i)
                     .birth("1992/" + i)

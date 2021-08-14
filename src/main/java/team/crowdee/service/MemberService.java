@@ -34,20 +34,31 @@ public class MemberService {
     // 회원가입시 멤버 아이디 중복확인 어디?
     @Transactional
     public Member join(Member member) {
-        this.validationId(member);
-        this.validationPw(member);
-        this.doubleCheck(member.getUserId(),member.getNickName());
+        boolean checkId = validationId(member);
+        boolean checkPw = this.validationPw(member);
+        boolean checkIdNick = this.doubleCheck(member.getUserId(), member.getNickName());
+        if (checkId == false && checkPw == false && checkIdNick == false) {
+            return null;
+        }
         String encodePass = passwordEncoder.encode(member.getPassword());//패스워드 암호화
         member.changePassword(encodePass);//로직명 변경(명시적으로)
-        Long saveMember = memberRepository.save(member);
+        Member saveMember = memberRepository.save(member);
         return saveMember != null ? member : null;
 
     }
 
     public Member memberLogin(LoginDTO loginDTO) {
-        Member findMember = memberRepository.login(loginDTO.getUserId());
-        boolean matches = passwordEncoder.matches(loginDTO.getPassword(), findMember.getPassword());
-        return matches ? findMember : null;//결과값에 따라 return값 결정
+        List<Member> userId = memberRepository.findByParam("userId", loginDTO.getUserId());
+        if (userId.get(0).getSecessionDate() == null) {
+            Member findMember = memberRepository.login(loginDTO.getUserId());
+            boolean matches = passwordEncoder.matches(loginDTO.getPassword(), findMember.getPassword());
+            return matches ? findMember : null;
+        }
+        else {
+            return null;
+        }
+     //   결과값에 따라 return값 결정
+
 //        if(loginDTO.getWithdrawal()==Withdrawal.existence){
 //            Member findMember = memberRepository.login(loginDTO.getUserId());
 //            //DB에 암호화된 패스워드와 입력한 패스워드가 일치하는지 확인하는 과정
@@ -101,9 +112,11 @@ public class MemberService {
         Member member = memberRepository.findById(memberDTO.getMemberId());
         String encodePass = passwordEncoder.encode(memberDTO.getPassword());
         Address address = new Address();
-        address.setZonecode(memberDTO.getZonecode());
+        address.updateAddress(address);
+     /*   address.setZonecode(memberDTO.getZonecode());
         address.setRestAddress(memberDTO.getRestAddress());
-        address.setRoadAddress(memberDTO.getRoadAddress());
+        address.setRoadAddress(memberDTO.getRoadAddress());*/
+       // member.changeMember(memberDTO.getNickName(),)
         member.changeNickName(memberDTO.getNickName());
         member.changePhone(memberDTO.getPhone());
         member.changeAddress(address);
