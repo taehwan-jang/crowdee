@@ -15,17 +15,29 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: -
-    password: -
+    username: team.crowdee@gmail.com
+    password: zuglkxuwfejpcunv
     properties:
       mail:
         smtp:
           auth: true
           starttls:
             enable: true
+
 logging:
   level:
     org.hibernate.SQL: debug
     org.hibernate.type: trace
 server:
   port: 8081
+
+cloud:
+  aws:
+    s3:
+      bucket: crowdee
+      region:
+        static: ap-northeast-2
+    credentials:
+      accessKey: AKIA2CK36GNBCJZKGAE7
+      secretKey: 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
+
