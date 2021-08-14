@@ -4,11 +4,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 import team.crowdee.domain.Creator;
 import team.crowdee.domain.Member;
+import team.crowdee.domain.dto.LoginDTO;
+import team.crowdee.domain.dto.MemberDTO;
 import team.crowdee.repository.MemberRepository;
 
 import javax.persistence.EntityManager;
@@ -20,7 +23,8 @@ import static org.assertj.core.api.Assertions.*;
 @SpringBootTest
 @Transactional
 class MemberControllerTest {
-
+    @Autowired
+    MemberController memberController;
     @Autowired
     private MemberRepository memberRepository;
     @Autowired
@@ -29,9 +33,7 @@ class MemberControllerTest {
     @Test
     public void 크리에이터테스트() throws Exception {
         //given
-
         Member member5 = memberRepository.findById(5L);
-
         Creator creator1 = Creator.builder()
                 .BusinessNumber("123-1231-1231")
                 .build();
@@ -59,6 +61,7 @@ class MemberControllerTest {
                     .email("mail" + i + "@mail.com")
                     .userName("user" + i)
                     .registDate(LocalDateTime.now())
+
                     .age(20 + i)
                     .userId("testId" + i)
                     .gender("남자")
@@ -66,6 +69,26 @@ class MemberControllerTest {
                     .build()
             );
         }
+    }
+
+    @Test  //session 데이터없으면 널포인트뜨니까 넣고 테스트돌리세용!!
+    public void 테스트_로그인(){
+       LoginDTO loginDTO = new LoginDTO();
+        loginDTO.setUserId("testId0");
+        loginDTO.setPassword("1q2w3e4r!0");
+        ResponseEntity<?> login = memberController.login(loginDTO);
+
+        assertThat(login).isEqualTo(true);
+
+    }
+
+    @Test
+    public void 테스트_회원가입() {
+        MemberDTO memberDTO = new MemberDTO();
+
+
+
+       // memberController.signUp()
     }
 
 }

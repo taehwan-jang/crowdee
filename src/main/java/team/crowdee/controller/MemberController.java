@@ -115,7 +115,9 @@ public class MemberController {
     public ResponseEntity<?> edit(@RequestBody MemberDTO memberDTO) {
 
         Member member = memberService.memberEdit(memberDTO);
-
+        if(member ==null){
+            return new ResponseEntity<>("수정이 되어지지않았습니다.", HttpStatus.BAD_REQUEST);
+        }
         return new ResponseEntity<>("정보가 수정되었습니다", HttpStatus.OK);
     }
 

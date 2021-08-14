@@ -21,7 +21,6 @@ public class MemberRepository {
     @PersistenceContext
     private final EntityManager em;
 
-
     public Long save(Member member) {
         em.persist(member);
         return member.getMemberId();
@@ -53,7 +52,7 @@ public class MemberRepository {
 
     public List<Member> findByParam(String target,String param) {
 
-        String query = "select m from Member m where m." + target + "=:param";
+        String query = "select m from Member m where m."+ target +"=:param";
         return em.createQuery(query, Member.class)
                 .setParameter("param", param)
                 .getResultList();

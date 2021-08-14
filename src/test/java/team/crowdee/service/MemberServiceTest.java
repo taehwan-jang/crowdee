@@ -9,13 +9,18 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
+import team.crowdee.domain.Authorities;
 import team.crowdee.domain.Member;
 import team.crowdee.domain.dto.ChangePassDTO;
 import team.crowdee.domain.dto.LoginDTO;
 import team.crowdee.domain.dto.MemberDTO;
 import team.crowdee.repository.MemberRepository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+
+import static org.assertj.core.api.Assertions.as;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -41,6 +46,7 @@ class MemberServiceTest {
                             .email("mail" + i + "@mail.com")
                             .userName("user" + i)
                             .registDate(LocalDateTime.now())
+                            .secessionDate("2021101"+i)
                             .age(20 + i)
                             .userId("testId" + i)
                             .gender("남자")
@@ -57,7 +63,7 @@ class MemberServiceTest {
         //when
         Member join = memberService.join(member);
         //then
-        Assertions.assertThat(join).isNotNull();
+        assertThat(join).isNotNull();
     }
 
     // 테스트 완료
@@ -77,9 +83,9 @@ class MemberServiceTest {
         boolean valiId3 = memberService.validationId(sampleId3);
 
         //then
-        Assertions.assertThat(valiId1).isEqualTo(false);
-        Assertions.assertThat(valiId2).isEqualTo(false);
-        Assertions.assertThat(valiId3).isEqualTo(true);
+        assertThat(valiId1).isEqualTo(false);
+        assertThat(valiId2).isEqualTo(false);
+        assertThat(valiId3).isEqualTo(true);
     }
 
     @Test
@@ -103,11 +109,11 @@ class MemberServiceTest {
         boolean valiPw5 = memberService.validationPw(samplePw5);
 
         //then
-        Assertions.assertThat(valiPw1).isEqualTo(false);
-        Assertions.assertThat(valiPw2).isEqualTo(false);
-        Assertions.assertThat(valiPw3).isEqualTo(false);
-        Assertions.assertThat(valiPw4).isEqualTo(false);
-        Assertions.assertThat(valiPw5).isEqualTo(true);
+        assertThat(valiPw1).isEqualTo(false);
+        assertThat(valiPw2).isEqualTo(false);
+        assertThat(valiPw3).isEqualTo(false);
+        assertThat(valiPw4).isEqualTo(false);
+        assertThat(valiPw5).isEqualTo(true);
 
     }
 
@@ -131,10 +137,9 @@ class MemberServiceTest {
         //when
         boolean usernamecheck = memberService.doubleCheck(memberDTO2.getUserId(),memberDTO2.getNickName() );
         boolean nicknamecheck = memberService.doubleCheck(memberDTO4.getUserId(), memberDTO4.getNickName());
-        Assertions.assertThat(usernamecheck).isEqualTo(false); // 유저네임중복이되냐 테스트
-        Assertions.assertThat(nicknamecheck).isEqualTo(false); // 닉네임이중복이되냐 테스트
-
-
+        System.out.println();
+        assertThat(usernamecheck).isEqualTo(false); // 유저네임중복이되냐 테스트
+        assertThat(nicknamecheck).isEqualTo(false); // 닉네임이중복이되냐 테스트
         //then
 
 
@@ -150,7 +155,7 @@ class MemberServiceTest {
         System.out.println(loginMember.getUserId());
         //when
         Member memberLogin = memberService.memberLogin(loginMember);
-        Assertions.assertThat(memberLogin).isNotNull();
+        assertThat(memberLogin).isNotNull();
         //then
 
     }
@@ -171,20 +176,21 @@ class MemberServiceTest {
         memberDTO.setPassword("pass");
 
         //when
-        Member findMember = memberService.memberEdit(memberDTO);
+        Member editMember = memberService.memberEdit(memberDTO);
         //then
-        Assertions.assertThat(findMember.getNickName()).isEqualTo("닉네임테스트");
-        Assertions.assertThat(findMember.getMobile()).isEqualTo("000-0000-0000");
-        Assertions.assertThat(findMember.getPhone()).isEqualTo("000-0000-0000");
-        Assertions.assertThat(findMember.getAddress().getZonecode()).isEqualTo("존코드");
-        Assertions.assertThat(findMember.getAddress().getRestAddress()).isEqualTo("레스트어드레스");
-        Assertions.assertThat(findMember.getAddress().getRoadAddress()).isEqualTo("로드어드레스");
-        boolean matches = passwordEncoder.matches(memberDTO.getPassword(), findMember.getPassword());
-        if (matches) {
+        assertThat(editMember.getNickName()).isEqualTo("닉네임테스트");
+        assertThat(editMember.getMobile()).isEqualTo("000-0000-0000");
+        assertThat(editMember.getPhone()).isEqualTo("000-0000-0000");
+        assertThat(editMember.getAddress().getZonecode()).isEqualTo("존코드");
+        assertThat(editMember.getAddress().getRestAddress()).isEqualTo("레스트어드레스");
+        assertThat(editMember.getAddress().getRoadAddress()).isEqualTo("로드어드레스");
+      //  boolean matches = passwordEncoder.matches(memberDTO.getPassword(), findMember.getPassword());
+        assertThat(editMember).isNotNull();
+       /* if (matches) {
             System.out.println("패스워드 일치");
         } else {
             System.out.println("패스워드 불일치");
-        }
+        }*/
     }
 
     //테스트 진행중
@@ -197,18 +203,18 @@ class MemberServiceTest {
         Member member = memberService.memberLogin(loginDTO);
         //Assertions.assertThat(member).isNotNull(); 로그인성공
         //비번체인지
+
         ChangePassDTO changePassDTO = new ChangePassDTO();
         changePassDTO.setMemberId(3L);
         changePassDTO.setOldPassword("1q2w3e4r!2");
         changePassDTO.setNewPassword("tjdengus1!");
-
         Member changmember = memberService.memberChangPass(changePassDTO);
         boolean matches = passwordEncoder.matches(loginDTO.getPassword(), changmember.getPassword());
         //비번바꾸고 로그인
         loginDTO.setUserId("testId2");
         loginDTO.setPassword("tjdengus1!");
         Member member1 = memberService.memberLogin(loginDTO);
-        Assertions.assertThat(member1).isNull();
+        assertThat(member1).isNotNull();
 
     }
 
@@ -221,7 +227,21 @@ class MemberServiceTest {
         System.out.println("member.getUserName() = " + member.getUserName());
         String secessionDate = member.getSecessionDate();
         System.out.println("secessionDate = " + secessionDate);
-        Assertions.assertThat(secessionDate).isNotNull();
+        assertThat(secessionDate).isNotNull();
 
     }
+
+    @Test
+    @Rollback(value = false)
+    public void 가입확인_(){
+        Member member = memberRepository.findById(1L);
+        member.setEmailCert("ABC");
+        memberService.signUpConfirm("mail0@mail.com", "ABC");
+
+        assertThat(member.getEmailCert()).isEqualTo("Y");
+        assertThat(member.getAuthorities()).isEqualTo(Authorities.backer);
+        assertThat(member).isNotNull();
+    }
+
+
 }

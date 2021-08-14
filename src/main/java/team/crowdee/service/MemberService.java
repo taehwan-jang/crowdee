@@ -33,25 +33,21 @@ public class MemberService {
 
     // 회원가입시 멤버 아이디 중복확인 어디?
     @Transactional
-    public Member join(
-            Member member) {
+    public Member join(Member member) {
         this.validationId(member);
         this.validationPw(member);
         this.doubleCheck(member.getUserId(),member.getNickName());
         String encodePass = passwordEncoder.encode(member.getPassword());//패스워드 암호화
         member.changePassword(encodePass);//로직명 변경(명시적으로)
-        memberRepository.save(member);
-        return member;
+        Long saveMember = memberRepository.save(member);
+        return saveMember != null ? member : null;
+
     }
 
     public Member memberLogin(LoginDTO loginDTO) {
-
         Member findMember = memberRepository.login(loginDTO.getUserId());
         boolean matches = passwordEncoder.matches(loginDTO.getPassword(), findMember.getPassword());
         return matches ? findMember : null;//결과값에 따라 return값 결정
-
-
-
 //        if(loginDTO.getWithdrawal()==Withdrawal.existence){
 //            Member findMember = memberRepository.login(loginDTO.getUserId());
 //            //DB에 암호화된 패스워드와 입력한 패스워드가 일치하는지 확인하는 과정
@@ -60,7 +56,6 @@ public class MemberService {
 //        else {
 //            return null;
 //        }
-
 
     }
 
@@ -114,8 +109,7 @@ public class MemberService {
         member.changeAddress(address);
         member.changeMobile(memberDTO.getMobile());
         member.changePassword(encodePass);
-
-        return member;
+        return member != null ? member : null;
     }
     
     //비밀번호 수정
@@ -133,6 +127,7 @@ public class MemberService {
             return null;
         }
         return member;
+
     }
 
     @Transactional
@@ -141,7 +136,6 @@ public class MemberService {
         if (members.isEmpty()) {
             return null;
         }
-
         Member member = members.get(0);
         member.setEmailCert("Y");
         member.setAuthorities(Authorities.backer);
@@ -151,12 +145,11 @@ public class MemberService {
     @Transactional
     public Member deleteMember(MemberDTO memberDTO) { //비번 값을 보내준다고 가정
         Member member = memberRepository.findById(memberDTO.getMemberId());
-
         LocalDateTime currentDate= LocalDateTime.now();
         String plusMonths = currentDate.plusMonths(1L).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         log.info("탈퇴 신청 후 한달 이후 날짜 ={}", plusMonths);
         member.setSecessionDate(plusMonths);
-        return member;
+        return member != null ? member : null;
     }
 
     @Scheduled(cron = "0 0 1 * * *") //0 0 1 * * *로 변경하면 하루마다 메소드 시작.
@@ -164,12 +157,15 @@ public class MemberService {
     public void timeDelete() {
         String today= Utils.getTodayString();
         List<Member> SecessionMember = memberRepository.findByParam("secessionDate",today);
-        for (Member member : SecessionMember) {
-            log.info("탈퇴 회원 아이디={}",member.getUserId());
-            log.info("탈퇴 회원 이름={}",member.getUserName());
-            log.info("탈퇴 회원 패스워드={}",member.getPassword());
-            memberRepository.delete(member);
+        if (SecessionMember != null && today!=null) {
+            for (Member member : SecessionMember) {
+                log.info("탈퇴 회원 아이디={}",member.getUserId());
+                log.info("탈퇴 회원 이름={}",member.getUserName());
+                log.info("탈퇴 회원 패스워드={}",member.getPassword());
+                memberRepository.delete(member);
+            }
         }
+
 
 
         /*
