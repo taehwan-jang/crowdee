@@ -7,7 +7,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import team.crowdee.domain.Authorities;
+import team.crowdee.domain.UserState;
 import team.crowdee.domain.Member;
 import team.crowdee.domain.dto.ChangePassDTO;
 import team.crowdee.domain.dto.LoginDTO;
@@ -84,20 +84,40 @@ public class MemberService {
 
     public boolean doubleCheck(String userId, String nickName) {
         List<Member> byUserId = memberRepository.findByParam("userId", userId);
-        List<Member> byNickName = memberRepository.findByParam("nickName", nickName);
+        List<Member> byNickName = memberRepository.findByParam("userId", nickName);
         //값이들어온상태인데 비엇다고하면 차잇다면 펄스인데
         if (!byUserId.isEmpty() || !byNickName.isEmpty()) {
             return false;
         }
         return true;
     }
-//    public boolean doubleCheck(String nickName) {
-//        List<Member> byNickName = memberRepository.findByParam("userId", nickName);
-//        if (!byNickName.isEmpty()) {
-//            return false;
-//        }
-//        return true;
-//    }
+
+    public boolean doubleCheck(String nickName) {
+        List<Member> byNickName = memberRepository.findByParam("userId", nickName);
+        if (!byNickName.isEmpty()) {
+            return false;
+        }
+        return true;
+    }
+
+    //회원 정보 수정
+    @Transactional
+    public Member memberEdit(MemberDTO memberDTO) {
+        Member member = memberRepository.findById(memberDTO.getMemberId());
+        String encodePass = passwordEncoder.encode(memberDTO.getPassword());
+        Address address = new Address();
+        address.setZonecode(memberDTO.getZonecode());
+        address.setRestAddress(memberDTO.getRestAddress());
+        address.setRoadAddress(memberDTO.getRoadAddress());
+        member.changeNickName(memberDTO.getNickName());
+        member.changePhone(memberDTO.getPhone());
+        member.changeAddress(address);
+        member.changeMobile(memberDTO.getMobile());
+        member.changePassword(encodePass);
+
+        return member;
+    }
+    
     //비밀번호 수정
     @Transactional
     public Member memberChangPass(ChangePassDTO changePassDTO) {
@@ -109,39 +129,13 @@ public class MemberService {
             System.out.println(encodePass);
             member.changePassword(encodePass);//저장
         }
-        return null;
-    }
-
-    //다시 작업필요.. (회원가입과비슷한방식)
-    //회원 정보 수정
-    @Transactional
-    public Member memberEdit(MemberDTO memberDTO) {
-        //닉네임 중복 검사
-        List<Member> byNickName = memberRepository.findByParam("nickName", memberDTO.getNickName());
-        if (!(byNickName.isEmpty())) {
+        else {
             return null;
         }
-
-        Address address = memberDTO.getAddress();
-//        if (address != memberId.getAddress()) {
-            Member member = Member.builder()
-                    .nickName(memberDTO.getNickName())
-                    .address(address)
-                    .phone(memberDTO.getPhone())
-                    .mobile(memberDTO.getMobile())
-                    .build();
-//            return member;
-//        }
-//        else{
-//        member.changeNickName(memberDTO.getNickName());
-//        member.changePhone(memberDTO.getPhone());
-//        member.changeAddress(address);
-//        member.changeMobile(memberDTO.getMobile());
-            return member;
-
+        return member;
     }
 
-
+    //이메일 인증
     @Transactional
     public Member signUpConfirm(String email, String authKey) {
         List<Member> members = memberRepository.findToConfirm(email,authKey);
@@ -151,7 +145,7 @@ public class MemberService {
 
         Member member = members.get(0);
         member.setEmailCert("Y");
-        member.setAuthorities(Authorities.backer);
+        member.setUserState(UserState.backer);
         return member;
     }
   // <서비스 부분>
@@ -201,7 +195,4 @@ public class MemberService {
 
 
 }
-
-
-
 
