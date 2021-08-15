@@ -107,15 +107,16 @@ public class MemberController {
         if (member == null) {
             return new ResponseEntity<>("패스워드를 다시 확인해주세요.", HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(member, HttpStatus.OK);
+        return new ResponseEntity<>("패스워드가 수정되었습니다.", HttpStatus.OK);
     }
 
     //회원 정보 수정
     @PostMapping("/edit")
     public ResponseEntity<?> edit(@RequestBody MemberDTO memberDTO) {
-
         Member member = memberService.memberEdit(memberDTO);
-
+        if(member == null ){
+            return new ResponseEntity<>("닉네임 중복으로 다시 확인해주세요.", HttpStatus.BAD_REQUEST);
+        }
         return new ResponseEntity<>("정보가 수정되었습니다", HttpStatus.OK);
     }
 

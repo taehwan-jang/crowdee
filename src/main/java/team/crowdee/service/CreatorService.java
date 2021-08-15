@@ -35,7 +35,7 @@ public class CreatorService {
 
         /////////////////검증 완료 후 진행////////////
         ////////////////////////////////////////////
-        Member member = memberRepository.findById(creatorDTO.getMemberId());//멤버서비스에 만들어줘야함(리포지토리는 일단임의로한것)
+        Member member = memberRepository.findById(creatorDTO.getMemberId());
         AccountInfo accountInfo = new AccountInfo();
         accountInfo.setAccountNumber(creatorDTO.getAccountNumber());
         accountInfo.setBankBookImageUrl(creatorDTO.getBankBookImageUrl());
