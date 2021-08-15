@@ -2,7 +2,6 @@ package team.crowdee.domain.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import team.crowdee.domain.Authorities;
 import team.crowdee.domain.UserState;
 
 import java.time.LocalDateTime;

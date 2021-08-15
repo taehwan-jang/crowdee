@@ -76,8 +76,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // 메인화면, 로그인창 등은 token 없이도 접근이 가능해야 하니까....
                 .and()
                 .authorizeRequests()
-                .antMatchers("/member/login").permitAll() //로그인 api
-                .antMatchers("/member/signUp").permitAll() //회원가입 api
+                .antMatchers("/member1/login").permitAll() //로그인 api
+                .antMatchers("/member1/signUp").permitAll() //회원가입 api
 
                 .anyRequest().authenticated()
 
