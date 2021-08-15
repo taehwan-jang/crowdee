@@ -32,6 +32,7 @@ public class TokenProvider implements InitializingBean {
     private final String secret;
     private final long tokenValidityInMilliseconds;
 
+
     private Key key;
 
     public TokenProvider(

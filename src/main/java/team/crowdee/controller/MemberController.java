@@ -2,14 +2,21 @@ package team.crowdee.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import team.crowdee.domain.UserState;
 import team.crowdee.domain.Member;
 import team.crowdee.domain.dto.*;
 import team.crowdee.domain.valuetype.Address;
+import team.crowdee.jwt.JwtFilter;
+import team.crowdee.jwt.TokenProvider;
 import team.crowdee.repository.MemberRepository;
 import team.crowdee.service.MemberService;
 import team.crowdee.util.MimeEmailService;
@@ -30,6 +37,8 @@ public class MemberController {
     private final MimeEmailService mimeEmailService;
     private final MemberService memberService;
     private final MemberRepository memberRepository;
+    private final TokenProvider tokenProvider;
+    private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
     //회원가입 추가할내용:회원탈퇴시에 회원존속여부 set해야함
     @PostMapping("/signUp")
@@ -75,17 +84,29 @@ public class MemberController {
     //로그인
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO) {
-        Member loginmember = memberService.memberLogin(loginDTO);
+        Member loginMember = memberService.memberLogin(loginDTO);
 
-        if (loginmember == null) {
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(loginDTO.getUserId(), loginDTO.getPassword());
+
+        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        String jwt = tokenProvider.createToken(authentication);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer" + jwt);
+
+        if (loginMember == null) {
             //실패 : 멤버가 없기 때문에 예외
             return new ResponseEntity<>("아이디 패스워드를 다시 확인해주세요.", HttpStatus.BAD_REQUEST);
         }
-        boolean isSecession = loginmember.getSecessionDate().equals(Utils.getTodayString());
-        if(isSecession){
-            return new ResponseEntity<>("탈퇴한 회원입니다.", HttpStatus.BAD_REQUEST);
+        if(loginMember.getSecessionDate()==null) {
+            boolean isSecession = StringUtils.hasText(loginMember.getSecessionDate());
+            if(isSecession){
+                return new ResponseEntity<>("탈퇴한 회원입니다.", HttpStatus.BAD_REQUEST);
+            }
         }
-        return new ResponseEntity<>(loginmember, HttpStatus.OK);
+        return new ResponseEntity<>(new TokenDTO(jwt), httpHeaders, HttpStatus.OK);
     }
 
     //비밀번호 찾기
