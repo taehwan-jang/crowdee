@@ -9,13 +9,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
+import team.crowdee.controller.MemberController;
 import team.crowdee.domain.Member;
 import team.crowdee.domain.dto.ChangePassDTO;
+import team.crowdee.domain.dto.FindMailDTO;
 import team.crowdee.domain.dto.LoginDTO;
 import team.crowdee.domain.dto.MemberDTO;
 import team.crowdee.repository.MemberRepository;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -27,9 +30,11 @@ class MemberServiceTest {
     private MemberRepository memberRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private MemberController memberController;
 
-    @Test
-    @Rollback(value = false)
+    //@Test
+    //@Rollback(value = false)
     public void 더미데이터_삽입() {
         for (int i = 0; i < 10; i++) {
             memberService.join(
@@ -38,7 +43,7 @@ class MemberServiceTest {
                             .password("1q2w3e4r!" + i)
                             .birth("1992/" + i)
                             .nickName("테스트" + i)
-                            .email("mail" + i + "@mail.com")
+                            .email("crowdee.funding@gmail.com")
                             .userName("user" + i)
                             .registDate(LocalDateTime.now())
                             .age(20 + i)
@@ -218,10 +223,23 @@ class MemberServiceTest {
         MemberDTO memberDTO = new MemberDTO();
         memberDTO.setMemberId(5L);
         Member member = memberService.deleteMember(memberDTO);
+        memberService.timeDelete();
         System.out.println("member.getUserName() = " + member.getUserName());
         String secessionDate = member.getSecessionDate();
         System.out.println("secessionDate = " + secessionDate);
         Assertions.assertThat(secessionDate).isNotNull();
+
+    }
+
+    //@Test
+    public void 비밀번호찾기(){
+        Member member = memberRepository.findById(33L);
+        FindMailDTO findMailDTO = new FindMailDTO();
+        findMailDTO.setUserId(member.getUserId());
+        findMailDTO.setEmail(member.getEmail());
+        System.out.println(findMailDTO.getEmail());
+        System.out.println(findMailDTO.getUserId());
+        memberController.lostPassword(findMailDTO);
 
     }
 }
