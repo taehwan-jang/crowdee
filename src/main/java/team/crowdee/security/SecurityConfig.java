@@ -79,7 +79,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/member1/login").permitAll() //로그인 api
                 .antMatchers("/member1/signUp").permitAll() //회원가입 api
 
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
 
                 // JwtFilter 를 addFilterBefore 메소드로 등록했던 JwtSecurityConfig 클래스도 적용
                 .and()
