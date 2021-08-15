@@ -1,6 +1,6 @@
 package team.crowdee.domain;
 
-public enum Authorities {
+public enum UserState {
 
     backer,creator,admin,guest
 

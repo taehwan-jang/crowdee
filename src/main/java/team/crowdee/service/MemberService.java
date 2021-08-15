@@ -7,7 +7,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import team.crowdee.domain.Authorities;
+import team.crowdee.domain.UserState;
 import team.crowdee.domain.Member;
 import team.crowdee.domain.dto.ChangePassDTO;
 import team.crowdee.domain.dto.LoginDTO;
@@ -135,6 +135,7 @@ public class MemberService {
         return member;
     }
 
+    //이메일 인증
     @Transactional
     public Member signUpConfirm(String email, String authKey) {
         List<Member> members = memberRepository.findToConfirm(email,authKey);
@@ -144,7 +145,7 @@ public class MemberService {
 
         Member member = members.get(0);
         member.setEmailCert("Y");
-        member.setAuthorities(Authorities.backer);
+        member.setUserState(UserState.backer);
         return member;
     }
   // <서비스 부분>
@@ -194,7 +195,4 @@ public class MemberService {
 
 
 }
-
-
-
 

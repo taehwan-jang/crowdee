@@ -4,8 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import team.crowdee.domain.Authorities;
+import team.crowdee.domain.UserState;
 import team.crowdee.domain.Member;
 import team.crowdee.domain.dto.*;
 import team.crowdee.domain.valuetype.Address;
@@ -13,7 +14,7 @@ import team.crowdee.repository.MemberRepository;
 import team.crowdee.service.MemberService;
 import team.crowdee.util.MimeEmailService;
 import team.crowdee.util.SendEmailService;
-import team.crowdee.util.Utils;
+
 import javax.mail.MessagingException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -49,7 +50,7 @@ public class MemberController {
                 .registDate(LocalDateTime.now())
                 .mobile(memberDTO.getMobile())
                 .email(memberDTO.getEmail())
-                .authorities(Authorities.guest)
+                .userState(UserState.guest)
                 .emailCert(authKey)
                 .build();
 
@@ -79,10 +80,12 @@ public class MemberController {
             //실패 : 멤버가 없기 때문에 예외
             return new ResponseEntity<>("아이디 패스워드를 다시 확인해주세요.", HttpStatus.BAD_REQUEST);
         }
-        boolean isSecession = member.getSecessionDate().equals(Utils.getTodayString());
+        boolean isSecession = StringUtils.hasText(member.getSecessionDate());
+
         if(isSecession){
             return new ResponseEntity<>("탈퇴한 회원입니다.", HttpStatus.BAD_REQUEST);
         }
+
         return new ResponseEntity<>(member, HttpStatus.OK);
     }
 
