@@ -2,8 +2,11 @@ package team.crowdee.domain.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import team.crowdee.domain.Authorities;
+import team.crowdee.domain.UserState;
 
 import java.time.LocalDateTime;
+import java.util.Calendar;
 
 @Getter @Setter
 public class MemberDTO {
@@ -24,6 +27,7 @@ public class MemberDTO {
     private String zonecode;
     private String roadAddress;
     private String restAddress;
+    private UserState userState;
 
 
     /**
