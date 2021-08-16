@@ -31,7 +31,6 @@ public class Member {
     private LocalDateTime registDate;
     private String secessionDate;
 
-
     @Enumerated(EnumType.STRING)
     private UserState userState;
 

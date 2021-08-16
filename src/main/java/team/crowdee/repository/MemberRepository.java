@@ -3,19 +3,16 @@ package team.crowdee.repository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.repository.EntityGraph;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Repository;
 import team.crowdee.domain.Creator;
 import team.crowdee.domain.Follow;
 import team.crowdee.domain.Member;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
+
 
 @Repository
 @RequiredArgsConstructor
@@ -25,17 +22,18 @@ public class MemberRepository {
     @PersistenceContext
     private final EntityManager em;
 
-
     public Long save(Member member) {
         em.persist(member);
         return member.getMemberId();
     }
 
-    public Member login(String userId) {
-        List<Member> resultList = em.createQuery("select m from Member m where m.userId=:userId", Member.class)
-                .setParameter("userId",userId)
+    public Member login(String email) {
+        List<Member> resultList = em.createQuery("select m from Member m where m.email=:email", Member.class)
+                .setParameter("email",email)
                 .getResultList();
+        System.out.println(resultList);
         if (resultList.isEmpty()) {
+
             return null;
         }
         return resultList.get(0);
@@ -56,17 +54,16 @@ public class MemberRepository {
     }
 
     public List<Member> findByParam(String target,String param) {
-
-        String query = "select m from Member m where m." + target + "=:param";
+        String query = "select m from Member m where m."+ target +"=:param";
+        System.out.println(param+"기모찌~");
         return em.createQuery(query, Member.class)
                 .setParameter("param", param)
                 .getResultList();
 
     }
 
-    public List<Member> findByEmailAndUserId(String userId,String email) {
-        return em.createQuery("select m from Member m where m.userId=:userId and m.email=:email", Member.class)
-                .setParameter("userId", userId)
+    public List<Member> findByEmail(String email) {
+        return em.createQuery("select m from Member m where m.email=:email", Member.class)
                 .setParameter("email", email)
                 .getResultList();
     }

@@ -32,7 +32,7 @@ public class MimeEmailService {
         String mailContent = "<h1>[이메일 인증]</h1><br><p>아래 링크를 클릭하시면 이메일 인증이 완료됩니다.</p>"
                 + "<a href='http://localhost:8081/member/signUpConfirm?email="
                 + email + "&authKey=" + authKey + "' target='_blank'>이메일 인증 확인</a>";
-        mimeMessage.setFrom("Crowdee@gmail.com");
+        mimeMessage.setFrom("Crowdee.funding@gmail.com");
         mimeMessage.setSubject("[Crowdee 회원가입 인증 이메일 입니다.]");
         mimeMessage.setText(mailContent,"UTF-8","html");
         mimeMessage.addRecipients(Message.RecipientType.TO, email);

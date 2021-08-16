@@ -1,0 +1,54 @@
+spring:
+  datasource:
+    url: jdbc:h2:tcp://localhost/~/project
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create #create -> 서버 재실행마다 table 드롭하고 새로 생성 / update -> 기존 테이블에 덮어씌움
+    properties:
+      hibernate:
+        #        show_sql: true sysout으로 출력된다.
+        format_sql: true
+#        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: crowdee.funding@gmail.com
+    password: zuglkxuwfejpcunv
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+#          ssl:
+#            trust: stmp.gmail.com
+#            protocols: TLSv1.2
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.type: trace
+server:
+  port: 8081
+
+#cloud:
+#  aws:
+#    s3:
+#      bucket: crowdee
+#      region:
+#        static: ap-northeast-2
+#      stack:
+#        auto: false
+#    credentials:
+#      accessKey: AKIA2CK36GNBCJZKGAE7
+#      secretKey: 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
+
+jwt:
+  header: Authorization
+  secret: c2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQtc2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQK
+  token-validity-in-seconds: 86400
+
