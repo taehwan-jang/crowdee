@@ -15,7 +15,9 @@ import team.crowdee.domain.Member;
 import team.crowdee.domain.dto.*;
 import team.crowdee.jwt.JwtFilter;
 import team.crowdee.jwt.TokenProvider;
+import team.crowdee.repository.MemberRepository;
 import team.crowdee.service.MemberService;
+import team.crowdee.util.MimeEmailService;
 import team.crowdee.util.SendEmailService;
 import javax.mail.MessagingException;
 import java.util.List;
@@ -27,9 +29,23 @@ import java.util.List;
 @Slf4j
 public class MemberController {
     private final SendEmailService sendEmailService;
+    private final MimeEmailService mimeEmailService;
     private final MemberService memberService;
+    private final MemberRepository memberRepository;
     private final TokenProvider tokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
+
+
+    @PostMapping("/emailCert")
+    public ResponseEntity<?> emailCert(@RequestParam String email) throws MessagingException {
+        List<Member> findMember = memberRepository.findByParam("email", email);
+        if (!findMember.isEmpty()) {
+            return new ResponseEntity<>("이미 가입된 이메일입니다.", HttpStatus.BAD_REQUEST);
+        }
+        String authKey = mimeEmailService.sendAuthMail(email);
+        return new ResponseEntity<>(authKey, HttpStatus.OK);
+
+    }
 
     //회원가입 추가할내용:회원탈퇴시에 회원존속여부 set해야함
     @PostMapping("/signUp")
