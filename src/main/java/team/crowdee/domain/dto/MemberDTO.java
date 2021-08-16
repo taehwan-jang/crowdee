@@ -1,15 +1,16 @@
 package team.crowdee.domain.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import team.crowdee.domain.UserState;
+import team.crowdee.domain.valuetype.Address;
 
+import javax.persistence.Embedded;
 import java.time.LocalDateTime;
 import java.util.Calendar;
 
-@Getter @Setter
+@Getter
+@Setter
 public class MemberDTO {
-
     private Long memberId;
     private String userId;
     private String userName;
@@ -27,6 +28,8 @@ public class MemberDTO {
     private String roadAddress;
     private String restAddress;
     private UserState userState;
+
+
 
 
     /**

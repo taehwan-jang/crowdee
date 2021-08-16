@@ -11,20 +11,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import team.crowdee.domain.UserState;
 import team.crowdee.domain.Member;
 import team.crowdee.domain.dto.*;
-import team.crowdee.domain.valuetype.Address;
 import team.crowdee.jwt.JwtFilter;
 import team.crowdee.jwt.TokenProvider;
-import team.crowdee.repository.MemberRepository;
 import team.crowdee.service.MemberService;
-import team.crowdee.util.MimeEmailService;
 import team.crowdee.util.SendEmailService;
-import team.crowdee.util.Utils;
-
 import javax.mail.MessagingException;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -34,41 +27,18 @@ import java.util.List;
 @Slf4j
 public class MemberController {
     private final SendEmailService sendEmailService;
-    private final MimeEmailService mimeEmailService;
     private final MemberService memberService;
-    private final MemberRepository memberRepository;
     private final TokenProvider tokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
     //회원가입 추가할내용:회원탈퇴시에 회원존속여부 set해야함
     @PostMapping("/signUp")
     public ResponseEntity<?> signUp(@RequestBody MemberDTO memberDTO) throws MessagingException {
-        Address address = new Address();
-        address.setZonecode(memberDTO.getZonecode());
-        address.setRestAddress(memberDTO.getRestAddress());
-        address.setRoadAddress(memberDTO.getRoadAddress());
-        String authKey = mimeEmailService.sendAuthMail(memberDTO.getEmail());
-        Member member = Member.builder()
-                .userId(memberDTO.getUserId())
-                .password(memberDTO.getPassword())
-                .userName(memberDTO.getUserName())
-                .nickName(memberDTO.getNickName())
-                .gender(memberDTO.getGender())
-                .age(memberDTO.getAge())
-                .birth(memberDTO.getBirth())
-                .phone(memberDTO.getPhone())
-                .registDate(LocalDateTime.now())
-                .mobile(memberDTO.getMobile())
-                .email(memberDTO.getEmail())
-                .userState(UserState.guest)
-                .emailCert(authKey)
-                .build();
-
-        Member memberJoin = memberService.join(member);
-        if (memberJoin == null) {
+        Long member = memberService.join(memberDTO);
+        if (member == null) {
             return new ResponseEntity<>("회원가입에 실패했습니다.", HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(memberJoin, HttpStatus.CREATED);
+        return new ResponseEntity<>("회원가입이완료되었습니다.", HttpStatus.CREATED);
     }
 
     @GetMapping("/signUpConfirm")
@@ -79,7 +49,6 @@ public class MemberController {
         }
         return new ResponseEntity<>("인증이 완료되었습니다.", HttpStatus.OK);
     }
-
 
     //로그인
     @PostMapping("/login")
@@ -112,14 +81,15 @@ public class MemberController {
     //비밀번호 찾기
     @PostMapping("/findPass")
     public ResponseEntity<?> lostPassword(@RequestBody FindMailDTO findMailDTO) {
-
         List<Member> findMember = memberService.findPassword(findMailDTO);
-        if (findMember.isEmpty()) {
+        if (findMember == null) {
             return new ResponseEntity<>("아이디와 이메일을 다시 확인해주세요", HttpStatus.BAD_REQUEST);
         }
         Member member = findMember.get(0);
-//        System.out.println("값찍어보기"+findMember.get(0).getMemberId()+findMember.get(0).getEmail());
         MailDTO mailDTO = sendEmailService.createMailAndChangePass(member.getEmail(), member.getUserName(), member.getMemberId());
+        if(mailDTO==null) {
+            return new ResponseEntity<>("비밀번호 변경에 실패했습니다.",HttpStatus.BAD_REQUEST);
+        }
         sendEmailService.sendMail(mailDTO);
         return new ResponseEntity<>("이메일 발송되었습니다.", HttpStatus.OK);
     }
@@ -158,6 +128,7 @@ public class MemberController {
         return new ResponseEntity<>("정보가 수정되었습니다", HttpStatus.OK);
     }
 
+    //회원탈퇴
     @PostMapping("/delete")
     public ResponseEntity<?> delete(@RequestBody MemberDTO memberDTO) {
         Member member = memberService.deleteMember(memberDTO);

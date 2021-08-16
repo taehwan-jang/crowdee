@@ -11,14 +11,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 import team.crowdee.controller.MemberController;
 import team.crowdee.domain.Member;
-import team.crowdee.domain.dto.ChangePassDTO;
-import team.crowdee.domain.dto.FindMailDTO;
-import team.crowdee.domain.dto.LoginDTO;
-import team.crowdee.domain.dto.MemberDTO;
+import team.crowdee.domain.dto.*;
 import team.crowdee.repository.MemberRepository;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import team.crowdee.util.SendEmailService;
+import javax.mail.MessagingException;
+import java.util.List;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -32,10 +29,12 @@ class MemberServiceTest {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private MemberController memberController;
+    @Autowired
+    private SendEmailService sendEmailService;
 
-    //@Test
-    //@Rollback(value = false)
-    public void 더미데이터_삽입() {
+  /*      @Test
+      @Rollback(value = false)
+      public void 더미데이터_삽입() {
         for (int i = 0; i < 10; i++) {
             memberService.join(
                     Member.builder()
@@ -53,27 +52,30 @@ class MemberServiceTest {
                             .build()
             );
         }
-    }
+    }*/
 
-    @Test
-    public void 회원가입() throws Exception {
-        //given
-        Member member = memberRepository.findById(1L);
-        //when
-        Member join = memberService.join(member);
-        //then
-        Assertions.assertThat(join).isNotNull();
+    @Test //멤버컨트롤러 값 들어가는지 테스트완료
+    @Rollback(value = false)
+    public void 테스트_회원가입() throws MessagingException {
+        MemberDTO memberDTO = new MemberDTO();
+        memberDTO.setZonecode("존코드11");
+        memberDTO.setRoadAddress("도로명주소11");
+        memberDTO.setRestAddress("레스트어드레스11");
+        memberDTO.setUserId("sdh301113");
+        memberDTO.setPassword("tjdengus1!");
+        memberDTO.setNickName("미주짱짱맨");
+        memberDTO.setEmail("crowdee.funding@gmail.com");
+        memberService.join(memberDTO);
     }
-
-    // 테스트 완료
+        // 테스트 완료
     @Test
     public void 아이디검증() {
         //given
-        Member sampleId1 = new Member();
+        MemberDTO sampleId1 = new MemberDTO();
         sampleId1.setUserId("abc"); //4글자 미만
-        Member sampleId2 = new Member();
+        MemberDTO sampleId2 = new MemberDTO();
         sampleId2.setUserId("asdfghjklzxcvbnmqwertyy"); //20글자 초과
-        Member sampleId3 = new Member();
+        MemberDTO sampleId3 = new MemberDTO();
         sampleId3.setUserId("yoohansol"); //조건에 충족하는 값
 
         //when
@@ -90,15 +92,15 @@ class MemberServiceTest {
     @Test
     public void 비밀번호검증() {
         //given
-        Member samplePw1 = new Member();
+        MemberDTO samplePw1 = new MemberDTO();
         samplePw1.setPassword("123456"); //8글자 미만
-        Member samplePw2 = new Member();
+        MemberDTO samplePw2 = new MemberDTO();
         samplePw2.setPassword("12345678901234567"); //16글자 초과
-        Member samplePw3 = new Member();
+        MemberDTO samplePw3 = new MemberDTO();
         samplePw3.setPassword("1234567890"); //숫자로만 구성
-        Member samplePw4 = new Member();
+        MemberDTO samplePw4 = new MemberDTO();
         samplePw4.setPassword("aaaaa11111"); //영어로만 구성
-        Member samplePw5 = new Member();
+        MemberDTO samplePw5 = new MemberDTO();
         samplePw5.setPassword("Gksthf1234@"); //조건에 충족하는 값
 
         boolean valiPw1 = memberService.validationPw(samplePw1);
@@ -116,7 +118,6 @@ class MemberServiceTest {
 
     }
 
-    // 테스트 완료
     @Test
     public void 아이디닉네임중복검증() {
         //given
@@ -136,17 +137,13 @@ class MemberServiceTest {
         //when
         boolean usernamecheck = memberService.doubleCheck(memberDTO2.getUserId(),memberDTO2.getNickName());
         boolean nicknamecheck = memberService.doubleCheck(memberDTO4.getUserId(), memberDTO4.getNickName());
+        //thn
         Assertions.assertThat(usernamecheck).isEqualTo(false); // 유저네임중복이되냐 테스트
         Assertions.assertThat(nicknamecheck).isEqualTo(false); // 닉네임이중복이되냐 테스트
 
-
-        //then
-
-
     }
-    
 
-    @Test
+  /*  @Test //토근추가후 테스트 재실행필요
     public void 로그인테스트() {
         //give
         Member member = memberRepository.findById(1L);
@@ -158,7 +155,7 @@ class MemberServiceTest {
         Member getLoginMember = memberService.memberLogin(loginMember);
 
         //then
-        Assertions.assertThat(getLoginMember).isNotNull();
+         Assertions.assertThat(getLoginMember).isNotNull();
         Assertions.assertThat(getLoginMember.getUserId()).isEqualTo(member.getUserId());
         boolean matches = passwordEncoder.matches(loginMember.getPassword(), getLoginMember.getPassword());
         if(matches) {
@@ -167,12 +164,11 @@ class MemberServiceTest {
         else {
             System.out.println("비밀번호 불일치");
         }
-    }
-
-    //테스트 진행중
+    }*/
+  //토근추가후 테스트 재실행필요
     @Test
     public void 회원정보수정() {
-        //given
+       //given
         //memberDTO 설정
         MemberDTO memberDTO = new MemberDTO();
         memberDTO.setZonecode("존코드");
@@ -182,8 +178,6 @@ class MemberServiceTest {
         memberDTO.setNickName("닉네임테스트");
         memberDTO.setPhone("000-0000-0000");
         memberDTO.setMobile("000-0000-0000");
-        memberDTO.setPassword("pass");
-
         //when
         Member findMember = memberService.memberEdit(memberDTO);
         //then
@@ -193,15 +187,10 @@ class MemberServiceTest {
         Assertions.assertThat(findMember.getAddress().getZonecode()).isEqualTo("존코드");
         Assertions.assertThat(findMember.getAddress().getRestAddress()).isEqualTo("레스트어드레스");
         Assertions.assertThat(findMember.getAddress().getRoadAddress()).isEqualTo("로드어드레스");
-        boolean matches = passwordEncoder.matches(memberDTO.getPassword(), findMember.getPassword());
-        if (matches) {
-            System.out.println("패스워드 일치");
-        } else {
-            System.out.println("패스워드 불일치");
-        }
+
     }
 
-    //테스트 진행중
+    //토근추가후 테스트 재실행필요
     @Test
     public void 비밀번호수정() {
         //given //기존꺼로그인
@@ -226,29 +215,65 @@ class MemberServiceTest {
 
     }
 
+    //토근추가후 테스트 재실행필요
     @Test
-    @Rollback(value = false)
+//    @Rollback(value = false)
     public void 회원탈퇴_SecessionDate_확인(){
+        //given
         MemberDTO memberDTO = new MemberDTO();
-        memberDTO.setMemberId(5L);
-        Member member = memberService.deleteMember(memberDTO);
-        memberService.timeDelete();
-        System.out.println("member.getUserName() = " + member.getUserName());
-        String secessionDate = member.getSecessionDate();
-        System.out.println("secessionDate = " + secessionDate);
-        Assertions.assertThat(secessionDate).isNotNull();
+        memberDTO.setUserId("testId4");
 
+        //when
+        Member deleteMember = memberService.deleteMember(memberDTO);
+
+        //then
+        System.out.println("deleteMember.getUserName() = " + deleteMember.getUserName());
+        String secessionDate = deleteMember.getSecessionDate();
+        System.out.println("secessionDate = " + secessionDate);
+        Assertions.assertThat(secessionDate).isEqualTo("20210916");
     }
 
-    //@Test
-    public void 비밀번호찾기(){
-        Member member = memberRepository.findById(2L);
+    @Test
+    public void 회원탈퇴_SecessionDate_매일확인() {
+        //given
+        Member member = memberRepository.findById(1L);
+        member.setSecessionDate("20210816");
+
+        //when
+        memberService.timeDelete();
+
+        //then
+        if(memberRepository.findById(1L)==null) {
+            System.out.println("회원삭제완료");
+        }
+    }
+
+    @Test
+    public void 비밀번호찾기() {
+
+        //given
+        Member memberFindPass = memberRepository.findById(2L);
         FindMailDTO findMailDTO = new FindMailDTO();
-        findMailDTO.setUserId(member.getUserId());
-        findMailDTO.setEmail(member.getEmail());
+        findMailDTO.setUserId(memberFindPass.getUserId());
+        findMailDTO.setEmail(memberFindPass.getEmail());
         System.out.println(findMailDTO.getEmail());
         System.out.println(findMailDTO.getUserId());
-        memberController.lostPassword(findMailDTO);
+
+        //when
+        List<Member> findMember = memberService.findPassword(findMailDTO);
+        if (findMember == null) {
+            System.out.println("멤버 들고오기 실패");
+        }
+        Member member = findMember.get(0);
+        MailDTO mailDTO = sendEmailService.createMailAndChangePass(member.getEmail(), member.getUserName(), member.getMemberId());
+        if(mailDTO==null) {
+            System.out.println("비밀번호 변경실패");
+        }
+
+        //then
+        Assertions.assertThat(member.getUserName()).isEqualTo(memberFindPass.getUserName());
+        sendEmailService.sendMail(mailDTO);
 
     }
+
 }

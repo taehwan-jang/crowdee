@@ -15,8 +15,9 @@ import team.crowdee.domain.dto.LoginDTO;
 import team.crowdee.domain.dto.MemberDTO;
 import team.crowdee.domain.valuetype.Address;
 import team.crowdee.repository.MemberRepository;
+import team.crowdee.util.MimeEmailService;
 import team.crowdee.util.Utils;
-
+import javax.mail.MessagingException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -31,21 +32,43 @@ import java.util.regex.Pattern;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final MimeEmailService mimeEmailService;
 
     // 회원가입시 멤버 아이디 중복확인 어디?
     @Transactional
-    public Member join(
-            Member member) {
-        this.validationId(member);
-        this.validationPw(member);
-        this.doubleCheck(member.getUserId(),member.getNickName());
-        String encodePass = passwordEncoder.encode(member.getPassword());//패스워드 암호화
-        member.changePassword(encodePass);//로직명 변경(명시적으로)
-        memberRepository.save(member);
-        return member;
+    public Long join(MemberDTO memberDTO) throws MessagingException {
+        Address address = new Address();
+        address.setZonecode(memberDTO.getZonecode());
+        address.setRestAddress(memberDTO.getRestAddress());
+        address.setRoadAddress(memberDTO.getRoadAddress());
+        String authKey = mimeEmailService.sendAuthMail(memberDTO.getEmail());
+        Member member = Member.builder()
+                .userId(memberDTO.getUserId())
+                .password(passwordEncoder.encode(memberDTO.getPassword())) //패스워드암호화
+                .userName(memberDTO.getUserName())
+                .nickName(memberDTO.getNickName())
+                .gender(memberDTO.getGender())
+                .age(memberDTO.getAge())
+                .birth(memberDTO.getBirth())
+                .address(address)
+                .phone(memberDTO.getPhone())
+                .registDate(LocalDateTime.now())
+                .mobile(memberDTO.getMobile())
+                .email(memberDTO.getEmail())
+                .userState(UserState.guest)
+                .emailCert(authKey)
+                //autories 랑
+                .build();
+        if (validationId(memberDTO) == false && validationPw(memberDTO) == false &&
+                doubleCheck(memberDTO.getUserId(), memberDTO.getNickName()) == false) {
+            return null;
+        }
+        Long saveMember = memberRepository.save(member);
+        return saveMember;
+
     }
 
-    //로그인
+    //로그인 -> 토큰 추가로 인해 코드 리뷰 이후 코드작성
     public Member memberLogin(LoginDTO loginDTO) {
         Member findMember = memberRepository.login(loginDTO.getUserId());
         if(findMember.getSecessionDate()==null) {
@@ -55,7 +78,6 @@ public class MemberService {
         return null;
     }
 
-    //오빠한테 물어보기
     //비밀번호 찾기
     public List<Member> findPassword(FindMailDTO findMailDTO) {
 
@@ -65,17 +87,17 @@ public class MemberService {
     }
 
     // 회원 ID 검증
-    public boolean validationId(Member member){
-        if(member.getUserId().length()<4 || member.getUserId().length()>20){
+    public boolean validationId(MemberDTO memberDTO){
+        if(memberDTO.getUserId().length()<4 || memberDTO.getUserId().length()>20){
             return false;
         }
         return true;
     }
 
     // 회원 Password 검증
-    public boolean validationPw(Member member){
+    public boolean validationPw(MemberDTO memberDTO){
         Pattern p = Pattern.compile("^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[$@$!%*#?&])[A-Za-z[0-9]$@$!%*#?&]{8,16}$");
-        Matcher m = p.matcher(member.getPassword());
+        Matcher m = p.matcher(memberDTO.getPassword());
         if(m.matches()){
             return true;
         }
@@ -109,7 +131,6 @@ public class MemberService {
             return null;
         }
         Member member = memberRepository.findById(memberDTO.getMemberId());
-        String encodePass = passwordEncoder.encode(memberDTO.getPassword());
         Address address = new Address();
         address.setZonecode(memberDTO.getZonecode());
         address.setRestAddress(memberDTO.getRestAddress());
@@ -127,15 +148,31 @@ public class MemberService {
     //비밀번호 수정
     @Transactional
     public Member memberChangPass(ChangePassDTO changePassDTO) {
-        Member member = memberRepository.findById(changePassDTO.getMemberId()); //멤버에는 3번의 값이들어가잇다
+        Member member = memberRepository.findById(changePassDTO.getMemberId());
         boolean matches = passwordEncoder.matches(changePassDTO.getOldPassword(), member.getPassword());
         System.out.println(matches);
         if(matches) {
+            boolean pw = this.validationChangPass(changePassDTO);
+            if(pw==false){
+                return null;
+            }
             String encodePass = passwordEncoder.encode(changePassDTO.getNewPassword());//암호화한다음에
-            System.out.println(encodePass);
             member.changePassword(encodePass);//저장
+            System.out.println(encodePass);
+            return member;
+
         }
         return null;
+    }
+
+    //ChangePassDTO의 NewPassword 유효성검사
+    public boolean validationChangPass(ChangePassDTO changePassDTO){
+        Pattern p = Pattern.compile("^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[$@$!%*#?&])[A-Za-z[0-9]$@$!%*#?&]{8,16}$");
+        Matcher m = p.matcher(changePassDTO.getNewPassword());
+        if(m.matches()){
+            return true;
+        }
+        return false;
     }
 
     //이메일 인증
@@ -145,7 +182,6 @@ public class MemberService {
         if (members.isEmpty()) {
             return null;
         }
-
         Member member = members.get(0);
         member.setEmailCert("Y");
         member.setUserState(UserState.backer);
@@ -155,32 +191,30 @@ public class MemberService {
     //회원탈퇴
     @Transactional
     public Member deleteMember(MemberDTO memberDTO) { //비번 값을 보내준다고 가정
-        Member member = memberRepository.findById(memberDTO.getMemberId());
-
+        Member findMember = memberRepository.findByParam("userId", memberDTO.getUserId()).get(0);
+        System.out.println("findMember.getUserId()1:"+findMember.getUserId());
         LocalDateTime currentDate= LocalDateTime.now();
         String plusMonths = currentDate.plusMonths(1L).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         log.info("탈퇴 신청 후 한달 이후 날짜 ={}", plusMonths);
-        member = Member.builder()
-                .secessionDate(plusMonths)
-                .build();
-        return member;
+        findMember.changeSecessionDate(plusMonths);
+        return findMember;
     }
-    
+
     //회원탈퇴 : 매일 0시마다 실행되는 로직, 일자 비교하여 회원삭제
-    @Scheduled(cron = "0 0 1 * * *") //0 0 1 * * *로 변경하면 하루마다 메소드 시작.
+    @Scheduled(cron = "50 43 11 * * *") //0 0 1 * * *로 변경하면 하루마다 메소드 시작.
     @Transactional
     public void timeDelete() {
         String today= Utils.getTodayString();
+//        String today = "20210815";
         List<Member> SecessionMember = memberRepository.findByParam("secessionDate",today);
         for (Member member : SecessionMember) {
+            System.out.println("실행하니?");
             log.info("탈퇴 회원 아이디={}",member.getUserId());
             log.info("탈퇴 회원 이름={}",member.getUserName());
             log.info("탈퇴 회원 패스워드={}",member.getPassword());
             memberRepository.delete(member);
         }
-
     }
-
 
 }
 

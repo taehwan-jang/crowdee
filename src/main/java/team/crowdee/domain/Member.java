@@ -1,6 +1,7 @@
 package team.crowdee.domain;
 
 import lombok.*;
+import team.crowdee.domain.dto.MemberDTO;
 import team.crowdee.domain.valuetype.Address;
 
 import javax.persistence.*;
@@ -16,7 +17,6 @@ import java.util.Set;
 @Getter
 @Setter
 public class Member {
-
     @Id
     @GeneratedValue
     @Column(name = "member_id")
@@ -63,19 +63,22 @@ public class Member {
     @JoinColumn(name = "creator_id")
     private Creator creator;
 
-
     public void joinCreator(Creator creator) {
         this.creator = creator;
         this.userState = UserState.creator;
         creator.setMember(this);
 
     }
-    public void secessionMember(String secessionDate) {
-        this.secessionDate = secessionDate;
-    }
-
     //=====수정을 위한 패턴=====//
+    public Member changeMember(String nickName, String password, String phone, String mobile, Address address) {
+        this.nickName = nickName;
+        this.password = password;
+        this.phone = phone;
+        this.mobile = mobile;
+        this.address = address;
+        return this;
 
+    }
     public Member changePassword(String password) {
         this.password = password;
         return this;
@@ -98,6 +101,11 @@ public class Member {
 
     public Member changeAddress(Address address) {
         this.address = address;
+        return this;
+    }
+
+    public Member changeSecessionDate(String secessionDate) {
+        this.secessionDate = secessionDate;
         return this;
     }
 

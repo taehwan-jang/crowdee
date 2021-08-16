@@ -24,7 +24,7 @@ public class CreatorService {
          * 검증 시작
          */
         //검증 메서드 호출
-        this.validationMemberId(creatorDTO);
+       /* this.validationMemberId(creatorDTO)*/
         //검증 메서드 호출
         this.validationBankName(creatorDTO);
 
@@ -32,7 +32,6 @@ public class CreatorService {
 //        if(){
 //            return null;
 //        }
-
         /////////////////검증 완료 후 진행////////////
         ////////////////////////////////////////////
         Member member = memberRepository.findById(creatorDTO.getMemberId());//멤버서비스에 만들어줘야함(리포지토리는 일단임의로한것)

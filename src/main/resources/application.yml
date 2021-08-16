@@ -15,7 +15,7 @@ spring:
 
   mail:
     host: smtp.gmail.com
-    port: 465
+    port: 587
     username: crowdee.funding@gmail.com
     password: zuglkxuwfejpcunv
     properties:
@@ -24,9 +24,9 @@ spring:
           auth: true
           starttls:
             enable: true
-          ssl:
-            trust: stmp.gmail.com
-            protocols: TLSv1.2
+#          ssl:
+#            trust: stmp.gmail.com
+#            protocols: TLSv1.2
 
 logging:
   level:
