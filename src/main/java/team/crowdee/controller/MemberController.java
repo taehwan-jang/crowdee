@@ -20,7 +20,7 @@ import team.crowdee.service.MemberService;
 import team.crowdee.util.MimeEmailService;
 import team.crowdee.util.SendEmailService;
 import javax.mail.MessagingException;
-import java.util.List;
+import java.util.*;
 
 @RestController
 @CrossOrigin
@@ -35,7 +35,6 @@ public class MemberController {
     private final TokenProvider tokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
-
     @PostMapping("/emailCert")
     public ResponseEntity<?> emailCert(@RequestParam String email) throws MessagingException {
         List<Member> findMember = memberRepository.findByParam("email", email);
@@ -43,7 +42,9 @@ public class MemberController {
             return new ResponseEntity<>("이미 가입된 이메일입니다.", HttpStatus.BAD_REQUEST);
         }
         String authKey = mimeEmailService.sendAuthMail(email);
-        return new ResponseEntity<>(authKey, HttpStatus.OK);
+        Map<String, String> key = new HashMap<>();
+        key.put("authKey", authKey);
+        return new ResponseEntity<>(key, HttpStatus.OK);
 
     }
 
