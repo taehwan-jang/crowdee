@@ -11,21 +11,14 @@ import java.util.Calendar;
 public class MemberDTO {
 
     private Long memberId;
-    private String userId;
     private String userName;
     private String password;
     private String nickName;
-    private String gender;
-    private int age;
-    private String birth;
-    private String phone;
     private String mobile;
     private String email;
+    private String emailCert;
     private LocalDateTime registDate;
     private LocalDateTime secessionDate;
-    private String zonecode;
-    private String roadAddress;
-    private String restAddress;
     private UserState userState;
 
 

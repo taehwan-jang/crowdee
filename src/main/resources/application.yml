@@ -6,12 +6,12 @@ spring:
     driver-class-name: org.h2.Driver
   jpa:
     hibernate:
-      ddl-auto: create #create -> 서버 재실행마다 table 드롭하고 새로 생성 / update -> 기존 테이블에 덮어씌움
+      ddl-auto: update #create -> 서버 재실행마다 table 드롭하고 새로 생성 / update -> 기존 테이블에 덮어씌움
     properties:
       hibernate:
         #        show_sql: true sysout으로 출력된다.
         format_sql: true
-        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+#        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
 
   mail:
     host: smtp.gmail.com
@@ -24,9 +24,9 @@ spring:
           auth: true
           starttls:
             enable: true
-          ssl:
-            trust: stmp.gmail.com
-            protocols: TLSv1.2
+#          ssl:
+#            trust: stmp.gmail.com
+#            protocols: TLSv1.2
 
 logging:
   level:

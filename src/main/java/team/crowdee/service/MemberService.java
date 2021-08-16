@@ -34,8 +34,7 @@ public class MemberService {
 
     // 회원가입시 멤버 아이디 중복확인 어디?
     @Transactional
-    public Member join(
-            Member member) {
+    public Member join(Member member) {
         this.validationId(member);
         this.validationPw(member);
         this.doubleCheck(member.getUserId(),member.getNickName());
@@ -109,18 +108,12 @@ public class MemberService {
         if (!(byNickName.isEmpty())) {
             return null;
         }
+
         Member member = memberRepository.findById(memberDTO.getMemberId());
         String encodePass = passwordEncoder.encode(memberDTO.getPassword());
-        Address address = new Address();
-        address.setZonecode(memberDTO.getZonecode());
-        address.setRestAddress(memberDTO.getRestAddress());
-        address.setRoadAddress(memberDTO.getRoadAddress());
-        member = Member.builder()
-                .nickName(memberDTO.getNickName())
-                .address(address)
-                .phone(memberDTO.getPhone())
-                .mobile(memberDTO.getMobile())
-                .build();
+        member.changeNickName(memberDTO.getNickName())
+                .changePassword(encodePass)
+                .changeMobile(memberDTO.getMobile());
 
         return member;
     }
