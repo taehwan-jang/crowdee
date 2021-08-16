@@ -5,6 +5,8 @@ import team.crowdee.domain.UserState;
 import team.crowdee.domain.valuetype.Address;
 
 import javax.persistence.Embedded;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import java.time.LocalDateTime;
 import java.util.Calendar;
 
@@ -12,23 +14,17 @@ import java.util.Calendar;
 @Setter
 public class MemberDTO {
     private Long memberId;
-    private String userId;
-    private String userName;
-    private String password;
-    private String nickName;
-    private String gender;
-    private int age;
-    private String birth;
-    private String phone;
-    private String mobile;
-    private String email;
+    //회원가입할때 아이디 패스워드 검증
+    private String password; //o
+    private String userName; //x
+    private String nickName;//중복검사 o
+    private String mobile; //o
+    private String email; //x --애매한 부분
+    private String emailCert; //이메일 인증 받았을때 //o
     private LocalDateTime registDate;
-    private LocalDateTime secessionDate;
-    private String zonecode;
-    private String roadAddress;
-    private String restAddress;
+    private String secessionDate;
+    @Enumerated(EnumType.STRING)
     private UserState userState;
-
 
 
 

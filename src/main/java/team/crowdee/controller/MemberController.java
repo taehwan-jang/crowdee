@@ -56,7 +56,7 @@ public class MemberController {
         Member loginMember = memberService.memberLogin(loginDTO);
 
         UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(loginDTO.getUserId(), loginDTO.getPassword());
+                new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword());
 
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -94,7 +94,7 @@ public class MemberController {
         return new ResponseEntity<>("이메일 발송되었습니다.", HttpStatus.OK);
     }
 
-        //태환오빠 코드
+    //태환오빠 코드
         /*List<Member> findMember = memberRepository
                 .findByEmailAndUserId(findMailDTO.getUserId(), findMailDTO.getEmail());
         if (findMember.isEmpty()) {

@@ -22,16 +22,18 @@ public class MemberRepository {
     @PersistenceContext
     private final EntityManager em;
 
-    public Member save(Member member) {
+    public Long save(Member member) {
         em.persist(member);
-        return member;
+        return member.getMemberId();
     }
 
-    public Member login(String userId) {
-        List<Member> resultList = em.createQuery("select m from Member m where m.userId=:userId", Member.class)
-                .setParameter("userId",userId)
+    public Member login(String email) {
+        List<Member> resultList = em.createQuery("select m from Member m where m.email=:email", Member.class)
+                .setParameter("email",email)
                 .getResultList();
+        System.out.println(resultList);
         if (resultList.isEmpty()) {
+
             return null;
         }
         return resultList.get(0);
@@ -52,17 +54,16 @@ public class MemberRepository {
     }
 
     public List<Member> findByParam(String target,String param) {
-
         String query = "select m from Member m where m."+ target +"=:param";
+        System.out.println(param+"기모찌~");
         return em.createQuery(query, Member.class)
                 .setParameter("param", param)
                 .getResultList();
 
     }
 
-    public List<Member> findByEmailAndUserId(String userId,String email) {
-        return em.createQuery("select m from Member m where m.userId=:userId and m.email=:email", Member.class)
-                .setParameter("userId", userId)
+    public List<Member> findByEmail(String email) {
+        return em.createQuery("select m from Member m where m.email=:email", Member.class)
                 .setParameter("email", email)
                 .getResultList();
     }

@@ -1,5 +1,4 @@
 package team.crowdee.service;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -13,7 +12,6 @@ import team.crowdee.domain.dto.ChangePassDTO;
 import team.crowdee.domain.dto.FindMailDTO;
 import team.crowdee.domain.dto.LoginDTO;
 import team.crowdee.domain.dto.MemberDTO;
-import team.crowdee.domain.valuetype.Address;
 import team.crowdee.repository.MemberRepository;
 import team.crowdee.util.MimeEmailService;
 import team.crowdee.util.Utils;
@@ -33,48 +31,40 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final MimeEmailService mimeEmailService;
-
     // 회원가입시 멤버 아이디 중복확인 어디?
     @Transactional
     public Long join(MemberDTO memberDTO) throws MessagingException {
-        if (validationId(memberDTO) == false && validationPw(memberDTO) == false &&
-                doubleCheck(memberDTO.getUserId(), memberDTO.getNickName()) == false) {
+        if ( validationPw(memberDTO) == false && validationNick(memberDTO) == false) {
             return null;
         }
-        Address address = new Address();
-        address.setZonecode(memberDTO.getZonecode());
-        address.setRestAddress(memberDTO.getRestAddress());
-        address.setRoadAddress(memberDTO.getRoadAddress());
         String authKey = mimeEmailService.sendAuthMail(memberDTO.getEmail());
         Member member = Member.builder()
-                .userId(memberDTO.getUserId())
                 .password(passwordEncoder.encode(memberDTO.getPassword())) //패스워드암호화
                 .userName(memberDTO.getUserName())
                 .nickName(memberDTO.getNickName())
-                .gender(memberDTO.getGender())
-                .age(memberDTO.getAge())
-                .birth(memberDTO.getBirth())
-                .address(address)
-                .phone(memberDTO.getPhone())
                 .registDate(LocalDateTime.now())
                 .mobile(memberDTO.getMobile())
                 .email(memberDTO.getEmail())
                 .userState(UserState.guest)
                 .emailCert(authKey)
-                //autories 랑
                 .build();
 
-
         Long saveMember = memberRepository.save(member);
-        return saveMember;
 
+        return saveMember;
     }
 
     //로그인 -> 토큰 추가로 인해 코드 리뷰 이후 코드작성
     public Member memberLogin(LoginDTO loginDTO) {
-        Member findMember = memberRepository.login(loginDTO.getUserId());
-        if(findMember.getSecessionDate()==null) {
+        System.out.println("로그인:"+  loginDTO.getPassword());
+        System.out.println("로그인:"+loginDTO.getEmail());
+        List<Member> email = memberRepository.findByEmail(loginDTO.getEmail());
+        String email1 = email.get(0).getEmail();
+        Member findMember = memberRepository.login(email1);
+        if(findMember.getSecessionDate()==null ) {
             boolean matches = passwordEncoder.matches(loginDTO.getPassword(), findMember.getPassword());
+            System.out.println(matches);
+
             return matches ? findMember : null;//결과값에 따라 return값 결정
         }
         return null;
@@ -82,18 +72,9 @@ public class MemberService {
 
     //비밀번호 찾기
     public List<Member> findPassword(FindMailDTO findMailDTO) {
-
         List<Member> findPassMember = memberRepository
-                .findByEmailAndUserId(findMailDTO.getUserId(), findMailDTO.getEmail());
+                .findByEmail(findMailDTO.getEmail());
         return findPassMember;
-    }
-
-    // 회원 ID 검증
-    public boolean validationId(MemberDTO memberDTO){
-        if(memberDTO.getUserId().length()<4 || memberDTO.getUserId().length()>20){
-            return false;
-        }
-        return true;
     }
 
     // 회원 Password 검증
@@ -106,44 +87,33 @@ public class MemberService {
         return false;
     }
 
-    public boolean doubleCheck(String userId, String nickName) {
-        List<Member> byUserId = memberRepository.findByParam("userId", userId);
-        List<Member> byNickName = memberRepository.findByParam("userId", nickName);
-        //값이들어온상태인데 비엇다고하면 차잇다면 펄스인데
-        if (!byUserId.isEmpty() || !byNickName.isEmpty()) {
-            return false;
-        }
-        return true;
-    }
-
-    public boolean doubleCheck(String nickName) {
-        List<Member> byNickName = memberRepository.findByParam("userId", nickName);
+    public boolean validationNick(MemberDTO memberDTO) {
+        List<Member> byNickName = memberRepository.findByParam("nickName", memberDTO.getNickName());
         if (!byNickName.isEmpty()) {
             return false;
         }
         return true;
     }
 
+    public boolean validationEmail(MemberDTO memberDTO) {
+        List<Member> byEmail = memberRepository.findByParam("email", memberDTO.getEmail());
+        if (!byEmail.isEmpty()) {
+            return false;
+        }
+        return true;
+
+    }
+
     //회원 정보 수정
     @Transactional
     public Member memberEdit(MemberDTO memberDTO) {
         //닉네임 중복 검사
-        List<Member> byNickName = memberRepository.findByParam("nickName", memberDTO.getNickName());
-        if (!(byNickName.isEmpty())) {
+        if(validationNick(memberDTO)==false) {
             return null;
         }
         Member member = memberRepository.findById(memberDTO.getMemberId());
-        Address address = new Address();
-        address.setZonecode(memberDTO.getZonecode());
-        address.setRestAddress(memberDTO.getRestAddress());
-        address.setRoadAddress(memberDTO.getRoadAddress());
-        member = Member.builder()
-                .nickName(memberDTO.getNickName())
-                .address(address)
-                .phone(memberDTO.getPhone())
-                .mobile(memberDTO.getMobile())
-                .build();
-
+        member.changeNickName(memberDTO.getNickName())
+                .changeMobile(memberDTO.getMobile());
         return member;
     }
 
@@ -193,27 +163,22 @@ public class MemberService {
     //회원탈퇴
     @Transactional
     public Member deleteMember(MemberDTO memberDTO) { //비번 값을 보내준다고 가정
-        Member findMember = memberRepository.findByParam("userId", memberDTO.getUserId()).get(0);
-        System.out.println("findMember.getUserId()1:"+findMember.getUserId());
+        Member findMember = memberRepository.findByParam("userName", memberDTO.getUserName()).get(0);
         LocalDateTime currentDate= LocalDateTime.now();
         String plusMonths = currentDate.plusMonths(1L).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         log.info("탈퇴 신청 후 한달 이후 날짜 ={}", plusMonths);
-        findMember.changeSecessionDate(plusMonths);
+        findMember.secessionMember(plusMonths);
         return findMember;
     }
 
     //회원탈퇴 : 매일 0시마다 실행되는 로직, 일자 비교하여 회원삭제
-    @Scheduled(cron = "50 43 11 * * *") //0 0 1 * * *로 변경하면 하루마다 메소드 시작.
+    @Scheduled(cron = "0 0 1 * * *") //0 0 1 * * *로 변경하면 하루마다 메소드 시작.
     @Transactional
     public void timeDelete() {
         String today= Utils.getTodayString();
-//        String today = "20210815";
+//        String today = "20210815"; 테스트바꿀때 일자 바꿔서해볼것
         List<Member> SecessionMember = memberRepository.findByParam("secessionDate",today);
         for (Member member : SecessionMember) {
-            System.out.println("실행하니?");
-            log.info("탈퇴 회원 아이디={}",member.getUserId());
-            log.info("탈퇴 회원 이름={}",member.getUserName());
-            log.info("탈퇴 회원 패스워드={}",member.getPassword());
             memberRepository.delete(member);
         }
     }

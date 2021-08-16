@@ -1,3 +1,4 @@
+/*
 package team.crowdee.repository;
 
 import com.zaxxer.hikari.util.FastList;
@@ -30,8 +31,10 @@ class MemberRepositoryTest {
     @Autowired
     MemberRepository memberRepository;
 
-  /*  @Test
-    @Rollback(value = false)*/
+  */
+/*  @Test
+    @Rollback(value = false)*//*
+
     public void 테스트_회원저장() throws Exception {
         //given
         //when
@@ -40,13 +43,11 @@ class MemberRepositoryTest {
             Member member = memberRepository.save(Member.builder()
                     .userName("장태환" + i)
                     .password("1q2w3e4r!"+i)
-                    .birth("1992/" + i)
                     .nickName("테스트" + i)
                     .email("mail" + i + "@mail.com")
                     .emailCert("ABCD")
                     .userName("user" + i)
-                    .registDate(LocalDateTime.now())
-                    .age(20 + i)
+
                     .userId("testId" + i)
                     .gender("남자")
                     .mobile("010-1234-123" + i)
@@ -114,4 +115,4 @@ class MemberRepositoryTest {
     }
 
 
-}
+}*/

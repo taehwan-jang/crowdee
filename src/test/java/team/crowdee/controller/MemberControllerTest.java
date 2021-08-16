@@ -41,15 +41,10 @@ class MemberControllerTest {
         for (int i = 0; i < 10; i++) {
             memberRepository.save(
                     Member.builder()
-                            .birth("1992/" + i)
                             .nickName("테스트" + i)
                             .email("mail" + i + "@mail.com")
                             .userName("user" + i)
                             .registDate(LocalDateTime.now())
-
-                            .age(20 + i)
-                            .userId("testId" + i)
-                            .gender("남자")
                             .mobile("010-1234-123" + i)
                             .build()
             );
@@ -79,7 +74,7 @@ class MemberControllerTest {
     @Test  //session 데이터없으면 널포인트뜨니까 넣고 테스트돌리세용!!
     public void 테스트_로그인(){
        LoginDTO loginDTO = new LoginDTO();
-       loginDTO.setUserId("testId0");
+       loginDTO.setEmail("mail@mail.com");
        loginDTO.setPassword("1q2w3e4r!0");
        ResponseEntity<?> login = memberController.login(loginDTO);
        assertThat(login).isEqualTo(true);
@@ -91,7 +86,7 @@ class MemberControllerTest {
         FindMailDTO findMailDTO = new FindMailDTO();
         findMailDTO.setUserId("user59");
         findMailDTO.setEmail("Crowdee.funding@gmail.com");
-        List<Member> user59 = memberRepository.findByEmailAndUserId("user59", "Crowdee.funding@gmail.com");
+        List<Member> user59 = memberRepository.findByEmail("Crowdee.funding@gmail.com");
         for (Member member : user59) {
             System.out.println(member+"어디지?");
         }
