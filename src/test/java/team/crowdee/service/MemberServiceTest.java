@@ -33,8 +33,8 @@ class MemberServiceTest {
     @Autowired
     private MemberController memberController;
 
-    //@Test
-    //@Rollback(value = false)
+//    @Test
+//    @Rollback(value = false)
     public void 더미데이터_삽입() {
         for (int i = 0; i < 10; i++) {
             memberService.join(
@@ -240,7 +240,7 @@ class MemberServiceTest {
 
     }
 
-    //@Test
+    @Test
     public void 비밀번호찾기(){
         Member member = memberRepository.findById(2L);
         FindMailDTO findMailDTO = new FindMailDTO();
@@ -249,6 +249,5 @@ class MemberServiceTest {
         System.out.println(findMailDTO.getEmail());
         System.out.println(findMailDTO.getUserId());
         memberController.lostPassword(findMailDTO);
-
     }
 }

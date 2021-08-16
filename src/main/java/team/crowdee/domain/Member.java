@@ -22,22 +22,15 @@ public class Member {
     @Column(name = "member_id")
     private Long memberId;
     //회원가입할때 아이디 패스워드 검증
-    private String userId;//디비랑 중복검사
     private String password; //o
     private String userName; //x
     private String nickName;//중복검사 o
-    private String gender; //x
-    private int age; //x
-    private String birth; //x
-    private String phone; //o
     private String mobile; //o
     private String email; //x --애매한 부분
     private String emailCert; //이메일 인증 받았을때 //o
     private LocalDateTime registDate;
     private String secessionDate;
 
-    @Embedded
-    private Address address;
 
     @Enumerated(EnumType.STRING)
     private UserState userState;
@@ -86,18 +79,8 @@ public class Member {
         return this;
     }
 
-    public Member changePhone(String phone) {
-        this.phone = phone;
-        return this;
-    }
-
     public Member changeMobile(String mobile) {
         this.mobile = mobile;
-        return this;
-    }
-
-    public Member changeAddress(Address address) {
-        this.address = address;
         return this;
     }
 
