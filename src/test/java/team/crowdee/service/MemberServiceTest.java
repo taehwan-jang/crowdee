@@ -20,6 +20,7 @@ import java.util.List;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @Transactional
+
 class MemberServiceTest {
     @Autowired
     private MemberService memberService;

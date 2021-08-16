@@ -105,8 +105,7 @@ public class MemberController {
         sendEmailService.sendMail(mailDTO);
         return new ResponseEntity<>("이메일 발송되었습니다.", HttpStatus.OK);
     }
-
-         */
+        */
 
     //비밀번호 수정
     @PostMapping("/changePass")

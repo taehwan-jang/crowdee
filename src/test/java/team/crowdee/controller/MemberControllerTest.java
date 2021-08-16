@@ -14,8 +14,8 @@ import team.crowdee.domain.Member;
 import team.crowdee.domain.dto.FindMailDTO;
 import team.crowdee.domain.dto.LoginDTO;
 import team.crowdee.domain.dto.MemberDTO;
+import team.crowdee.domain.valuetype.Address;
 import team.crowdee.repository.MemberRepository;
-import team.crowdee.service.MemberService;
 
 import javax.mail.MessagingException;
 import javax.persistence.EntityManager;
@@ -29,9 +29,7 @@ import static org.assertj.core.api.Assertions.*;
 @Transactional
 class MemberControllerTest {
     @Autowired
-    private MemberService memberService;
-    @Autowired
-    private MemberController memberController;
+    MemberController memberController;
     @Autowired
     private MemberRepository memberRepository;
     @Autowired
@@ -76,26 +74,6 @@ class MemberControllerTest {
         //then
         System.out.println("findCreator.getBusinessNumber() = " + findCreator.getBusinessNumber());
         assertThat(findCreator).isEqualTo(creator1);
-    }
-
-    @Test
-    @Rollback(value = false)
-    public void 더미데이터() {
-        for (int i = 0; i < 10; i++) {
-            memberRepository.save(
-                Member.builder()
-                    .birth("1992/" + i)
-                    .nickName("테스트" + i)
-                    .email("mail" + i + "@mail.com")
-                    .userName("user" + i)
-                    .registDate(LocalDateTime.now())
-                    .age(20 + i)
-                    .userId("testId" + i)
-                    .gender("남자")
-                    .mobile("010-1234-123" + i)
-                    .build()
-            );
-        }
     }
 
     @Test  //session 데이터없으면 널포인트뜨니까 넣고 테스트돌리세용!!

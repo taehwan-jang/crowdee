@@ -37,6 +37,10 @@ public class MemberService {
     // 회원가입시 멤버 아이디 중복확인 어디?
     @Transactional
     public Long join(MemberDTO memberDTO) throws MessagingException {
+        if (validationId(memberDTO) == false && validationPw(memberDTO) == false &&
+                doubleCheck(memberDTO.getUserId(), memberDTO.getNickName()) == false) {
+            return null;
+        }
         Address address = new Address();
         address.setZonecode(memberDTO.getZonecode());
         address.setRestAddress(memberDTO.getRestAddress());
@@ -59,10 +63,8 @@ public class MemberService {
                 .emailCert(authKey)
                 //autories 랑
                 .build();
-        if (validationId(memberDTO) == false && validationPw(memberDTO) == false &&
-                doubleCheck(memberDTO.getUserId(), memberDTO.getNickName()) == false) {
-            return null;
-        }
+
+
         Long saveMember = memberRepository.save(member);
         return saveMember;
 

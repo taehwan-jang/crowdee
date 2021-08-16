@@ -32,6 +32,7 @@ public class MemberDTO {
 
 
 
+
     /**
      * 아이디
      * 닉네임 뺴야하는거 아닌가?
