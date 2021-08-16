@@ -143,32 +143,25 @@ import java.util.List;
 
     }
 
-    //토근추가후 테스트 재실행필요
     @Test
     public void 비밀번호수정() {
-        //given //기존꺼로그인
+        //given
         LoginDTO loginDTO = new LoginDTO();
-        loginDTO.setEmail("crowdee.funding@gmail.com");
-        loginDTO.setPassword("1q2w3e4r!0");
-        Member member = memberService.memberLogin(loginDTO);
-        //Assertions.assertThat(member).isNotNull(); 로그인성공
-        //비번체인지
         ChangePassDTO changePassDTO = new ChangePassDTO();
         changePassDTO.setMemberId(1L);
         changePassDTO.setOldPassword("1q2w3e4r!0");
         changePassDTO.setNewPassword("tjdengus1!");
-
-        Member changmember = memberService.memberChangPass(changePassDTO);
-        System.out.println("비밀번호 수정:"+ changmember.getPassword());
-        System.out.println("비밀번호 수정."+ loginDTO.getPassword());
-        boolean matches = passwordEncoder.matches(loginDTO.getPassword(), changmember.getPassword());
-        //비번바꾸고 로그인
+        //비밀번호 수정
+//       changePassDTO.setNewPassword("비번"); //유효성검사통과못하면 null반환
+        Member changMember = memberService.memberChangPass(changePassDTO);
+        boolean matches = passwordEncoder.matches(changePassDTO.getNewPassword(), changMember.getPassword());
+        Assertions.assertThat(matches).isEqualTo(true);
+        //비밀번호 수정 후 로그인하여 확인
+        loginDTO.setEmail("crowdee.funding@gmail.com");
         loginDTO.setPassword("tjdengus1!");
-        Member member1 = memberService.memberLogin(loginDTO);
-        Assertions.assertThat(member1).isNull();
-
+        Member memberLogin = memberService.memberLogin(loginDTO);
+        Assertions.assertThat(memberLogin).isNotNull();
     }
-
     //토근추가후 테스트 재실행필요
     @Test
    // @Rollback(value = false)
