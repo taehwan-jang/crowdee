@@ -46,7 +46,6 @@ public class MemberService {
 
     //로그인
     public Member memberLogin(LoginDTO loginDTO) {
-
         Member findMember = memberRepository.login(loginDTO.getUserId());
         if(findMember.getSecessionDate()==null) {
             boolean matches = passwordEncoder.matches(loginDTO.getPassword(), findMember.getPassword());
@@ -146,7 +145,7 @@ public class MemberService {
         return member;
     }
 
-  // <서비스 부분>
+    //회원탈퇴
     @Transactional
     public Member deleteMember(MemberDTO memberDTO) { //비번 값을 보내준다고 가정
         Member member = memberRepository.findById(memberDTO.getMemberId());
@@ -159,7 +158,8 @@ public class MemberService {
                 .build();
         return member;
     }
-
+    
+    //회원탈퇴 : 매일 0시마다 실행되는 로직, 일자 비교하여 회원삭제
     @Scheduled(cron = "0 0 1 * * *") //0 0 1 * * *로 변경하면 하루마다 메소드 시작.
     @Transactional
     public void timeDelete() {

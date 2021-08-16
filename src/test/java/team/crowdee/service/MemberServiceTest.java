@@ -134,7 +134,7 @@ class MemberServiceTest {
         memberDTO4.setUserId(member.getUserId());//유저네임 user0
         memberDTO4.setNickName("기모찌맨");//닉네임 기모찌맨
         //when
-        boolean usernamecheck = memberService.doubleCheck(memberDTO2.getUserId(),memberDTO2.getNickName() );
+        boolean usernamecheck = memberService.doubleCheck(memberDTO2.getUserId(),memberDTO2.getNickName());
         boolean nicknamecheck = memberService.doubleCheck(memberDTO4.getUserId(), memberDTO4.getNickName());
         Assertions.assertThat(usernamecheck).isEqualTo(false); // 유저네임중복이되냐 테스트
         Assertions.assertThat(nicknamecheck).isEqualTo(false); // 닉네임이중복이되냐 테스트
@@ -144,6 +144,7 @@ class MemberServiceTest {
 
 
     }
+    
 
     @Test
     public void 로그인테스트() {
@@ -152,12 +153,20 @@ class MemberServiceTest {
         LoginDTO loginMember = new LoginDTO();
         loginMember.setUserId(member.getUserId());
         loginMember.setPassword("1q2w3e4r!0");
-        System.out.println(loginMember.getUserId());
-        //when
-        Member memberLogin = memberService.memberLogin(loginMember);
-        Assertions.assertThat(memberLogin).isNotNull();
-        //then
 
+        //when
+        Member getLoginMember = memberService.memberLogin(loginMember);
+
+        //then
+        Assertions.assertThat(getLoginMember).isNotNull();
+        Assertions.assertThat(getLoginMember.getUserId()).isEqualTo(member.getUserId());
+        boolean matches = passwordEncoder.matches(loginMember.getPassword(), getLoginMember.getPassword());
+        if(matches) {
+            System.out.println("비밀번호 일치");
+        }
+        else {
+            System.out.println("비밀번호 불일치");
+        }
     }
 
     //테스트 진행중
