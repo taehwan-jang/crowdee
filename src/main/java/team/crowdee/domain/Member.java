@@ -7,6 +7,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Builder
@@ -39,7 +40,16 @@ public class Member {
     private Address address;
 
     @Enumerated(EnumType.STRING)
-    private Authorities authorities;
+    private UserState userState;
+
+    @ManyToMany
+    @JoinTable(
+            name = "member_authority",
+            joinColumns = {@JoinColumn(name = "member_id", referencedColumnName = "member_id")},
+            inverseJoinColumns = {@JoinColumn(name = "authority_name", referencedColumnName = "authority_name")}
+    )
+    private Set<Authority> authorities;
+
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     @Builder.Default
@@ -56,7 +66,7 @@ public class Member {
 
     public void joinCreator(Creator creator) {
         this.creator = creator;
-        this.authorities = Authorities.creator;
+        this.userState = UserState.creator;
         creator.setMember(this);
 
     }
@@ -90,7 +100,6 @@ public class Member {
         this.address = address;
         return this;
     }
-
 
 
 

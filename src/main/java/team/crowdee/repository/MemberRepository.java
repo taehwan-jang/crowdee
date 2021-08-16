@@ -2,6 +2,9 @@ package team.crowdee.repository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.jpa.repository.EntityGraph;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Repository;
 import team.crowdee.domain.Creator;
 import team.crowdee.domain.Follow;
@@ -12,6 +15,7 @@ import javax.persistence.PersistenceContext;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -104,5 +108,14 @@ public class MemberRepository {
     public void flush() {
         em.flush();
     }
+
+
+    @EntityGraph(attributePaths = "authorities")
+    public List<Member> findOneWithAuthoritiesByUserId(String userId) {
+        return em.createQuery("select m from Member m where m.userId=:userId", Member.class)
+                .setParameter("userId", userId)
+                .getResultList();
+    }
+
 
 }
