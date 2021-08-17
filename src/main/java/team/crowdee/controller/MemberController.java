@@ -1,5 +1,7 @@
 package team.crowdee.controller;
 
+import antlr.Token;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -20,6 +22,8 @@ import team.crowdee.service.MemberService;
 import team.crowdee.util.MimeEmailService;
 import team.crowdee.util.SendEmailService;
 import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 @RestController
@@ -73,6 +77,7 @@ public class MemberController {
     //로그인
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO) {
+
         Member loginMember = memberService.memberLogin(loginDTO);
 
         UsernamePasswordAuthenticationToken authenticationToken =
@@ -150,10 +155,20 @@ public class MemberController {
     //회원탈퇴
     @PostMapping("/delete")
     public ResponseEntity<?> delete(@RequestBody MemberDTO memberDTO) {
+
         Member member = memberService.deleteMember(memberDTO);
         if(member == null){
             return new ResponseEntity<>("탈퇴에 실패했습니다.", HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>("탈퇴 되었습니다", HttpStatus.OK);
     }
+
+    @PostMapping("/coffee")
+
+    public ResponseEntity<?> coffeeAll(){
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
+
 }
