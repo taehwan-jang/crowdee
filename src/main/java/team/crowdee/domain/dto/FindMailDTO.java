@@ -8,6 +8,6 @@ import lombok.Setter;
 
 public class FindMailDTO {
 
-    private String userId;
     private String email;
+    private String userName;
 }

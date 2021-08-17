@@ -84,7 +84,7 @@ class MemberControllerTest {
     @Test
     public void 회원가입_찾기(){
         FindMailDTO findMailDTO = new FindMailDTO();
-        findMailDTO.setUserId("user59");
+        findMailDTO.setEmail("user59");
         findMailDTO.setEmail("Crowdee.funding@gmail.com");
         List<Member> user59 = memberRepository.findByEmail("Crowdee.funding@gmail.com");
         for (Member member : user59) {
@@ -94,7 +94,7 @@ class MemberControllerTest {
 
         ResponseEntity<?> responseEntity = memberController.lostPassword(findMailDTO);
         System.out.println(findMailDTO.getEmail());
-        System.out.println(findMailDTO.getUserId());
+        System.out.println(findMailDTO.getUserName());
         System.out.println(responseEntity);
 
     }

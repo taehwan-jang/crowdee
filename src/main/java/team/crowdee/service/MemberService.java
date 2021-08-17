@@ -48,9 +48,8 @@ public class MemberService {
                 .userState(UserState.guest)
                 .emailCert(authKey)
                 .build();
-
+        
         Long saveMember = memberRepository.save(member);
-
         return saveMember;
     }
 
@@ -58,14 +57,15 @@ public class MemberService {
     public Member memberLogin(LoginDTO loginDTO) {
         System.out.println("로그인:"+  loginDTO.getPassword());
         System.out.println("로그인:"+loginDTO.getEmail());
-        List<Member> email = memberRepository.findByEmail(loginDTO.getEmail());
-        String email1 = email.get(0).getEmail();
-        Member findMember = memberRepository.login(email1);
-        if(findMember.getSecessionDate()==null ) {
-            boolean matches = passwordEncoder.matches(loginDTO.getPassword(), findMember.getPassword());
+        List<Member> findMember = memberRepository.findByEmail(loginDTO.getEmail());
+        if (findMember.isEmpty()) {
+            return null;
+        }
+        if(findMember.get(0).getSecessionDate()==null ) {
+            boolean matches = passwordEncoder.matches(loginDTO.getPassword(), findMember.get(0).getPassword());
             System.out.println(matches);
 
-            return matches ? findMember : null;//결과값에 따라 return값 결정
+            return matches ? findMember.get(0) : null;//결과값에 따라 return값 결정
         }
         return null;
     }
@@ -79,6 +79,9 @@ public class MemberService {
 
     // 회원 Password 검증
     public boolean validationPw(MemberDTO memberDTO){
+        if (memberDTO.getPassword() == null) {
+            return false;
+        }
         Pattern p = Pattern.compile("^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[$@$!%*#?&])[A-Za-z[0-9]$@$!%*#?&]{8,16}$");
         Matcher m = p.matcher(memberDTO.getPassword());
         if(m.matches()){
@@ -88,6 +91,9 @@ public class MemberService {
     }
 
     public boolean validationNick(MemberDTO memberDTO) {
+        if (memberDTO.getNickName() == null) {
+            return false;
+        }
         List<Member> byNickName = memberRepository.findByParam("nickName", memberDTO.getNickName());
         if (!byNickName.isEmpty()) {
             return false;
@@ -96,6 +102,9 @@ public class MemberService {
     }
 
     public boolean validationEmail(MemberDTO memberDTO) {
+        if (memberDTO.getEmail() == null) {
+            return false;
+        }
         List<Member> byEmail = memberRepository.findByParam("email", memberDTO.getEmail());
         if (!byEmail.isEmpty()) {
             return false;
