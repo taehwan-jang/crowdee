@@ -45,8 +45,10 @@ public class MemberController {
         Map<String, String> key = new HashMap<>();
         key.put("authKey", authKey);
         return new ResponseEntity<>(key, HttpStatus.OK);
+
     }
 
+    //회원가입
     @PostMapping("/signUp")
     public ResponseEntity<?> signUp(@RequestBody MemberDTO memberDTO) throws MessagingException {
         if (memberDTO == null) {

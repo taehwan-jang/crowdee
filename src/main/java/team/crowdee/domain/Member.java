@@ -62,9 +62,6 @@ public class Member {
         creator.setMember(this);
 
     }
-    public void secessionMember(String secessionDate) {
-        this.secessionDate = secessionDate;
-    }
 
     //=====수정을 위한 패턴=====//
 
@@ -83,6 +80,9 @@ public class Member {
         return this;
     }
 
-
+    public Member changeSecessionDate(String secessionDate) {
+        this.secessionDate = secessionDate;
+        return this;
+    }
 
 }

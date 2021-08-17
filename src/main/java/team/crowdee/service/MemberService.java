@@ -31,7 +31,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final MimeEmailService mimeEmailService;
-    // 회원가입시 멤버 아이디 중복확인 어디?
+
     @Transactional
     public Long join(MemberDTO memberDTO) throws MessagingException {
         if ( validationPw(memberDTO) == false && validationNick(memberDTO) == false) {
@@ -172,11 +172,11 @@ public class MemberService {
     //회원탈퇴
     @Transactional
     public Member deleteMember(MemberDTO memberDTO) { //비번 값을 보내준다고 가정
-        Member findMember = memberRepository.findByParam("userName", memberDTO.getUserName()).get(0);
+        Member findMember = memberRepository.findByParam("nickName", memberDTO.getNickName()).get(0);
         LocalDateTime currentDate= LocalDateTime.now();
         String plusMonths = currentDate.plusMonths(1L).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         log.info("탈퇴 신청 후 한달 이후 날짜 ={}", plusMonths);
-        findMember.secessionMember(plusMonths);
+        findMember.changeSecessionDate(plusMonths);
         return findMember;
     }
 
