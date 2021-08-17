@@ -45,7 +45,6 @@ public class MemberController {
         Map<String, String> key = new HashMap<>();
         key.put("authKey", authKey);
         return new ResponseEntity<>(key, HttpStatus.OK);
-
     }
 
     //회원가입 추가할내용:회원탈퇴시에 회원존속여부 set해야함

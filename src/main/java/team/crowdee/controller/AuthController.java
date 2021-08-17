@@ -30,7 +30,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    // UserId, Password 를 파라미터로 받아 Token 객체 생성
+    // email, Password 를 파라미터로 받아 Token 객체 생성
     // 유저 정보를 조회하여 인증정보 생성
     public ResponseEntity<TokenDTO> authorize(@RequestBody LoginDTO loginDTO){
 

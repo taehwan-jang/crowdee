@@ -203,7 +203,7 @@ import java.util.List;
         FindMailDTO findMailDTO = new FindMailDTO();
         findMailDTO.setEmail(memberFindPass.getEmail());
         System.out.println(findMailDTO.getEmail());
-        System.out.println(findMailDTO.getUserId());
+        System.out.println(findMailDTO.getUserName());
         //when
         List<Member> findMember = memberService.findPassword(findMailDTO);
         if (findMember == null) {

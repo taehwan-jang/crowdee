@@ -8,7 +8,7 @@ import lombok.Setter;
 public class ChangePassDTO {
 
     private Long memberId;
-    private String userId;
+    private String email;
     private String oldPassword;
     private String newPassword;
 

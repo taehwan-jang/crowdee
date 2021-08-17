@@ -27,17 +27,17 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     @Transactional
     // 로그인 시 DB 에서 member 정보를 조회하는 메소드(권한정보와 함께)
-    public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
-        return memberRepository.findOneWithAuthoritiesByUserId(userId)
-                .stream().map(member -> createUser(userId, member))
-                .findAny().orElseThrow(() -> new UsernameNotFoundException(userId + " -> 데이터베이스에서 찾을 수 없습니다."));
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return memberRepository.findOneWithAuthoritiesByEmail(email)
+                .stream().map(member -> createUser(email, member))
+                .findAny().orElseThrow(() -> new UsernameNotFoundException(email + " -> 데이터베이스에서 찾을 수 없습니다."));
     }
 
     // DB 에서 조회한 member 및 권한정보를 'org.springframework.security.core.userdetails.User' 객체로 변환하여 리턴
-    private org.springframework.security.core.userdetails.User createUser(String userId, Member member){
+    private org.springframework.security.core.userdetails.User createUser(String email, Member member){
         if(member==null){ // 수정필요한 코드
             log.info("//==========로그인 실패시 로직===========//");
-            throw new RuntimeException(userId + " -> 활성화되어 있지 않습니다.");
+            throw new RuntimeException(email + " -> 활성화되어 있지 않습니다.");
         }
         List<GrantedAuthority> grantedAuthorities = member.getAuthorities().stream()
                 .map(authority -> new SimpleGrantedAuthority(authority.getAuthorityName()))
