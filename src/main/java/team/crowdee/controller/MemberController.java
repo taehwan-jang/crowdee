@@ -49,6 +49,9 @@ public class MemberController {
 
     @PostMapping("/signUp")
     public ResponseEntity<?> signUp(@RequestBody MemberDTO memberDTO) throws MessagingException {
+        if (memberDTO == null) {
+            return new ResponseEntity<>("값을 입력해주세요", HttpStatus.BAD_REQUEST);
+        }
         Long member = memberService.join(memberDTO);
         if (member == null) {
             return new ResponseEntity<>("회원가입에 실패했습니다.", HttpStatus.BAD_REQUEST);
