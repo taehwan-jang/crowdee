@@ -31,7 +31,7 @@ public class MimeEmailService {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         String mailContent = "<h1>[이메일 인증]</h1><br><p>아래 코드를 가입창에 입력해주세요.</p>"
                 + email + "<h3>" + authKey + "</h3>";
-        mimeMessage.setFrom("Crowdee.funding@gmail.com");
+        mimeMessage.setFrom("Crowdeefunding@gmail.com");
         mimeMessage.setSubject("[Crowdee 회원가입 인증 이메일 입니다.]");
         mimeMessage.setText(mailContent,"UTF-8","html");
         mimeMessage.addRecipients(Message.RecipientType.TO, email);

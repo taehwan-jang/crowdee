@@ -34,7 +34,7 @@ public class MemberService {
 
     @Transactional
     public Long join(MemberDTO memberDTO) throws MessagingException {
-        if ( validationPw(memberDTO) == false && validationNick(memberDTO) == false) {
+        if (validationPw(memberDTO) == false && validationNick(memberDTO) == false && validationEmail(memberDTO) == false) {
             return null;
         }
         String authKey = mimeEmailService.sendAuthMail(memberDTO.getEmail());
@@ -45,12 +45,12 @@ public class MemberService {
                 .registDate(LocalDateTime.now())
                 .mobile(memberDTO.getMobile())
                 .email(memberDTO.getEmail())
-                .userState(UserState.guest)
-                .emailCert(authKey)
+                .emailCert(memberDTO.getEmailCert())
                 .build();
-        
-        Long saveMember = memberRepository.save(member);
-        return saveMember;
+        if (memberDTO.getEmailCert() == "Y") {
+            Long saveMember = memberRepository.save(member);
+        }
+        return member.getMemberId();
     }
 
     //로그인 -> 토큰 추가로 인해 코드 리뷰 이후 코드작성
@@ -102,14 +102,30 @@ public class MemberService {
     }
 
     public boolean validationEmail(MemberDTO memberDTO) {
+        //값을입력안했을때
         if (memberDTO.getEmail() == null) {
             return false;
         }
+        //이메일 형식체크
+        if (checkEmail(memberDTO)==false) {
+            return false;
+        }
         List<Member> byEmail = memberRepository.findByParam("email", memberDTO.getEmail());
+        //이메일 중복검사
         if (!byEmail.isEmpty()) {
             return false;
         }
         return true;
+
+    }
+
+    public boolean checkEmail(MemberDTO memberDTO) { // .과 @ 를 무조건포함시켜야한다.
+        Pattern p = Pattern.compile("^[_a-zA-Z0-9-\\.]+@[\\.a-zA-Z0-9-]+\\.[a-zA-Z]+$");
+        Matcher m = p.matcher(memberDTO.getEmail());
+        if(m.matches()){
+            return true;
+        }
+        return false;
 
     }
 

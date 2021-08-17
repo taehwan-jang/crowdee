@@ -16,6 +16,10 @@ import team.crowdee.repository.MemberRepository;
 import team.crowdee.util.SendEmailService;
 import javax.mail.MessagingException;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -34,20 +38,75 @@ import java.util.List;
 
 
    /* @Test
-   // @Rollback(value = false)
+    @Rollback(value = false)
     public void 더미데이터_삽입() throws MessagingException {
         MemberDTO memberDTO = new MemberDTO();
         for (int i = 0; i < 10; i++) {
             memberDTO.setUserName("장태환" + i);
             memberDTO.setPassword("1q2w3e4r!" + i);
             memberDTO.setNickName("테스트" + i);
-            memberDTO.setEmail("crowdee.funding@gmail.com");
+            memberDTO.setEmail("crowdeefunding@gmail.com");
             memberDTO.setUserName("user" + i);
             memberDTO.setMobile("010-1234-123" + i);
             memberService.join(memberDTO);
         }
 
     }*/
+
+
+    @Test
+    public void 이메일_형식검증() {
+
+     /*   String a0 = "adfkljl@naver.com"; //잘되는
+        String a1 = "adfkljlnaver.com"; //안되는
+        String a2 = "adfkljl@navercom"; //안되는
+        String a3 = "adfkljlnavercom"; //안되는
+        String a4 = "adfkljl.naver@com"; //안되는
+        Pattern p = Pattern.compile("^[_a-zA-Z0-9-\\.]+@[\\.a-zA-Z0-9-]+\\.[a-zA-Z]+$");
+        Matcher m = p.matcher(a0);
+        System.out.println("결과"+m.matches());
+        Matcher m1 = p.matcher(a1);
+        System.out.println("결과"+m1.matches());
+        Matcher m2 = p.matcher(a2);
+        System.out.println("결과"+m2.matches());
+        Matcher m3 = p.matcher(a3);
+        System.out.println("결과"+m3.matches());
+        Matcher m4 = p.matcher(a4);
+        System.out.println("결과"+m4.matches());*/
+        MemberDTO memberDTO1 = new MemberDTO();
+        memberDTO1.setEmail("crowdeefunding@gmail.com");//true
+        MemberDTO memberDTO2 = new MemberDTO();
+        memberDTO2.setEmail("asdfnavercom"); //false 골벵이없음 점없음
+        MemberDTO memberDTO3 = new MemberDTO();
+        memberDTO2.setEmail("asdfnav.ercom");//false 골벵이없음
+        MemberDTO memberDTO4 = new MemberDTO();
+        memberDTO3.setEmail("asdfn1123@asfvercom");//점없음
+        boolean checkEmail1 = memberService.checkEmail(memberDTO1);
+        boolean checkEmail2 = memberService.checkEmail(memberDTO2);
+        boolean checkEmail3 = memberService.checkEmail(memberDTO3);
+        System.out.println(checkEmail1);
+        System.out.println(checkEmail2);
+        System.out.println(checkEmail3);
+        //Assertions.assertThat(checkEmail1).isEqualTo(true);
+       // assertThat(checkEmail2).isEqualTo(false);
+
+    }
+
+    @Test
+    public void 이메일전체검증() {
+        MemberDTO memberDTO1 = new MemberDTO();
+        memberDTO1.setEmail("Asdfasdf");
+        MemberDTO memberDTO2 = new MemberDTO();
+        //중복검사
+        memberDTO2.setEmail("crowdeefunding@gmail.com");
+
+        //boolean validationEmail = memberService.validationEmail(memberDTO1);
+        boolean validationEmail2 = memberService.validationEmail(memberDTO2);
+
+      //  assertThat(validationEmail).isEqualTo(false);
+        assertThat(validationEmail2).isEqualTo(false);
+
+    }
 
     @Test //멤버컨트롤러 값 들어가는지 테스트완료
     @Rollback(value = false)
@@ -56,7 +115,7 @@ import java.util.List;
 
         memberDTO.setPassword("tjdengus1!");
         memberDTO.setNickName("미주짱짱맨");
-        memberDTO.setEmail("crowdee.funding@gmail.com");
+        memberDTO.setEmail("crowdeefunding@gmail.com");
         memberService.join(memberDTO);
     }
         // 테스트 완료
@@ -82,11 +141,11 @@ import java.util.List;
         boolean valiPw5 = memberService.validationPw(samplePw5);
 
         //then
-        Assertions.assertThat(valiPw1).isEqualTo(false);
-        Assertions.assertThat(valiPw2).isEqualTo(false);
-        Assertions.assertThat(valiPw3).isEqualTo(false);
-        Assertions.assertThat(valiPw4).isEqualTo(false);
-        Assertions.assertThat(valiPw5).isEqualTo(true);
+        assertThat(valiPw1).isEqualTo(false);
+        assertThat(valiPw2).isEqualTo(false);
+        assertThat(valiPw3).isEqualTo(false);
+        assertThat(valiPw4).isEqualTo(false);
+        assertThat(valiPw5).isEqualTo(true);
 
     }
 
@@ -102,7 +161,7 @@ import java.util.List;
         System.out.println(validationNick);
 
         //thn// 유저네임중복이되냐 테스트
-        Assertions.assertThat(validationNick).isEqualTo(false); // 닉네임이중복이되냐 테스트
+        assertThat(validationNick).isEqualTo(false); // 닉네임이중복이되냐 테스트
 
     }
 
@@ -115,7 +174,7 @@ import java.util.List;
         //when
         Member getLoginMember = memberService.memberLogin(loginMember);
         //then
-         Assertions.assertThat(getLoginMember).isNotNull();
+         assertThat(getLoginMember).isNotNull();
         boolean matches = passwordEncoder.matches(loginMember.getPassword(), getLoginMember.getPassword());
         if(matches) {
             System.out.println("비밀번호 일치");
@@ -138,8 +197,8 @@ import java.util.List;
         //when
         Member findMember = memberService.memberEdit(memberDTO);
         //then
-        Assertions.assertThat(findMember.getNickName()).isEqualTo("닉네임테스트");
-        Assertions.assertThat(findMember.getMobile()).isEqualTo("000-0000-0000");
+        assertThat(findMember.getNickName()).isEqualTo("닉네임테스트");
+        assertThat(findMember.getMobile()).isEqualTo("000-0000-0000");
 
     }
 
@@ -155,12 +214,12 @@ import java.util.List;
 //       changePassDTO.setNewPassword("비번"); //유효성검사통과못하면 null반환
         Member changMember = memberService.memberChangPass(changePassDTO);
         boolean matches = passwordEncoder.matches(changePassDTO.getNewPassword(), changMember.getPassword());
-        Assertions.assertThat(matches).isEqualTo(true);
+        assertThat(matches).isEqualTo(true);
         //비밀번호 수정 후 로그인하여 확인
         loginDTO.setEmail("crowdee.funding@gmail.com");
         loginDTO.setPassword("tjdengus1!");
         Member memberLogin = memberService.memberLogin(loginDTO);
-        Assertions.assertThat(memberLogin).isNotNull();
+        assertThat(memberLogin).isNotNull();
     }
     //토근추가후 테스트 재실행필요
     @Test
@@ -177,7 +236,7 @@ import java.util.List;
         System.out.println("deleteMember.getUserName() = " + deleteMember.getUserName());
         String secessionDate = deleteMember.getSecessionDate();
         System.out.println("secessionDate = " + secessionDate);
-        Assertions.assertThat(secessionDate).isEqualTo("20210916");
+        assertThat(secessionDate).isEqualTo("20210916");
     }
 
     @Test
@@ -215,7 +274,7 @@ import java.util.List;
             System.out.println("비밀번호 변경실패");
         }
         //then
-        Assertions.assertThat(member.getUserName()).isEqualTo(memberFindPass.getUserName());
+        assertThat(member.getUserName()).isEqualTo(memberFindPass.getUserName());
         sendEmailService.sendMail(mailDTO);
         memberController.lostPassword(findMailDTO);
 
