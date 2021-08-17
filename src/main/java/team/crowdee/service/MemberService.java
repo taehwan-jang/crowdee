@@ -48,9 +48,8 @@ public class MemberService {
                 .userState(UserState.guest)
                 .emailCert(authKey)
                 .build();
-
+        
         Long saveMember = memberRepository.save(member);
-
         return saveMember;
     }
 
@@ -80,6 +79,9 @@ public class MemberService {
 
     // 회원 Password 검증
     public boolean validationPw(MemberDTO memberDTO){
+        if (memberDTO.getPassword() == null) {
+            return false;
+        }
         Pattern p = Pattern.compile("^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[$@$!%*#?&])[A-Za-z[0-9]$@$!%*#?&]{8,16}$");
         Matcher m = p.matcher(memberDTO.getPassword());
         if(m.matches()){
@@ -89,6 +91,9 @@ public class MemberService {
     }
 
     public boolean validationNick(MemberDTO memberDTO) {
+        if (memberDTO.getNickName() == null) {
+            return false;
+        }
         List<Member> byNickName = memberRepository.findByParam("nickName", memberDTO.getNickName());
         if (!byNickName.isEmpty()) {
             return false;
@@ -97,6 +102,9 @@ public class MemberService {
     }
 
     public boolean validationEmail(MemberDTO memberDTO) {
+        if (memberDTO.getEmail() == null) {
+            return false;
+        }
         List<Member> byEmail = memberRepository.findByParam("email", memberDTO.getEmail());
         if (!byEmail.isEmpty()) {
             return false;

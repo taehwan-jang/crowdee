@@ -47,7 +47,6 @@ public class MemberController {
         return new ResponseEntity<>(key, HttpStatus.OK);
     }
 
-    //회원가입 추가할내용:회원탈퇴시에 회원존속여부 set해야함
     @PostMapping("/signUp")
     public ResponseEntity<?> signUp(@RequestBody MemberDTO memberDTO) throws MessagingException {
         Long member = memberService.join(memberDTO);
