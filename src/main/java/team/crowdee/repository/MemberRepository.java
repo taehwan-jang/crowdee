@@ -55,7 +55,6 @@ public class MemberRepository {
 
     public List<Member> findByParam(String target,String param) {
         String query = "select m from Member m where m."+ target +"=:param";
-        System.out.println(param+"기모찌~");
         return em.createQuery(query, Member.class)
                 .setParameter("param", param)
                 .getResultList();

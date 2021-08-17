@@ -168,7 +168,7 @@ import java.util.List;
     public void 회원탈퇴_SecessionDate_확인(){
         //given
         MemberDTO memberDTO = new MemberDTO();
-        memberDTO.setUserName("user0");
+        memberDTO.setNickName("테스트0");
 
         //when
         Member deleteMember = memberService.deleteMember(memberDTO);
