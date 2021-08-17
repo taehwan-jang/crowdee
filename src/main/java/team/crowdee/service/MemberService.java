@@ -58,14 +58,15 @@ public class MemberService {
     public Member memberLogin(LoginDTO loginDTO) {
         System.out.println("로그인:"+  loginDTO.getPassword());
         System.out.println("로그인:"+loginDTO.getEmail());
-        List<Member> email = memberRepository.findByEmail(loginDTO.getEmail());
-        String email1 = email.get(0).getEmail();
-        Member findMember = memberRepository.login(email1);
-        if(findMember.getSecessionDate()==null ) {
-            boolean matches = passwordEncoder.matches(loginDTO.getPassword(), findMember.getPassword());
+        List<Member> findMember = memberRepository.findByEmail(loginDTO.getEmail());
+        if (findMember.isEmpty()) {
+            return null;
+        }
+        if(findMember.get(0).getSecessionDate()==null ) {
+            boolean matches = passwordEncoder.matches(loginDTO.getPassword(), findMember.get(0).getPassword());
             System.out.println(matches);
 
-            return matches ? findMember : null;//결과값에 따라 return값 결정
+            return matches ? findMember.get(0) : null;//결과값에 따라 return값 결정
         }
         return null;
     }
