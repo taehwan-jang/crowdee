@@ -1,6 +1,7 @@
 package team.crowdee.domain.dto;
 
 import lombok.*;
+import team.crowdee.domain.Authority;
 import team.crowdee.domain.UserState;
 import team.crowdee.domain.valuetype.Address;
 
@@ -9,6 +10,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import java.time.LocalDateTime;
 import java.util.Calendar;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -25,6 +27,7 @@ public class MemberDTO {
     private String secessionDate;
     @Enumerated(EnumType.STRING)
     private UserState userState;
+    private Set<Authority> authorities;
 
 
 
