@@ -34,6 +34,7 @@ public class MemberService {
 
     @Transactional
     public Long join(MemberDTO memberDTO) throws MessagingException {
+        //비밀번호검증:8-16자리 대문자소문자특수문자 포함 // 닉네임 중복검증 //이메일 중복검증 형식검증
         if (validationPw(memberDTO) == false && validationNick(memberDTO) == false && validationEmail(memberDTO) == false) {
             return null;
         }
@@ -47,6 +48,7 @@ public class MemberService {
                 .email(memberDTO.getEmail())
                 .emailCert(memberDTO.getEmailCert())
                 .build();
+        //이메일 인증후 emailcert Y로 변경 확인후 저장
         if (memberDTO.getEmailCert() == "Y") {
             Long saveMember = memberRepository.save(member);
         }
@@ -55,16 +57,14 @@ public class MemberService {
 
     //로그인 -> 토큰 추가로 인해 코드 리뷰 이후 코드작성
     public Member memberLogin(LoginDTO loginDTO) {
-        System.out.println("로그인:"+  loginDTO.getPassword());
-        System.out.println("로그인:"+loginDTO.getEmail());
+        log.info("로그인비밀번호 ={}", loginDTO.getEmail());
+        log.info("로그인비밀번호 ={}", loginDTO.getPassword());
         List<Member> findMember = memberRepository.findByEmail(loginDTO.getEmail());
         if (findMember.isEmpty()) {
             return null;
         }
         if(findMember.get(0).getSecessionDate()==null ) {
             boolean matches = passwordEncoder.matches(loginDTO.getPassword(), findMember.get(0).getPassword());
-            System.out.println(matches);
-
             return matches ? findMember.get(0) : null;//결과값에 따라 return값 결정
         }
         return null;
@@ -144,18 +144,20 @@ public class MemberService {
 
     //비밀번호 수정
     @Transactional
-    public Member memberChangPass(ChangePassDTO changePassDTO) {
+    public Member memberChangePass(ChangePassDTO changePassDTO) {
+        //1.newPassword검증
+        boolean newChangePass = validationChangePass(changePassDTO);
+        if(newChangePass==false){
+            return null;
+        }
+        //2.ChangePassDTO의 memberId와 일치하는 Member정보 가져와서 비밀번호 비교
         Member member = memberRepository.findById(changePassDTO.getMemberId());
         boolean matches = passwordEncoder.matches(changePassDTO.getOldPassword(), member.getPassword());
-        System.out.println(matches);
+        //3.일치하면 암호화하여 Member의 changePassword를 통해 password변경
         if(matches) {
-            boolean pw = this.validationChangPass(changePassDTO);
-            if(pw==false){
-                return null;
-            }
-            String encodePass = passwordEncoder.encode(changePassDTO.getNewPassword());//암호화한다음에
-            member.changePassword(encodePass);//저장
-            System.out.println(encodePass);
+            String encodePass = passwordEncoder.encode(changePassDTO.getNewPassword());
+            member.changePassword(encodePass);
+            log.info("암호화비밀번호 ={}", encodePass);
             return member;
 
         }
@@ -163,10 +165,9 @@ public class MemberService {
     }
 
     //ChangePassDTO의 NewPassword 유효성검사
-    public boolean validationChangPass(ChangePassDTO changePassDTO){
+    public boolean validationChangePass(ChangePassDTO changePassDTO){
         Pattern p = Pattern.compile("^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[$@$!%*#?&])[A-Za-z[0-9]$@$!%*#?&]{8,16}$");
-        Matcher m = p.matcher(changePassDTO.getNewPassword());
-        if(m.matches()){
+        if(p.matcher(changePassDTO.getNewPassword()).matches()){
             return true;
         }
         return false;
@@ -189,9 +190,11 @@ public class MemberService {
     @Transactional
     public Member deleteMember(MemberDTO memberDTO) { //비번 값을 보내준다고 가정
         Member findMember = memberRepository.findByParam("nickName", memberDTO.getNickName()).get(0);
-        LocalDateTime currentDate= LocalDateTime.now();
+        LocalDateTime currentDate = LocalDateTime.now();
+        //한달뒤의 일자를 넣어줌.
         String plusMonths = currentDate.plusMonths(1L).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         log.info("탈퇴 신청 후 한달 이후 날짜 ={}", plusMonths);
+        //세션데이트 컬럼에 한달뒤의 일자를 보내줌.
         findMember.changeSecessionDate(plusMonths);
         return findMember;
     }
@@ -202,8 +205,10 @@ public class MemberService {
     public void timeDelete() {
         String today= Utils.getTodayString();
 //        String today = "20210815"; 테스트바꿀때 일자 바꿔서해볼것
+        // 현재날짜와 일치한 데이터를 가져와서 저장함.
         List<Member> SecessionMember = memberRepository.findByParam("secessionDate",today);
         for (Member member : SecessionMember) {
+            // forEach을 돌려서 동일한 멤버 삭제
             memberRepository.delete(member);
         }
     }

@@ -37,21 +37,22 @@ import static org.assertj.core.api.Assertions.assertThat;
     private SendEmailService sendEmailService;
 
 
-   /* @Test
-    @Rollback(value = false)
-    public void 더미데이터_삽입() throws MessagingException {
-        MemberDTO memberDTO = new MemberDTO();
-        for (int i = 0; i < 10; i++) {
-            memberDTO.setUserName("장태환" + i);
-            memberDTO.setPassword("1q2w3e4r!" + i);
-            memberDTO.setNickName("테스트" + i);
-            memberDTO.setEmail("crowdeefunding@gmail.com");
-            memberDTO.setUserName("user" + i);
-            memberDTO.setMobile("010-1234-123" + i);
-            memberService.join(memberDTO);
-        }
-
-    }*/
+//    @Test
+//    @Rollback(value = false)
+//    public void 더미데이터_삽입() throws MessagingException {
+//        MemberDTO memberDTO = new MemberDTO();
+//        for (int i = 0; i < 10; i++) {
+//            memberDTO.setUserName("장태환" + i);
+//            memberDTO.setPassword("1q2w3e4r!" + i);
+//            memberDTO.setNickName("테스트" + i);
+//            memberDTO.setEmail("crowdeefunding@gmail.com");
+//            memberDTO.setUserName("user" + i);
+//            memberDTO.setEmailCert("Y");
+//            memberDTO.setMobile("010-1234-123" + i);
+//            memberService.join(memberDTO);
+//        }
+//
+//    }
 
 
     @Test
@@ -94,17 +95,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 
     @Test
     public void 이메일전체검증() {
+        //새로운이메일검사
         MemberDTO memberDTO1 = new MemberDTO();
-        memberDTO1.setEmail("Asdfasdf");
-        MemberDTO memberDTO2 = new MemberDTO();
-        //중복검사
-        memberDTO2.setEmail("crowdeefunding@gmail.com");
+        memberDTO1.setEmail("tjdengus123@gmail.com");
 
-        //boolean validationEmail = memberService.validationEmail(memberDTO1);
-        boolean validationEmail2 = memberService.validationEmail(memberDTO2);
+        boolean validationEmail = memberService.validationEmail(memberDTO1);
 
-      //  assertThat(validationEmail).isEqualTo(false);
-        assertThat(validationEmail2).isEqualTo(false);
+        assertThat(validationEmail).isEqualTo(true);
+
+        //중복이메일검사
+//        MemberDTO memberDTO2 = new MemberDTO();
+//        memberDTO2.setEmail("crowdeefunding@gmail.com");
+//
+//        boolean validationEmail2 = memberService.validationEmail(memberDTO2);
+//
+//        assertThat(validationEmail2).isEqualTo(false);
 
     }
 
@@ -169,7 +174,7 @@ import static org.assertj.core.api.Assertions.assertThat;
     public void 로그인테스트() {
         //give
         LoginDTO loginMember = new LoginDTO();
-        loginMember.setEmail("crowdee.funding@gmail.com");
+        loginMember.setEmail("crowdeefunding@gmail.com");
         loginMember.setPassword("1q2w3e4r!0");
         //when
         Member getLoginMember = memberService.memberLogin(loginMember);
@@ -212,18 +217,18 @@ import static org.assertj.core.api.Assertions.assertThat;
         changePassDTO.setNewPassword("tjdengus1!");
         //비밀번호 수정
 //       changePassDTO.setNewPassword("비번"); //유효성검사통과못하면 null반환
-        Member changMember = memberService.memberChangPass(changePassDTO);
+        Member changMember = memberService.memberChangePass(changePassDTO);
         boolean matches = passwordEncoder.matches(changePassDTO.getNewPassword(), changMember.getPassword());
         assertThat(matches).isEqualTo(true);
         //비밀번호 수정 후 로그인하여 확인
-        loginDTO.setEmail("crowdee.funding@gmail.com");
+        loginDTO.setEmail("crowdeefunding@gmail.com");
         loginDTO.setPassword("tjdengus1!");
         Member memberLogin = memberService.memberLogin(loginDTO);
         assertThat(memberLogin).isNotNull();
     }
-    //토근추가후 테스트 재실행필요
+   // 테스트 코드 회원탈퇴
     @Test
-   // @Rollback(value = false)
+    // @Rollback(value = false)
     public void 회원탈퇴_SecessionDate_확인(){
         //given
         MemberDTO memberDTO = new MemberDTO();
@@ -236,7 +241,7 @@ import static org.assertj.core.api.Assertions.assertThat;
         System.out.println("deleteMember.getUserName() = " + deleteMember.getUserName());
         String secessionDate = deleteMember.getSecessionDate();
         System.out.println("secessionDate = " + secessionDate);
-        assertThat(secessionDate).isEqualTo("20210916");
+        Assertions.assertThat(secessionDate).isEqualTo("20210917");
     }
 
     @Test
@@ -255,6 +260,7 @@ import static org.assertj.core.api.Assertions.assertThat;
     }
 
 
+    @Test
     public void 비밀번호찾기 (){
         //given
         Member memberFindPass = memberRepository.findById(2L);
@@ -268,16 +274,15 @@ import static org.assertj.core.api.Assertions.assertThat;
         if (findMember == null) {
             System.out.println("멤버 들고오기 실패");
         }
-            Member member1 = findMember.get(0);
+        Member member1 = findMember.get(0);
         MailDTO mailDTO = sendEmailService.createMailAndChangePass(member.getEmail(), member.getUserName(), member.getMemberId());
         if(mailDTO==null) {
             System.out.println("비밀번호 변경실패");
         }
         //then
-        assertThat(member.getUserName()).isEqualTo(memberFindPass.getUserName());
+        Assertions.assertThat(member.getUserName()).isEqualTo(memberFindPass.getUserName());
         sendEmailService.sendMail(mailDTO);
         memberController.lostPassword(findMailDTO);
-
     }
 
 }
