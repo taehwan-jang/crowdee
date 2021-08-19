@@ -14,27 +14,36 @@ import team.crowdee.util.FileUtils;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/api")
+@CrossOrigin
 public class ImageController {
 
     @Autowired
     private FileUtils fileUtils;
 
-    @PostMapping("/image")
+    @PostMapping(value = "/image")
     public ResponseEntity<?> upload(@RequestParam("file") MultipartFile file) throws Exception {
 
         String imgUrl = fileUtils.parseCKEditorImgPath(file);
+        String filename = imgUrl.substring(imgUrl.lastIndexOf("/"));
 
 //        String path = "/Users/jangtaehwan/work/project/crowdee/src/main/resources/file/";
 //        log.info("파일 이름={}", file.getOriginalFilename());
 //        file.transferTo(new File(path + file.getOriginalFilename()));
 //        File file1 = new File(path + file.getOriginalFilename());
 
-        return new ResponseEntity<>(imgUrl, HttpStatus.OK);
+        Map<String, String> toEditor = new HashMap<>();
+        toEditor.put("filename", filename);
+        toEditor.put("uploaded", "1");
+        toEditor.put("url", imgUrl);
+
+        return new ResponseEntity<>(toEditor, HttpStatus.OK);
     }
 
     @GetMapping("/image/{date}/{fileName}")
