@@ -10,7 +10,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.UUID;
 
 @Component
 @Slf4j
@@ -21,11 +23,13 @@ public class FileUtils {
 
 
     // 단일 이미지 파일 업로드
-    public String parseCkEditorImgPath(MultipartFile file) throws Exception {
+    public String parseCKEditorImgPath(MultipartFile uploadImg) throws Exception {
 
-        String storePathString = "";
+        String storePath = "";
         String filePath = "";
         String result = env.getProperty("images.hostUrl");
+        String originalName = uploadImg.getOriginalFilename();
+        String originalFileExtension = originalName.substring(originalName.lastIndexOf("."));
 
         try {
 
@@ -34,26 +38,26 @@ public class FileUtils {
             String strDate = fmt.format(new Date());
 
             //디스크의 물리적인 경로
-            storePathString = env.getProperty("images.path") + File.separator + strDate + File.separator;
+            storePath = env.getProperty("images.path") + File.separator + strDate + File.separator;
 
-            File saveFolder = new File(storePathString);
-
+            File saveFolder = new File(storePath);
             if (!saveFolder.exists() || saveFolder.isFile()) {
                 saveFolder.mkdirs();
             }
-
+            String newFileName = UUID.randomUUID().toString().replaceAll("-","") + originalFileExtension;
             //TODO 한글 파일명이 안되므로 파일명을 아스키 문자열로 변환해주는 작업이 필요하다!
             //
             //
 
-            filePath = storePathString + file.getOriginalFilename();
+            filePath = storePath + newFileName;
 
 //            if (logger.isDebugEnabled()) {
-//                logger.debug(filePath + " " + file.getSize());
+//                logger.debug(filePath + " " + uploadImg.getSize());
 //            }
-
-            file.transferTo(new File(filePath));
-            result = result + strDate + File.separator + file.getOriginalFilename();
+            File file = new File(filePath);
+            //실제 파일이 저장되는 순간
+            uploadImg.transferTo(file);
+            result = result + strDate + File.separator + newFileName;
 
         } catch (Exception e) {
             e.printStackTrace();
