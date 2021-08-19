@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import team.crowdee.util.FileUtils;
 
-import javax.imageio.stream.ImageOutputStreamImpl;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 
@@ -27,7 +26,7 @@ public class ImageController {
     @PostMapping("/image")
     public ResponseEntity<?> upload(@RequestParam("file") MultipartFile file) throws Exception {
 
-        String imgUrl = fileUtils.parseCkEditorImgPath(file);
+        String imgUrl = fileUtils.parseCKEditorImgPath(file);
 
 //        String path = "/Users/jangtaehwan/work/project/crowdee/src/main/resources/file/";
 //        log.info("파일 이름={}", file.getOriginalFilename());
