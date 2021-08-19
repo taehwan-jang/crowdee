@@ -1,5 +1,7 @@
 package team.crowdee.controller;
 
+import antlr.Token;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -20,6 +22,8 @@ import team.crowdee.service.MemberService;
 import team.crowdee.util.MimeEmailService;
 import team.crowdee.util.SendEmailService;
 import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 @RestController
@@ -45,13 +49,12 @@ public class MemberController {
         Map<String, String> key = new HashMap<>();
         key.put("authKey", authKey);
         return new ResponseEntity<>(key, HttpStatus.OK);
+
     }
 
+    //회원가입
     @PostMapping("/signUp")
     public ResponseEntity<?> signUp(@RequestBody MemberDTO memberDTO) throws MessagingException {
-        if (memberDTO == null) {
-            return new ResponseEntity<>("값을 입력해주세요", HttpStatus.BAD_REQUEST);
-        }
         Long member = memberService.join(memberDTO);
         if (member == null) {
             return new ResponseEntity<>("회원가입에 실패했습니다.", HttpStatus.BAD_REQUEST);
@@ -71,6 +74,7 @@ public class MemberController {
     //로그인
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO) {
+
         Member loginMember = memberService.memberLogin(loginDTO);
 
         UsernamePasswordAuthenticationToken authenticationToken =
@@ -100,7 +104,7 @@ public class MemberController {
     @PostMapping("/findPass")
     public ResponseEntity<?> lostPassword(@RequestBody FindMailDTO findMailDTO) {
         List<Member> findMember = memberService.findPassword(findMailDTO);
-        if (findMember == null) {
+        if (findMember.isEmpty()) {
             return new ResponseEntity<>("아이디와 이메일을 다시 확인해주세요", HttpStatus.BAD_REQUEST);
         }
         Member member = findMember.get(0);
@@ -111,7 +115,6 @@ public class MemberController {
         sendEmailService.sendMail(mailDTO);
         return new ResponseEntity<>("이메일 발송되었습니다.", HttpStatus.OK);
     }
-
     //태환오빠 코드
         /*List<Member> findMember = memberRepository
                 .findByEmailAndUserId(findMailDTO.getUserId(), findMailDTO.getEmail());
@@ -123,12 +126,12 @@ public class MemberController {
         sendEmailService.sendMail(mailDTO);
         return new ResponseEntity<>("이메일 발송되었습니다.", HttpStatus.OK);
     }
-        */
+       */
 
     //비밀번호 수정
     @PostMapping("/changePass")
     public ResponseEntity<?> changePass(@RequestBody ChangePassDTO changePassDTO) {
-        Member member = memberService.memberChangPass(changePassDTO);
+        Member member = memberService.memberChangePass(changePassDTO);
         if (member == null) {
             return new ResponseEntity<>("패스워드를 다시 확인해주세요.", HttpStatus.BAD_REQUEST);
         }
@@ -148,10 +151,20 @@ public class MemberController {
     //회원탈퇴
     @PostMapping("/delete")
     public ResponseEntity<?> delete(@RequestBody MemberDTO memberDTO) {
+
         Member member = memberService.deleteMember(memberDTO);
         if(member == null){
             return new ResponseEntity<>("탈퇴에 실패했습니다.", HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>("탈퇴 되었습니다", HttpStatus.OK);
     }
+
+    @PostMapping("/coffee")
+
+    public ResponseEntity<?> coffeeAll(){
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
+
 }

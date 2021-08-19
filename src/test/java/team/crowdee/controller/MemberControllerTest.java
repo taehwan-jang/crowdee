@@ -99,4 +99,28 @@ class MemberControllerTest {
 
     }
 
+    /*  .password(passwordEncoder.encode(memberDTO.getPassword())) //패스워드암호화
+                .userName(memberDTO.getUserName())
+                .nickName(memberDTO.getNickName())
+                .registDate(LocalDateTime.now())
+                .mobile(memberDTO.getMobile())
+                .email(memberDTO.getEmail())
+                .emailCert(memberDTO.getEmailCert())
+                .build();*/
+    @Test
+    @Rollback(value = false)
+    public void 회원가입() throws MessagingException {
+        MemberDTO memberDTO = new MemberDTO();
+        memberDTO.setNickName("존절남");
+        memberDTO.setEmail("Crowdeefunding@gmail.com");
+        memberDTO.setUserName("성두현");
+        memberDTO.setPassword("tjdengus1!");
+        memberDTO.setRegistDate(LocalDateTime.now());
+        memberDTO.setMobile("123123123");
+        memberDTO.setEmailCert("Y");
+        ResponseEntity<?> responseEntity = memberController.signUp(memberDTO);
+        System.out.println(responseEntity);
+
+    }
+
 }
