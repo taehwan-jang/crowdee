@@ -33,11 +33,6 @@ public class ImageController {
         String imgUrl = fileUtils.parseCKEditorImgPath(file);
         String filename = imgUrl.substring(imgUrl.lastIndexOf("/"));
 
-//        String path = "/Users/jangtaehwan/work/project/crowdee/src/main/resources/file/";
-//        log.info("파일 이름={}", file.getOriginalFilename());
-//        file.transferTo(new File(path + file.getOriginalFilename()));
-//        File file1 = new File(path + file.getOriginalFilename());
-
         Map<String, String> toEditor = new HashMap<>();
         toEditor.put("filename", filename);
         toEditor.put("uploaded", "1");
@@ -50,15 +45,12 @@ public class ImageController {
     public void image(HttpServletResponse res,
                       @PathVariable String date,
                       @PathVariable String fileName) throws IOException {
-        String path = fileUtils.findImagePath()+File.separator+date+File.separator;
+        String path = fileUtils.findImagePath() + File.separator + date + File.separator;
 
         OutputStream out = res.getOutputStream();
-        FileInputStream fis = null;
-
-//        res.setHeader("Content-Type", MediaType.MULTIPART_FORM_DATA_VALUE);
+        FileInputStream fis = new FileInputStream(path + fileName);
         res.setHeader("Content-Disposition", "inline; filename=\"" + fileName + "\"");
 
-        fis = new FileInputStream(path+fileName);
         FileCopyUtils.copy(fis, out);
         if (fis != null) {
             try {
