@@ -86,24 +86,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/google").hasAnyAuthority(GOOGLE.getRoleType())
                 .antMatchers("/kakao").hasAnyAuthority(KAKAO.getRoleType())
                 .antMatchers("/naver").hasAnyAuthority(NAVER.getRoleType())
-                .anyRequest().authenticated()
+                .antMatchers("/login").permitAll()
+                .antMatchers("/hello").permitAll()
+                .antMatchers("/home").permitAll()
+//                .anyRequest().authenticated()
 
                 .and()
                 .oauth2Login()
-//                .antMatchers("/member/login").permitAll() //로그인 api
-//                .antMatchers("/member/signUp").permitAll() //회원가입 api
-
-//                .anyRequest().permitAll()
-//                .and()
                 .userInfoEndpoint().userService(new CustomOAuth2MemberService()) // 네이버 USER INFO의 응답을 처리하기 위한 설정
 
                 .and()
-                .defaultSuccessUrl("/loginSuccess")
+                .defaultSuccessUrl("/hello")
                 .failureUrl("/loginFailure")
 
                 .and()
-                .exceptionHandling()
-                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"));
+                .exceptionHandling();
+//                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"));
 
                 // JwtFilter 를 addFilterBefore 메소드로 등록했던 JwtSecurityConfig 클래스도 적용
 //                .and()
