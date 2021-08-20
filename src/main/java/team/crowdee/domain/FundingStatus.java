@@ -33,6 +33,12 @@ public class FundingStatus {
 
     //멤버를 가지고 있는게 나을지 현재 후원자수가 몇명인지 아는게 좋을지 고민
 
+    public String rateOfAchievement() {
+        double rawRate = (double) getAmountStatus() / (double) funding.getTargetAmount();
+        //NPE 방지로 valueOf 사용
+        String stringResult = String.valueOf(rawRate);
+        return stringResult.substring(0, stringResult.lastIndexOf(".") + 2)+" %";
+    }
 
 
 }
