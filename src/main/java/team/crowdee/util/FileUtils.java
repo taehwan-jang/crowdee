@@ -21,7 +21,6 @@ public class FileUtils {
 
     Environment env;
 
-
     // 단일 이미지 파일 업로드
     public String parseCKEditorImgPath(MultipartFile uploadImg) throws Exception {
 

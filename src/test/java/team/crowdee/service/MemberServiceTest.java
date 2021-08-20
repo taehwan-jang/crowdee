@@ -81,7 +81,7 @@ import static org.assertj.core.api.Assertions.assertThat;
         MemberDTO memberDTO3 = new MemberDTO();
         memberDTO2.setEmail("asdfnav.ercom");//false 골벵이없음
         MemberDTO memberDTO4 = new MemberDTO();
-        memberDTO3.setEmail("asdfn1123@asfvercom");//점없음
+        memberDTO3.setEmail("asdfn1123@@asfvercom");//점없음
         boolean checkEmail1 = memberService.checkEmail(memberDTO1);
         boolean checkEmail2 = memberService.checkEmail(memberDTO2);
         boolean checkEmail3 = memberService.checkEmail(memberDTO3);

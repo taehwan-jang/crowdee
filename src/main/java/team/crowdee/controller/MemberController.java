@@ -22,6 +22,7 @@ import team.crowdee.service.MemberService;
 import team.crowdee.util.MimeEmailService;
 import team.crowdee.util.SendEmailService;
 import javax.mail.MessagingException;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
