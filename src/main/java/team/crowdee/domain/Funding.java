@@ -29,13 +29,8 @@ public class Funding {
     @JoinColumn(name = "creator_id")
     private Creator creator;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "thumbnail_id")
+    @OneToOne(mappedBy = "funding")
     private ThumbNail thumbNail;
-
-
-
-    //검색전용
 
 
     @Lob
@@ -53,7 +48,7 @@ public class Funding {
     @Embedded
     private Address address;//공연장 주소
 
-    @OneToOne(mappedBy = "funding")
+    @OneToOne(mappedBy = "funding",fetch = FetchType.EAGER)
     private FundingStatus status;//상태 엔티티
 
     @OneToMany(mappedBy = "funding")
@@ -61,15 +56,9 @@ public class Funding {
     private List<Order> orders = new ArrayList<>();
 
 
-    public void changeFundingStatus(FundingStatus status) {
+    public Funding changeFundingStatus(FundingStatus status) {
         this.status = status;
-    }
-
-    public int getRestDays() {
-        LocalDate start = LocalDate.parse(startDate, DateTimeFormatter.ISO_DATE);
-        LocalDate end = LocalDate.parse(endDate, DateTimeFormatter.ISO_DATE);
-
-        return Period.between(start, end).getDays();
+        return this;
     }
 
     public Funding changeHall(Address address) {
@@ -77,8 +66,17 @@ public class Funding {
         return this;
     }
 
+
+    //==========조회용 로직 일부 추가===========//
     public int totalParticipant() {
         return getOrders().size();
+    }
+
+    public int getRestDays() {
+        LocalDate start = LocalDate.now();
+        LocalDate end = LocalDate.parse(endDate, DateTimeFormatter.ISO_DATE);
+
+        return Period.between(start, end).getDays();
     }
 
 }

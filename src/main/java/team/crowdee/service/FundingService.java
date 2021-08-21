@@ -6,8 +6,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team.crowdee.domain.Funding;
 import team.crowdee.domain.FundingStatus;
+import team.crowdee.domain.ThumbNail;
 import team.crowdee.domain.dto.ThumbNailDTO;
 import team.crowdee.repository.FundingRepository;
+import team.crowdee.repository.ThumbNailRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +20,9 @@ import java.util.List;
 @Transactional
 public class FundingService {
 
+
     private final FundingRepository fundingRepository;
+    private final ThumbNailRepository thumbNailRepository;
 
     /**
      * 명확한 영역 구분을 위해 펀딩의 등록 수정 삭제는 creatorService 에서 진행
@@ -34,20 +38,22 @@ public class FundingService {
 
     @Transactional(readOnly = true)
     public List<ThumbNailDTO> findThumbNail() {
-        List<Funding> fundingList = fundingRepository.findAll();
-        List<ThumbNailDTO> thumbNailList = new ArrayList<>();
-        for (Funding funding : fundingList) {
-            thumbNailList.add(ThumbNailDTO.builder()
-                    .thumbNailUrl(funding.getThumbNailUrl())
-                    .rateOfAchievement(funding.getStatus().rateOfAchievement())
-                    .expiredDate(funding.getEndDate())
-                    .restDate(funding.getRestDays())
-                    .category(funding.getCategory())
-                    .summery(funding.getSummery())
-                    .title(funding.getTitle())
-                    .build());
+        List<ThumbNail> thumbNailList = thumbNailRepository.findAll();
+        List<ThumbNailDTO> thumbNailDTOList = new ArrayList<>();
+        for (ThumbNail thumbNail : thumbNailList) {
+            thumbNailDTOList.add(
+                    ThumbNailDTO.builder()
+                            .title(thumbNail.getTitle())
+                            .expiredDate(thumbNail.getFunding().getEndDate())
+                            .thumbNailUrl(thumbNail.getThumbNailUrl())
+                            .restDate(thumbNail.getFunding().getRestDays())
+                            .summery(thumbNail.getSummery())
+                            .category(thumbNail.getCategory())
+                            .rateOfAchievement(thumbNail.getFunding().getStatus().rateOfAchievement())
+                            .build()
+            );
         }
-        return thumbNailList;
+        return thumbNailDTOList;
     }
 
 

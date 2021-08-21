@@ -23,7 +23,10 @@ public class ThumbNail {
     private String category;//카테고리
     private String tag;
 
-    @OneToOne(mappedBy = "thumbNail")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "funding_id")
     private Funding funding;
+
+
 
 }

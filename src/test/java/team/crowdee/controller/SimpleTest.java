@@ -60,15 +60,14 @@ public class SimpleTest {
     @Test
     public void 문자열에서_날짜로변환_남은날짜() throws Exception {
         //given
-        String startDate = "2021-08-21";
         String endDate = "2021-09-11";
 
-        LocalDate start = LocalDate.parse(startDate, DateTimeFormatter.ISO_DATE);
+        LocalDate start = LocalDate.now();
         LocalDate end = LocalDate.parse(endDate, DateTimeFormatter.ISO_DATE);
         //when
         int days = Period.between(start, end).getDays();
         //then
-        Assertions.assertEquals(21,days);
+        Assertions.assertEquals(20,days);
     }
 
 }
