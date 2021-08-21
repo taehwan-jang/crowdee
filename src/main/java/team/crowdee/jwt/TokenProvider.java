@@ -3,6 +3,7 @@ package team.crowdee.jwt;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -25,10 +26,9 @@ import java.util.stream.Collectors;
 
 
 @Component
+@Slf4j
 // jwt.secret, jwt.token-validity-in-seconds 주입
 public class TokenProvider implements InitializingBean {
-
-    private final Logger logger = LoggerFactory.getLogger(TokenProvider.class);
 
     private static final String AUTHORITIES_KEY = "auth";
 
@@ -96,16 +96,16 @@ public class TokenProvider implements InitializingBean {
             return true;
         }
         catch(io.jsonwebtoken.security.SecurityException | MalformedJwtException e){
-            logger.info("잘못된 JWT 서명입니다.");
+            log.info("잘못된 JWT 서명입니다.");
         }
         catch(ExpiredJwtException e){
-            logger.info("만료된 JWT 토큰입니다.");
+            log.info("만료된 JWT 토큰입니다.");
         }
         catch(UnsupportedJwtException e){
-            logger.info("지원하지 않는 JWT 토큰입니다.");
+            log.info("지원하지 않는 JWT 토큰입니다.");
         }
         catch(IllegalArgumentException e){
-            logger.info("JWT 토큰이 잘못되었습니다.");
+            log.info("JWT 토큰이 잘못되었습니다.");
         }
         return false;
 

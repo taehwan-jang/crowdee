@@ -29,14 +29,14 @@ public class Funding {
     @JoinColumn(name = "creator_id")
     private Creator creator;
 
-    //썸네일에서 보여줄 항목들
-    private String title;
-    private String summery;//요약
-    private String thumbNailUrl;//file이름 -> 여러건일경우 리스트?
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "thumbnail_id")
+    private ThumbNail thumbNail;
+
+
 
     //검색전용
-    private String category;//카테고리
-    private String tag;
+
 
     @Lob
     private String content;//내용-> editor api를 사용해서 정보를 저장한다?

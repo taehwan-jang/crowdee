@@ -10,7 +10,7 @@ import java.util.List;
 @Entity
 @Getter
 @Builder
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Setter
 public class Creator {
