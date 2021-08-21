@@ -37,8 +37,8 @@ public class Funding {
     private String content;//내용-> editor api를 사용해서 정보를 저장한다?
 
     //사이드바에 노출될 항목
-    private int targetAmount;//목표금액
-    private int minAmount;//최소금액
+    private int goalFundraising;//목표금액
+    private int minFundraising;//최소금액
     private LocalDateTime postDate;//등록일
     private String startDate;//시작일(yyyy-mm-dd)
     private String endDate;//종료일(yyyy-mm-dd)

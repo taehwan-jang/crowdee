@@ -11,11 +11,12 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ThumbNailDTO {
 
+    private Long funding_id;
     private String thumbNailUrl;
     private String title;
     private String summery;
     private String rateOfAchievement;
-    private String expiredDate;
+    private int goalFundraising;
     private String category;
     private int restDate;
 

@@ -43,8 +43,9 @@ public class FundingService {
         for (ThumbNail thumbNail : thumbNailList) {
             thumbNailDTOList.add(
                     ThumbNailDTO.builder()
+                            .funding_id(thumbNail.getFunding().getFundingId())
                             .title(thumbNail.getTitle())
-                            .expiredDate(thumbNail.getFunding().getEndDate())
+                            .goalFundraising(thumbNail.getFunding().getGoalFundraising())
                             .thumbNailUrl(thumbNail.getThumbNailUrl())
                             .restDate(thumbNail.getFunding().getRestDays())
                             .summery(thumbNail.getSummery())
