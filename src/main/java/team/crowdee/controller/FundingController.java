@@ -16,8 +16,9 @@ import java.util.List;
 
 @RestController
 @Slf4j
-@RequestMapping("/content")
+@RequestMapping("/contents")
 @RequiredArgsConstructor
+@CrossOrigin
 public class FundingController {
 
     private final FundingService fundingService;
