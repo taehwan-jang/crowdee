@@ -19,6 +19,7 @@ public class Creator {
     @GeneratedValue
     @Column(name = "creator_id")
     private Long creatorId;
+    private String creatorNickName;
 
     private String BusinessNumber;
 
