@@ -2,13 +2,16 @@ package team.crowdee.controller;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
+import java.util.Base64;
+
+import static java.util.Base64.*;
 
 public class SimpleTest {
 
@@ -70,4 +73,25 @@ public class SimpleTest {
         Assertions.assertEquals(20,days);
     }
 
+
+
+    @Test
+    public void 디코드테스트() throws Exception {
+        //given
+        String token = "eyJhbGciOiJub25lIn0.eyJzdWIiOiJjcm93ZGVlZnVuZGluZ0BnbWFpbC5jb20iLCJhdXRoIjoiIiwiZXhwIjoxNjI5NzEwOTU1fQ.aasdilfhasd";
+        int firstDot = token.indexOf(".");
+        int lastDot = token.lastIndexOf(".");
+        String substring = token.substring(firstDot+1, lastDot);
+        Decoder decoder = getDecoder();
+        byte[] keyBytes = decoder.decode(substring.getBytes());
+        //when
+        System.out.println("keyBytes = " + keyBytes);
+        String payload = new String(keyBytes);
+        String[] strings = payload.split("\"");
+        String string = strings[3];
+        System.out.println("string = " + string);
+
+        System.out.println("한글이 아니잖아");
+        //then
+    }
 }

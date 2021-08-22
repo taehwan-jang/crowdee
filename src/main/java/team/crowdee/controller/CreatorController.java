@@ -32,7 +32,7 @@ public class CreatorController {
 
     //크리에이터 등록
     @PostMapping("/signCreator")
-    public ResponseEntity<?> creatorMember(@RequestBody CreatorDTO creatorDTO) throws MessagingException {
+    public ResponseEntity<?> creatorMember(@RequestBody CreatorDTO creatorDTO) {
         Creator joinCreator = creatorService.joinCreator(creatorDTO);
 
         if(joinCreator == null) {

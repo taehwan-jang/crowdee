@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,7 +25,10 @@ import team.crowdee.util.SendEmailService;
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
+
+import static java.util.Base64.getDecoder;
 
 @RestController
 @CrossOrigin
@@ -86,6 +90,8 @@ public class MemberController {
         String jwt = tokenProvider.createToken(authentication);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer" + jwt);
+        ///////////////////////////////////////////////////////////////////////////
+
 
         if (loginMember == null) {
             //실패 : 멤버가 없기 때문에 예외
@@ -115,18 +121,7 @@ public class MemberController {
         sendEmailService.sendMail(mailDTO);
         return new ResponseEntity<>("이메일 발송되었습니다.", HttpStatus.OK);
     }
-    //태환오빠 코드
-        /*List<Member> findMember = memberRepository
-                .findByEmailAndUserId(findMailDTO.getUserId(), findMailDTO.getEmail());
-        if (findMember.isEmpty()) {
-            return new ResponseEntity<>("아이디와 이메일을 다시 확인해주세요", HttpStatus.BAD_REQUEST);
-        }
-        Member member = findMember.get(0);
-        MailDTO mailDTO = sendEmailService.createMailAndChangePass(member.getEmail(), member.getUserName(), member.getMemberId());
-        sendEmailService.sendMail(mailDTO);
-        return new ResponseEntity<>("이메일 발송되었습니다.", HttpStatus.OK);
-    }
-       */
+
 
     //비밀번호 수정
     @PostMapping("/changePass")
@@ -160,7 +155,24 @@ public class MemberController {
     }
 
     @PostMapping("/coffee")
-    public ResponseEntity<?> coffeeAll(){
+    public ResponseEntity<?> coffeeAll(HttpServletRequest request){
+        String bearerToken = request.getHeader("Authorization");
+        String email = "";
+        if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")){
+            String token = bearerToken.substring(7);
+            int firstDot = token.indexOf(".");
+            int lastDot = token.lastIndexOf(".");
+            String substring = token.substring(firstDot+1, lastDot);
+            Base64.Decoder decoder = getDecoder();
+            byte[] keyBytes = decoder.decode(substring.getBytes());
+            String payload = new String(keyBytes);
+            String[] strings = payload.split("\"");
+            email = strings[3];
+        }
+        List<Member> email1 = memberRepository.findByParam("email", email);
+        for (Member member : email1) {
+            System.out.println("member.getUserName() = " + member.getUserName());
+        }
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

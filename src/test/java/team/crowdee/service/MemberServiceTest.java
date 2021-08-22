@@ -37,22 +37,22 @@ import static org.assertj.core.api.Assertions.assertThat;
     private SendEmailService sendEmailService;
 
 
-//    @Test
-//    @Rollback(value = false)
-//    public void 더미데이터_삽입() throws MessagingException {
-//        MemberDTO memberDTO = new MemberDTO();
+    @Test
+    @Rollback(value = false)
+    public void 더미데이터_삽입() throws MessagingException {
+        MemberDTO memberDTO = new MemberDTO();
 //        for (int i = 0; i < 10; i++) {
-//            memberDTO.setUserName("장태환" + i);
-//            memberDTO.setPassword("1q2w3e4r!" + i);
-//            memberDTO.setNickName("테스트" + i);
-//            memberDTO.setEmail("crowdeefunding@gmail.com");
-//            memberDTO.setUserName("user" + i);
-//            memberDTO.setEmailCert("Y");
-//            memberDTO.setMobile("010-1234-123" + i);
-//            memberService.join(memberDTO);
+            memberDTO.setUserName("장태환");
+            memberDTO.setPassword("1q2w3e4r!");
+            memberDTO.setNickName("테스트");
+            memberDTO.setEmail("crowdeefunding@gmail.com");
+            memberDTO.setUserName("user");
+            memberDTO.setEmailCert("Y");
+            memberDTO.setMobile("010-1234-123");
+            memberService.join(memberDTO);
 //        }
-//
-//    }
+
+    }
 
 
     @Test
