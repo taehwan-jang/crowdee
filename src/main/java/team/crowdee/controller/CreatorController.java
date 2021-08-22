@@ -6,11 +6,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team.crowdee.domain.Creator;
+import team.crowdee.domain.Funding;
+import team.crowdee.domain.FundingStatus;
 import team.crowdee.domain.Member;
 import team.crowdee.domain.dto.CreatorDTO;
 import team.crowdee.domain.valuetype.AccountInfo;
 import team.crowdee.repository.MemberRepository;
 import team.crowdee.service.CreatorService;
+import team.crowdee.service.FundingService;
 import team.crowdee.service.MemberService;
 
 import javax.mail.MessagingException;
@@ -25,6 +28,7 @@ public class CreatorController {
     private final MemberService memberService;
     private final MemberRepository memberRepository;
     private final CreatorService creatorService;
+    private final FundingService fundingService;
 
     //크리에이터 등록
     @PostMapping("/signCreator")
@@ -35,5 +39,12 @@ public class CreatorController {
             return new ResponseEntity<>("크리에이터 등록에 실패했습니다.", HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>("크리에이터 등록에 성공했습니다.", HttpStatus.OK);
+    }
+
+    @PostMapping("/create")
+    @PatchMapping("/createFunding/{id}")
+    public ResponseEntity<?> createFunding(@RequestBody FundingStatus fundingStatus, @PathVariable Long id) {
+        Funding findFunding = fundingService.changeFundingStatus(fundingStatus,id);
+        return null;
     }
 }

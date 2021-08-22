@@ -161,8 +161,8 @@ public class MemberController {
     }
 
     @PostMapping("/coffee")
-
     public ResponseEntity<?> coffeeAll(){
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

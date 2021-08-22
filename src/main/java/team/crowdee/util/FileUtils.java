@@ -22,7 +22,7 @@ public class FileUtils {
     Environment env;
 
     // 단일 이미지 파일 업로드
-    public String parseCKEditorImgPath(MultipartFile uploadImg) throws Exception {
+    public String uploadImage(MultipartFile uploadImg) throws Exception {
 
         String storePath = "";
         String filePath = "";
@@ -43,16 +43,11 @@ public class FileUtils {
             if (!saveFolder.exists() || saveFolder.isFile()) {
                 saveFolder.mkdirs();
             }
+            //한글 파일명 변경
             String newFileName = UUID.randomUUID().toString().replaceAll("-","") + originalFileExtension;
-            //TODO 한글 파일명이 안되므로 파일명을 아스키 문자열로 변환해주는 작업이 필요하다!
-            //
-            //
 
             filePath = storePath + newFileName;
 
-//            if (logger.isDebugEnabled()) {
-//                logger.debug(filePath + " " + uploadImg.getSize());
-//            }
             File file = new File(filePath);
             //실제 파일이 저장되는 순간
             uploadImg.transferTo(file);
@@ -64,8 +59,6 @@ public class FileUtils {
 
         return result;
     }
-
-
     public void deleteFile(String fileStreCours, String streFileNm) throws Exception {
 
         String path = fileStreCours + streFileNm;

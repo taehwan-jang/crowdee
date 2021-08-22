@@ -1,10 +1,10 @@
 package team.crowdee.controller;
 
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
@@ -19,18 +19,17 @@ import java.util.Map;
 
 @Controller
 @Slf4j
-@RequiredArgsConstructor
+@AllArgsConstructor
 @RequestMapping("/api")
 @CrossOrigin
 public class ImageController {
 
-    @Autowired
     private FileUtils fileUtils;
 
     @PostMapping(value = "/image")
     public ResponseEntity<?> upload(@RequestParam("file") MultipartFile file) throws Exception {
 
-        String imgUrl = fileUtils.parseCKEditorImgPath(file);
+        String imgUrl = fileUtils.uploadImage(file);
         String filename = imgUrl.substring(imgUrl.lastIndexOf("/"));
 
         Map<String, String> toEditor = new HashMap<>();

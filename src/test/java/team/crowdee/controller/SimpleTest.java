@@ -1,10 +1,13 @@
 package team.crowdee.controller;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
 
 public class SimpleTest {
@@ -52,6 +55,19 @@ public class SimpleTest {
         String finalResult = result.substring(0, last)+"%";
         //then
         System.out.println("finalResult = " + finalResult);
+    }
+
+    @Test
+    public void 문자열에서_날짜로변환_남은날짜() throws Exception {
+        //given
+        String endDate = "2021-09-11";
+
+        LocalDate start = LocalDate.now();
+        LocalDate end = LocalDate.parse(endDate, DateTimeFormatter.ISO_DATE);
+        //when
+        int days = Period.between(start, end).getDays();
+        //then
+        Assertions.assertEquals(20,days);
     }
 
 }

@@ -89,6 +89,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/login").permitAll()
                 .antMatchers("/hello").permitAll()
                 .antMatchers("/home").permitAll()
+                .antMatchers("member/login").permitAll()
 //                .anyRequest().authenticated()
 
                 .and()
@@ -100,12 +101,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .failureUrl("/loginFailure")
 
                 .and()
-                .exceptionHandling();
+                .exceptionHandling()
 //                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"));
 
                 // JwtFilter 를 addFilterBefore 메소드로 등록했던 JwtSecurityConfig 클래스도 적용
-//                .and()
-//                .apply(new JwtSecurityConfig(tokenProvider));
+                .and()
+                .apply(new JwtSecurityConfig(tokenProvider));
 
     }
 

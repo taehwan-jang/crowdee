@@ -6,7 +6,11 @@ import team.crowdee.domain.valuetype.Coordinate;
 
 import javax.persistence.*;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -25,32 +29,36 @@ public class Funding {
     @JoinColumn(name = "creator_id")
     private Creator creator;
 
-    //썸네일에서 보여줄 항목들
-    private String title;
-    private String summery;//요약
-    private String thumbNailUrl;//file이름 -> 여러건일경우 리스트?
+    @OneToOne(mappedBy = "funding")
+    private ThumbNail thumbNail;
+
 
     @Lob
     private String content;//내용-> editor api를 사용해서 정보를 저장한다?
 
     //사이드바에 노출될 항목
-    private int targetAmount;//목표금액
-    private int minAmount;//최소금액
+    private int goalFundraising;//목표금액
+    private int minFundraising;//최소금액
     private LocalDateTime postDate;//등록일
-    private LocalDateTime expiredDate;//만료일
+    private String startDate;//시작일(yyyy-mm-dd)
+    private String endDate;//종료일(yyyy-mm-dd)
     private int maxBacker;//최대후원자수
+
 
     @Embedded
     private Address address;//공연장 주소
 
-    @OneToOne(mappedBy = "funding")
+    @OneToOne(mappedBy = "funding",fetch = FetchType.EAGER)
     private FundingStatus status;//상태 엔티티
 
     @OneToMany(mappedBy = "funding")
-    private List<Order> orders;
+    @Builder.Default
+    private List<Order> orders = new ArrayList<>();
 
-    public Long getRestDays() {
-        return Duration.between(getExpiredDate(), getPostDate()).toDays();
+
+    public Funding changeFundingStatus(FundingStatus status) {
+        this.status = status;
+        return this;
     }
 
     public Funding changeHall(Address address) {
@@ -58,13 +66,17 @@ public class Funding {
         return this;
     }
 
+
+    //==========조회용 로직 일부 추가===========//
     public int totalParticipant() {
         return getOrders().size();
     }
 
-    public String participantRate() {
-//        (getMaxBacker() - getOrders().size()) / getMaxBacker();
-        return null;
+    public int getRestDays() {
+        LocalDate start = LocalDate.now();
+        LocalDate end = LocalDate.parse(endDate, DateTimeFormatter.ISO_DATE);
+
+        return Period.between(start, end).getDays();
     }
 
 }
