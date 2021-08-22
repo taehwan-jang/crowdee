@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Arrays;
 import java.util.Collection;
@@ -96,6 +97,7 @@ public class TokenProvider implements InitializingBean {
             return true;
         }
         catch(io.jsonwebtoken.security.SecurityException | MalformedJwtException e){
+            e.printStackTrace();
             log.info("잘못된 JWT 서명입니다.");
         }
         catch(ExpiredJwtException e){

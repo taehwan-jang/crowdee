@@ -49,15 +49,18 @@ public class Funding {
     private Address address;//공연장 주소
 
     @OneToOne(mappedBy = "funding",fetch = FetchType.EAGER)
-    private FundingStatus status;//상태 엔티티
+    private FundingStatus fundingStatus;//상태 엔티티
+
+    @Enumerated(EnumType.STRING)
+    private Status status;//현재 펀딩의 상태(심사/거절/진행/종료)
 
     @OneToMany(mappedBy = "funding")
     @Builder.Default
     private List<Order> orders = new ArrayList<>();
 
 
-    public Funding changeFundingStatus(FundingStatus status) {
-        this.status = status;
+    public Funding changeFundingStatus(FundingStatus fundingStatus) {
+        this.fundingStatus = fundingStatus;
         return this;
     }
 

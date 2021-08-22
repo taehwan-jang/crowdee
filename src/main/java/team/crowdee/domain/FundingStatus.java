@@ -22,10 +22,6 @@ public class FundingStatus {
 
     private int visitCount;//방문횟수(조회수)
     private int likeCount;//좋아요 갯수?? 찜으로 바꿀것
-
-    @Enumerated(EnumType.STRING)
-    private Status status;//현재 펀딩의 상태
-
     private int totalFundraising=0;//총 펀딩금액
 
     //멤버를 가지고 있는게 나을지 현재 후원자수가 몇명인지 아는게 좋을지 고민

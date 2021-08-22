@@ -94,4 +94,19 @@ public class SimpleTest {
         System.out.println("한글이 아니잖아");
         //then
     }
+
+
+    @Test
+    public void 상남자_어디갔노() throws Exception {
+        //given
+        String token = "eyJhbGciOiJub25lIn0.eyJzdWIiOiJjcm93ZGVlZnVuZGluZ0BnbWFpbC5jb20iLCJhdXRoIjoiIiwiZXhwIjoxNjI5NzEwOTU1fQ.aasdilfhasd";
+        String regex = ".";
+        String[] split = token.split(regex);
+        for (String s : split) {
+            System.out.println("s = " + s);
+        }
+        //when
+
+        //then
+    }
 }

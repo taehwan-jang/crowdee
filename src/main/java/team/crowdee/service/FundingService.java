@@ -50,7 +50,7 @@ public class FundingService {
                             .restDate(thumbNail.getFunding().getRestDays())
                             .summery(thumbNail.getSummery())
                             .category(thumbNail.getCategory())
-                            .rateOfAchievement(thumbNail.getFunding().getStatus().rateOfAchievement())
+                            .rateOfAchievement(thumbNail.getFunding().getFundingStatus().rateOfAchievement())
                             .build()
             );
         }

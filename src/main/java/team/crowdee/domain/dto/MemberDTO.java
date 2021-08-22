@@ -30,8 +30,6 @@ public class MemberDTO {
     private Set<Authority> authorities;
 
 
-
-
     /**
      * 아이디
      * 닉네임 뺴야하는거 아닌가?

@@ -8,6 +8,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -16,6 +17,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import team.crowdee.domain.Member;
 import team.crowdee.domain.dto.*;
+import team.crowdee.jwt.CustomJWTFilter;
 import team.crowdee.jwt.JwtFilter;
 import team.crowdee.jwt.TokenProvider;
 import team.crowdee.repository.MemberRepository;
@@ -155,20 +157,13 @@ public class MemberController {
     }
 
     @PostMapping("/coffee")
+    @PreAuthorize("hasAnyRole('backer')")
     public ResponseEntity<?> coffeeAll(HttpServletRequest request){
-        String bearerToken = request.getHeader("Authorization");
-        String email = "";
-        if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")){
-            String token = bearerToken.substring(7);
-            int firstDot = token.indexOf(".");
-            int lastDot = token.lastIndexOf(".");
-            String substring = token.substring(firstDot+1, lastDot);
-            Base64.Decoder decoder = getDecoder();
-            byte[] keyBytes = decoder.decode(substring.getBytes());
-            String payload = new String(keyBytes);
-            String[] strings = payload.split("\"");
-            email = strings[3];
-        }
+        String email = CustomJWTFilter.findEmail(request);
+        String authority = CustomJWTFilter.findAuthority(request);
+        System.out.println("authority = " + authority);
+
+
         List<Member> email1 = memberRepository.findByParam("email", email);
         for (Member member : email1) {
             System.out.println("member.getUserName() = " + member.getUserName());
