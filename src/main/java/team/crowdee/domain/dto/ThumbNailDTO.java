@@ -12,9 +12,11 @@ import lombok.Setter;
 public class ThumbNailDTO {
 
     private Long funding_id;
+    private Long creator_id;
     private String thumbNailUrl;
     private String title;
     private String summery;
+    private String tag;
     private String rateOfAchievement;
     private int goalFundraising;
     private String category;

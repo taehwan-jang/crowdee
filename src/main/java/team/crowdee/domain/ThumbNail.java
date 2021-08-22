@@ -27,6 +27,10 @@ public class ThumbNail {
     @JoinColumn(name = "funding_id")
     private Funding funding;
 
+    public void createFunding(Funding funding) {
+        this.funding = funding;
+    }
+
 
 
 }

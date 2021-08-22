@@ -10,6 +10,8 @@ import team.crowdee.domain.Funding;
 import team.crowdee.domain.FundingStatus;
 import team.crowdee.domain.Member;
 import team.crowdee.domain.dto.CreatorDTO;
+import team.crowdee.domain.dto.FundingIdDTO;
+import team.crowdee.domain.dto.ThumbNailDTO;
 import team.crowdee.domain.valuetype.AccountInfo;
 import team.crowdee.repository.MemberRepository;
 import team.crowdee.service.CreatorService;
@@ -42,9 +44,11 @@ public class CreatorController {
     }
 
     @PostMapping("/create")
-    @PatchMapping("/createFunding/{id}")
-    public ResponseEntity<?> createFunding(@RequestBody FundingStatus fundingStatus, @PathVariable Long id) {
-        Funding findFunding = fundingService.changeFundingStatus(fundingStatus,id);
-        return null;
+    public ResponseEntity<?> createFunding(@RequestBody ThumbNailDTO thumbNailDTO) {
+        Long funding_id = creatorService.createThumbNail(thumbNailDTO);
+        if (funding_id == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(new FundingIdDTO(funding_id),HttpStatus.BAD_REQUEST);
     }
 }

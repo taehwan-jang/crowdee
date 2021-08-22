@@ -5,21 +5,29 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-import team.crowdee.domain.Creator;
-import team.crowdee.domain.Member;
+import team.crowdee.domain.*;
 import team.crowdee.domain.dto.CreatorDTO;
+import team.crowdee.domain.dto.ThumbNailDTO;
 import team.crowdee.domain.valuetype.AccountInfo;
+import team.crowdee.repository.CreatorRepository;
+import team.crowdee.repository.FundingRepository;
 import team.crowdee.repository.MemberRepository;
+import team.crowdee.repository.ThumbNailRepository;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-@Transactional(readOnly = true)
+@Transactional
 public class CreatorService {
 
     private final MemberRepository memberRepository;
+    private final CreatorRepository creatorRepository;
+    private final FundingRepository fundingRepository;
+    private final ThumbNailRepository thumbNailRepository;
 
-    @Transactional
     public Creator joinCreator(CreatorDTO creatorDTO){
         /**
          * 검증 시작
@@ -59,6 +67,34 @@ public class CreatorService {
             return false;
         }
         return true;
+    }
+    /**
+     * 검증 절차 진행예정
+     */
+    public Long createThumbNail(ThumbNailDTO thumbNailDTO) {
+
+        Creator creator = creatorRepository.findById(thumbNailDTO.getCreator_id());
+
+        ThumbNail thumbNail = ThumbNail.builder()
+                .title(thumbNailDTO.getTitle())
+                .thumbNailUrl(thumbNailDTO.getThumbNailUrl())
+                .category(thumbNailDTO.getCategory())
+                .tag(thumbNailDTO.getTag())
+                .summery(thumbNailDTO.getSummery())
+                .build();
+
+        Funding funding = Funding.builder()
+                .creator(creator)
+                .thumbNail(thumbNail)
+                .status(Status.inspection)
+                .postDate(LocalDateTime.now())
+                .build();
+        thumbNail.createFunding(funding);
+
+        thumbNailRepository.save(thumbNail);
+        fundingRepository.save(funding);
+
+        return funding.getFundingId();
     }
 
 
