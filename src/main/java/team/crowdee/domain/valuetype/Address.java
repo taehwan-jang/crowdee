@@ -12,6 +12,10 @@ public class Address {
     private String zonecode;
     private String roadAddress;
     private String restAddress;
+    //위도경도 정보 추가
+
+    private String Latitude; //위도
+    private String longitude; //경도
 
 
 }

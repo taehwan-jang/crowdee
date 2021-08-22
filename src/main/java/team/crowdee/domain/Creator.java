@@ -10,7 +10,7 @@ import java.util.List;
 @Entity
 @Getter
 @Builder
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Setter
 public class Creator {
@@ -19,6 +19,7 @@ public class Creator {
     @GeneratedValue
     @Column(name = "creator_id")
     private Long creatorId;
+    private String creatorNickName;
 
     private String BusinessNumber;
 

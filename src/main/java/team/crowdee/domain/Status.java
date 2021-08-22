@@ -1,8 +1,7 @@
 package team.crowdee.domain;
 
 public enum Status {
-    inspection,progress,stop,end
-    //심사, 진행, 중단, 종료
-
+    inspection,reject,progress,end
+    //심사, 거절, 진행, 종료
 }
 

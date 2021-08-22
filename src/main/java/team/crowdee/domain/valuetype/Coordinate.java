@@ -10,7 +10,6 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class Coordinate {
 
-    private String Latitude; //위도
-    private String longitude; //경도
+
 
 }
