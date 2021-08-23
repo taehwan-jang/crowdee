@@ -52,7 +52,7 @@ public class JwtFilter extends GenericFilterBean {
     }
 
     // HttpServletRequest 객체의 Header에서 token을 꺼내는 역할 수행
-    private String resolveToken(HttpServletRequest request){
+    public String resolveToken(HttpServletRequest request){
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
         if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")){
             return bearerToken.substring(7);

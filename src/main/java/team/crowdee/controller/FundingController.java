@@ -31,12 +31,12 @@ public class FundingController {
         ThumbNailDTO thumbNailDTO = ThumbNailDTO.builder()
                 .category("이건카테고리")
                 .rateOfAchievement("이건진행률")
-                .summery("이건요약정보")
+                .summery("이건요약정보")/////////////////////////////////////스펠링 수정해라
                 .restDate(10)
                 .thumbNailUrl("https://cdn.notefolio.net/img/5a/af/5aaf36082b60a519aac5db918f67fabd809ee35def6cfd2020855da5e6565db0_v1.jpg")
                 .title("이건제목")
                 .goalFundraising(1000000)
-                .funding_id(1L)
+                .fundingId(1L)
                 .build();
         thumbNailList.add(thumbNailDTO);
         return new ResponseEntity<>(thumbNailList,HttpStatus.OK);

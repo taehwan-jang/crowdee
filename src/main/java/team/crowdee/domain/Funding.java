@@ -32,32 +32,40 @@ public class Funding {
     @OneToOne(mappedBy = "funding")
     private ThumbNail thumbNail;
 
-
-    @Lob
-    private String content;//내용-> editor api를 사용해서 정보를 저장한다?
+    //메인 컨텐츠
+    @OneToOne(mappedBy = "funding")
+    private Detail detail;
 
     //사이드바에 노출될 항목
-    private int goalFundraising;//목표금액
-    private int minFundraising;//최소금액
+    @OneToOne(mappedBy = "funding")
+    private FundingPlan fundingPlan;
     private LocalDateTime postDate;//등록일
-    private String startDate;//시작일(yyyy-mm-dd)
-    private String endDate;//종료일(yyyy-mm-dd)
-    private int maxBacker;//최대후원자수
-
 
     @Embedded
     private Address address;//공연장 주소
 
     @OneToOne(mappedBy = "funding",fetch = FetchType.EAGER)
-    private FundingStatus status;//상태 엔티티
+    private FundingStatus fundingStatus;//상태 엔티티
+
+    @Enumerated(EnumType.STRING)
+    private Status status;//현재 펀딩의 상태(심사/거절/진행/종료)
 
     @OneToMany(mappedBy = "funding")
     @Builder.Default
     private List<Order> orders = new ArrayList<>();
 
 
-    public Funding changeFundingStatus(FundingStatus status) {
-        this.status = status;
+    //=======Setter 대용=======//
+    public void addFundingPlan(FundingPlan fundingPlan) {
+        this.fundingPlan = fundingPlan;
+    }
+    public void addDetail(Detail detail) {
+        this.detail = detail;
+    }
+
+
+    public Funding changeFundingStatus(FundingStatus fundingStatus) {
+        this.fundingStatus = fundingStatus;
         return this;
     }
 
@@ -74,7 +82,7 @@ public class Funding {
 
     public int getRestDays() {
         LocalDate start = LocalDate.now();
-        LocalDate end = LocalDate.parse(endDate, DateTimeFormatter.ISO_DATE);
+        LocalDate end = LocalDate.parse(fundingPlan.getEndDate(), DateTimeFormatter.ISO_DATE);
 
         return Period.between(start, end).getDays();
     }

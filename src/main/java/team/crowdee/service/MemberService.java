@@ -6,6 +6,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import team.crowdee.domain.Authority;
 import team.crowdee.domain.UserState;
 import team.crowdee.domain.Member;
 import team.crowdee.domain.dto.ChangePassDTO;
@@ -18,7 +19,9 @@ import team.crowdee.util.Utils;
 import javax.mail.MessagingException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,7 +41,9 @@ public class MemberService {
         if (validationPw(memberDTO) == false && validationNick(memberDTO) == false && validationEmail(memberDTO) == false) {
             return null;
         }
-        String authKey = mimeEmailService.sendAuthMail(memberDTO.getEmail());
+//        String authKey = mimeEmailService.sendAuthMail(memberDTO.getEmail());
+        Set<Authority> authorities = new HashSet<Authority>();
+        authorities.add(new Authority("backer"));
         Member member = Member.builder()
                 .password(passwordEncoder.encode(memberDTO.getPassword())) //패스워드암호화
                 .userName(memberDTO.getUserName())
@@ -47,11 +52,14 @@ public class MemberService {
                 .mobile(memberDTO.getMobile())
                 .email(memberDTO.getEmail())
                 .emailCert(memberDTO.getEmailCert())
+                .authorities(authorities)
+                .userState(UserState.backer)
                 .build();
-        //이메일 인증후 emailcert Y로 변경 확인후 저장
-        if (memberDTO.getEmailCert() == "Y") {
-            Long saveMember = memberRepository.save(member);
-        }
+
+//        //이메일 인증후 emailcert Y로 변경 확인후 저장
+//        if (memberDTO.getEmailCert() == "Y") {
+//        }
+        Long saveMember = memberRepository.save(member);
         return member.getMemberId();
     }
 
