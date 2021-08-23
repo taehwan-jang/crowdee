@@ -4,63 +4,97 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import team.crowdee.domain.Creator;
-import team.crowdee.domain.Member;
+import org.springframework.util.StringUtils;
+import team.crowdee.domain.*;
 import team.crowdee.domain.dto.CreatorDTO;
+import team.crowdee.domain.dto.ThumbNailDTO;
 import team.crowdee.domain.valuetype.AccountInfo;
+import team.crowdee.repository.CreatorRepository;
+import team.crowdee.repository.FundingRepository;
 import team.crowdee.repository.MemberRepository;
+import team.crowdee.repository.ThumbNailRepository;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-@Transactional(readOnly = true)
+@Transactional
 public class CreatorService {
-//변경감지되야해서 컨트롤럴에서 옮김
-    private final MemberRepository memberRepository;
 
-    @Transactional
+    private final MemberRepository memberRepository;
+    private final CreatorRepository creatorRepository;
+    private final FundingRepository fundingRepository;
+    private final ThumbNailRepository thumbNailRepository;
+
     public Creator joinCreator(CreatorDTO creatorDTO){
         /**
          * 검증 시작
+         * 소셜 가입 회원인 경우 추가 정보를 입력하게만들기~
          */
-        //검증 메서드 호출
-       /* this.validationMemberId(creatorDTO)*/
-        //검증 메서드 호출
-        this.validationBankName(creatorDTO);
-
-//검증메소드에서 빈값 검증해서 이게 필요한것인지...
-//        if(){
-//            return null;
-//        }
-        /////////////////검증 완료 후 진행////////////
-        ////////////////////////////////////////////
-        Member member = memberRepository.findById(creatorDTO.getMemberId());//멤버서비스에 만들어줘야함(리포지토리는 일단임의로한것)
-        AccountInfo accountInfo = new AccountInfo();
-        accountInfo.setAccountNumber(creatorDTO.getAccountNumber());
-        accountInfo.setBankBookImageUrl(creatorDTO.getBankBookImageUrl());
-        accountInfo.setBankName(creatorDTO.getBankName());
+        boolean result = validation(creatorDTO);
+        if (!result) {
+            throw new IllegalArgumentException("빈값이 있다.");
+        }
+        Member member = memberRepository.findById(creatorDTO.getMemberId());
+        AccountInfo account = new AccountInfo();
+        account.setAccountNumber(creatorDTO.getAccountNumber());
+        account.setBankBookImageUrl(creatorDTO.getBankBookImageUrl());
+        account.setBankName(creatorDTO.getBankName());
         Creator creator = Creator.builder()
-                .creatorId(creatorDTO.getMemberId())
+                .creatorNickName(creatorDTO.getCreatorNickName())
                 .BusinessNumber(creatorDTO.getBusinessNumber())
+                .accountInfo(account)
                 .build();
+
         member.joinCreator(creator);
         return creator;
     }
 
-    //memberID 값들어있나 검증
-    public boolean validationMemberId(CreatorDTO creatorDTO) {
-        if(creatorDTO.getMemberId()==null){
+    //검증은 한번에 진행
+    public boolean validation(CreatorDTO creatorDTO) {
+        if(StringUtils.hasText(creatorDTO.getAccountNumber())){
+            return false;
+        }
+        if(StringUtils.hasText(creatorDTO.getBankName())){
+            return false;
+        }
+        if(StringUtils.hasText(creatorDTO.getCreatorNickName())){
+            return false;
+        }
+        if(StringUtils.hasText(creatorDTO.getBankBookImageUrl())){
             return false;
         }
         return true;
     }
+    /**
+     * 검증 절차 진행예정
+     */
+    public Long createThumbNail(ThumbNailDTO thumbNailDTO) {
 
-    //계좌번호 값들어있나 검증
-    public boolean validationBankName(CreatorDTO creatorDTO) {
-        if(creatorDTO.getBankName()==null){
-            return false;
-        }
-        return true;
+        Creator creator = creatorRepository.findById(thumbNailDTO.getCreator_id());
+
+        ThumbNail thumbNail = ThumbNail.builder()
+                .title(thumbNailDTO.getTitle())
+                .thumbNailUrl(thumbNailDTO.getThumbNailUrl())
+                .category(thumbNailDTO.getCategory())
+                .tag(thumbNailDTO.getTag())
+                .summery(thumbNailDTO.getSummery())
+                .build();
+
+        Funding funding = Funding.builder()
+                .creator(creator)
+                .thumbNail(thumbNail)
+                .status(Status.inspection)
+                .postDate(LocalDateTime.now())
+                .build();
+        thumbNail.createFunding(funding);
+
+        thumbNailRepository.save(thumbNail);
+        fundingRepository.save(funding);
+
+        return funding.getFundingId();
     }
 
 

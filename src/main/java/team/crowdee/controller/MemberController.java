@@ -5,8 +5,10 @@ import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -15,6 +17,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import team.crowdee.domain.Member;
 import team.crowdee.domain.dto.*;
+import team.crowdee.jwt.CustomJWTFilter;
 import team.crowdee.jwt.JwtFilter;
 import team.crowdee.jwt.TokenProvider;
 import team.crowdee.repository.MemberRepository;
@@ -25,7 +28,10 @@ import javax.mail.MessagingException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
+
+import static java.util.Base64.getDecoder;
 
 @RestController
 @CrossOrigin
@@ -87,6 +93,8 @@ public class MemberController {
         String jwt = tokenProvider.createToken(authentication);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer" + jwt);
+        ///////////////////////////////////////////////////////////////////////////
+
 
         if (loginMember == null) {
             //실패 : 멤버가 없기 때문에 예외
@@ -116,18 +124,7 @@ public class MemberController {
         sendEmailService.sendMail(mailDTO);
         return new ResponseEntity<>("이메일 발송되었습니다.", HttpStatus.OK);
     }
-    //태환오빠 코드
-        /*List<Member> findMember = memberRepository
-                .findByEmailAndUserId(findMailDTO.getUserId(), findMailDTO.getEmail());
-        if (findMember.isEmpty()) {
-            return new ResponseEntity<>("아이디와 이메일을 다시 확인해주세요", HttpStatus.BAD_REQUEST);
-        }
-        Member member = findMember.get(0);
-        MailDTO mailDTO = sendEmailService.createMailAndChangePass(member.getEmail(), member.getUserName(), member.getMemberId());
-        sendEmailService.sendMail(mailDTO);
-        return new ResponseEntity<>("이메일 발송되었습니다.", HttpStatus.OK);
-    }
-       */
+
 
     //비밀번호 수정
     @PostMapping("/changePass")
@@ -161,7 +158,17 @@ public class MemberController {
     }
 
     @PostMapping("/coffee")
-    public ResponseEntity<?> coffeeAll(){
+    @PreAuthorize("hasAnyRole('backer')")
+    public ResponseEntity<?> coffeeAll(HttpServletRequest request){
+        String email = CustomJWTFilter.findEmail(request);
+        String authority = CustomJWTFilter.findAuthority(request);
+        System.out.println("authority = " + authority);
+
+
+        List<Member> email1 = memberRepository.findByParam("email", email);
+        for (Member member : email1) {
+            System.out.println("member.getUserName() = " + member.getUserName());
+        }
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
