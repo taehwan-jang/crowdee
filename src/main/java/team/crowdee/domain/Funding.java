@@ -37,13 +37,9 @@ public class Funding {
     private String content;//내용-> editor api를 사용해서 정보를 저장한다?
 
     //사이드바에 노출될 항목
-    private int goalFundraising;//목표금액
-    private int minFundraising;//최소금액
+    @OneToOne(mappedBy = "funding")
+    private FundingPlan fundingPlan;
     private LocalDateTime postDate;//등록일
-    private String startDate;//시작일(yyyy-mm-dd)
-    private String endDate;//종료일(yyyy-mm-dd)
-    private int maxBacker;//최대후원자수
-
 
     @Embedded
     private Address address;//공연장 주소
@@ -58,6 +54,11 @@ public class Funding {
     @Builder.Default
     private List<Order> orders = new ArrayList<>();
 
+
+    //=======Setter 대용=======//
+    public void addFundingPlan(FundingPlan fundingPlan) {
+        this.fundingPlan = fundingPlan;
+    }
 
     public Funding changeFundingStatus(FundingStatus fundingStatus) {
         this.fundingStatus = fundingStatus;
@@ -77,7 +78,7 @@ public class Funding {
 
     public int getRestDays() {
         LocalDate start = LocalDate.now();
-        LocalDate end = LocalDate.parse(endDate, DateTimeFormatter.ISO_DATE);
+        LocalDate end = LocalDate.parse(fundingPlan.getEndDate(), DateTimeFormatter.ISO_DATE);
 
         return Period.between(start, end).getDays();
     }

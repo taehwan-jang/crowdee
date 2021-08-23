@@ -7,12 +7,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import team.crowdee.domain.*;
 import team.crowdee.domain.dto.CreatorDTO;
+import team.crowdee.domain.dto.FundingPlanDTO;
 import team.crowdee.domain.dto.ThumbNailDTO;
 import team.crowdee.domain.valuetype.AccountInfo;
-import team.crowdee.repository.CreatorRepository;
-import team.crowdee.repository.FundingRepository;
-import team.crowdee.repository.MemberRepository;
-import team.crowdee.repository.ThumbNailRepository;
+import team.crowdee.repository.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -27,6 +25,7 @@ public class CreatorService {
     private final CreatorRepository creatorRepository;
     private final FundingRepository fundingRepository;
     private final ThumbNailRepository thumbNailRepository;
+    private final FundingPlanRepository fundingPlanRepository;
 
     public Creator joinCreator(CreatorDTO creatorDTO){
         /**
@@ -71,7 +70,7 @@ public class CreatorService {
     /**
      * 검증 절차 진행예정
      */
-    public Long createThumbNail(ThumbNailDTO thumbNailDTO) {
+    public Long tempThumbNail(ThumbNailDTO thumbNailDTO) {
 
         Creator creator = creatorRepository.findById(thumbNailDTO.getCreator_id());
 
@@ -94,6 +93,21 @@ public class CreatorService {
         thumbNailRepository.save(thumbNail);
         fundingRepository.save(funding);
 
+        return funding.getFundingId();
+    }
+
+    public Long tempFundingPlan(FundingPlanDTO fundingPlanDTO) {
+
+        Funding funding = fundingRepository.findById(fundingPlanDTO.getFunding_id());
+        FundingPlan fundingPlan = FundingPlan.builder()
+                .goalFundraising(fundingPlanDTO.getGoalFundraising())
+                .startDate(fundingPlanDTO.getStartDate())
+                .endDate(fundingPlanDTO.getEndDate())
+                .minFundraising(fundingPlanDTO.getMinFundraising())
+                .maxBacker(fundingPlanDTO.getMaxBacker())
+                .build();
+        funding.addFundingPlan(fundingPlan);
+        fundingPlanRepository.save(fundingPlan);
         return funding.getFundingId();
     }
 
