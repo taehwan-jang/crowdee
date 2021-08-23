@@ -32,9 +32,9 @@ public class Funding {
     @OneToOne(mappedBy = "funding")
     private ThumbNail thumbNail;
 
-
-    @Lob
-    private String content;//내용-> editor api를 사용해서 정보를 저장한다?
+    //메인 컨텐츠
+    @OneToOne(mappedBy = "funding")
+    private Detail detail;
 
     //사이드바에 노출될 항목
     @OneToOne(mappedBy = "funding")
@@ -59,6 +59,10 @@ public class Funding {
     public void addFundingPlan(FundingPlan fundingPlan) {
         this.fundingPlan = fundingPlan;
     }
+    public void addDetail(Detail detail) {
+        this.detail = detail;
+    }
+
 
     public Funding changeFundingStatus(FundingStatus fundingStatus) {
         this.fundingStatus = fundingStatus;

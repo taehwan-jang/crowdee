@@ -36,7 +36,7 @@ public class FundingController {
                 .thumbNailUrl("https://cdn.notefolio.net/img/5a/af/5aaf36082b60a519aac5db918f67fabd809ee35def6cfd2020855da5e6565db0_v1.jpg")
                 .title("이건제목")
                 .goalFundraising(1000000)
-                .funding_id(1L)
+                .fundingId(1L)
                 .build();
         thumbNailList.add(thumbNailDTO);
         return new ResponseEntity<>(thumbNailList,HttpStatus.OK);

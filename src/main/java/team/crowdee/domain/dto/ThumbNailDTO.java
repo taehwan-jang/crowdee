@@ -11,8 +11,8 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ThumbNailDTO {
 
-    private Long funding_id;
-    private Long creator_id;
+    private Long fundingId;
+    private Long creatorId;
     private String thumbNailUrl;
     private String title;
     private String summery;

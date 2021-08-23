@@ -6,10 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team.crowdee.domain.Creator;
-import team.crowdee.domain.dto.CreatorDTO;
-import team.crowdee.domain.dto.FundingIdDTO;
-import team.crowdee.domain.dto.FundingPlanDTO;
-import team.crowdee.domain.dto.ThumbNailDTO;
+import team.crowdee.domain.dto.*;
 import team.crowdee.repository.MemberRepository;
 import team.crowdee.service.CreatorService;
 import team.crowdee.service.FundingService;
@@ -44,20 +41,29 @@ public class CreatorController {
      */
     @PostMapping("/create/thumbNail")
     public ResponseEntity<?> createTempThumbNail(@RequestBody ThumbNailDTO thumbNailDTO) {
-        Long funding_id = creatorService.tempThumbNail(thumbNailDTO);
-        if (funding_id == null) {
+        Long fundingId = creatorService.tempThumbNail(thumbNailDTO);
+        if (fundingId == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(new FundingIdDTO(funding_id),HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new FundingIdDTO(fundingId),HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/create/fundingPlan")
     public ResponseEntity<?> createTempFundingPlan(@RequestBody FundingPlanDTO fundingPlanDTO) {
-        Long funding_id = creatorService.tempFundingPlan(fundingPlanDTO);
-        if (funding_id == null) {
+        Long fundingId = creatorService.tempFundingPlan(fundingPlanDTO);
+        if (fundingId == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(new FundingIdDTO(funding_id),HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new FundingIdDTO(fundingId),HttpStatus.BAD_REQUEST);
+    }
+
+    @PostMapping("/create/detail")
+    public ResponseEntity<?> createTempDetail(@RequestBody DetailDTO detailDTO) {
+        Long fundingId = creatorService.tempDetail(detailDTO);
+        if (fundingId == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(new FundingIdDTO(fundingId),HttpStatus.BAD_REQUEST);
     }
 
 
