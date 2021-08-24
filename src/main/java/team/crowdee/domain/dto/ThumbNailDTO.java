@@ -1,21 +1,20 @@
 package team.crowdee.domain.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class ThumbNailDTO {
 
     private Long fundingId;
     private Long creatorId;
+    private String mangeUrl;
     private String thumbNailUrl;
     private String title;
-    private String summery;
+    private String summary;
     private String tag;
     private String rateOfAchievement;
     private int goalFundraising;

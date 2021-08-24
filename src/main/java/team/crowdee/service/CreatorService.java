@@ -6,15 +6,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import team.crowdee.domain.*;
-import team.crowdee.domain.dto.CreatorDTO;
-import team.crowdee.domain.dto.DetailDTO;
-import team.crowdee.domain.dto.FundingPlanDTO;
-import team.crowdee.domain.dto.ThumbNailDTO;
+import team.crowdee.domain.dto.*;
 import team.crowdee.domain.valuetype.AccountInfo;
 import team.crowdee.repository.*;
+import team.crowdee.util.Utils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -51,6 +50,10 @@ public class CreatorService {
         return creator;
     }
 
+    public Creator findCreator(Long creatorId) {
+        return creatorRepository.findById(creatorId);
+    }
+
     //검증은 한번에 진행
     public boolean validation(CreatorDTO creatorDTO) {
         if(StringUtils.hasText(creatorDTO.getAccountNumber())){
@@ -67,64 +70,68 @@ public class CreatorService {
         }
         return true;
     }
+    public FundingDTO tempFunding(String projectUrl,Long creatorId) {
+        String manageUrl = UUID.randomUUID().toString().replaceAll("-", "");
+        Creator findCreator = creatorRepository.findById(creatorId);
+        Funding tempFunding = Funding.builder()
+                .creator(findCreator)
+                .postDate(LocalDateTime.now())
+                .projectUrl(projectUrl)
+                .manageUrl(manageUrl)
+                .status(Status.inspection)
+                .build();
+        findCreator.getFundingList().add(tempFunding);
+        fundingRepository.save(tempFunding);
+
+        FundingDTO fundingDTO = Utils.fundingEToD(tempFunding);
+        return fundingDTO;
+    }
+
+
     /**
      * 검증 절차 진행예정
      */
-    public Long tempThumbNail(ThumbNailDTO thumbNailDTO) {
+    public FundingDTO tempThumbNail(ThumbNailDTO thumbNailDTO) {
 
-        Creator creator = creatorRepository.findById(thumbNailDTO.getCreatorId());
+        Funding funding = fundingRepository.findById(thumbNailDTO.getFundingId());
 
-        ThumbNail thumbNail = ThumbNail.builder()
-                .title(thumbNailDTO.getTitle())
-                .thumbNailUrl(thumbNailDTO.getThumbNailUrl())
-                .category(thumbNailDTO.getCategory())
-                .tag(thumbNailDTO.getTag())
-                .summery(thumbNailDTO.getSummery())
-                .build();
+        funding
+                .thumbTitle(thumbNailDTO.getTitle())
+                .thumbUrl(thumbNailDTO.getThumbNailUrl())
+                .thumbCategory(thumbNailDTO.getCategory())
+                .thumbTag(thumbNailDTO.getTag())
+                .thumbSummary(thumbNailDTO.getSummary());
 
-        Funding funding = Funding.builder()
-                .creator(creator)
-                .thumbNail(thumbNail)
-                .status(Status.inspection)
-                .postDate(LocalDateTime.now())
-                .build();
-        thumbNail.createFunding(funding);
-
-        fundingCompRepository.saveThumbNail(thumbNail);
-        fundingRepository.save(funding);
-
-        return funding.getFundingId();
+        FundingDTO fundingDTO = Utils.fundingEToD(funding);
+        return fundingDTO;
     }
 
-    public Long tempFundingPlan(FundingPlanDTO fundingPlanDTO) {
+    public FundingDTO tempFundingPlan(FundingPlanDTO fundingPlanDTO) {
 
         Funding funding = fundingRepository.findById(fundingPlanDTO.getFundingId());
-        FundingPlan fundingPlan = FundingPlan.builder()
-                .goalFundraising(fundingPlanDTO.getGoalFundraising())
-                .startDate(fundingPlanDTO.getStartDate())
-                .endDate(fundingPlanDTO.getEndDate())
-                .minFundraising(fundingPlanDTO.getMinFundraising())
-                .maxBacker(fundingPlanDTO.getMaxBacker())
-                .build();
-        funding.addFundingPlan(fundingPlan);
-        fundingCompRepository.saveFundingPlan(fundingPlan);
-        return funding.getFundingId();
+
+        funding
+                .planGoalFundraising(fundingPlanDTO.getGoalFundraising())
+                .planStartDate(fundingPlanDTO.getStartDate())
+                .planEndDate(fundingPlanDTO.getEndDate())
+                .planMinFundraising(fundingPlanDTO.getMinFundraising())
+                .planMaxBacker(fundingPlanDTO.getMaxBacker());
+
+        FundingDTO fundingDTO = Utils.fundingEToD(funding);
+        return fundingDTO;
     }
 
 
-    public Long tempDetail(DetailDTO detailDTO) {
+    public FundingDTO tempDetail(DetailDTO detailDTO) {
 
         Funding funding = fundingRepository.findById(detailDTO.getFundingId());
-        Detail detail = Detail.builder()
-                .funding(funding)
-                .content(detailDTO.getContent())
-                .budget(detailDTO.getBudget())
-                .schedule(detailDTO.getSchedule())
-                .aboutUs(detailDTO.getAboutUs())
-                .build();
-        funding.addDetail(detail);
-        fundingCompRepository.saveDetail(detail);
+        funding
+                .detailContent(detailDTO.getContent())
+                .detailBudget(detailDTO.getBudget())
+                .detailSchedule(detailDTO.getSchedule())
+                .detailAboutUs(detailDTO.getAboutUs());
 
-        return funding.getFundingId();
+        FundingDTO fundingDTO = Utils.fundingEToD(funding);
+        return fundingDTO;
     }
 }

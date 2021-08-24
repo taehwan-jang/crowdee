@@ -32,7 +32,7 @@ public class Creator {
 
 
     @OneToMany(mappedBy = "creator")
-    private List<Funding> fundings;//이건 creator 로 이동할것
+    private List<Funding> fundingList = new ArrayList<>();//creator 가 진행한 funding 리스트
 
     @Embedded
     private AccountInfo accountInfo;
