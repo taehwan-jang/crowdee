@@ -24,7 +24,6 @@ public class CreatorService {
     private final MemberRepository memberRepository;
     private final CreatorRepository creatorRepository;
     private final FundingRepository fundingRepository;
-    private final FundingCompRepository fundingCompRepository;
 
     public Creator joinCreator(CreatorDTO creatorDTO){
         /**
