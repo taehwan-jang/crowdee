@@ -44,8 +44,6 @@ public class Funding {
     private String category;//카테고리
     private String tag;
 
-    @OneToOne(mappedBy = "funding")
-    private Detail detail;
     /**
      * 메인 컨텐츠 (Detail)
      */
@@ -111,6 +109,7 @@ public class Funding {
     }
 
     public Funding planGoalFundraising(int goalFundraising) {
+        this.goalFundraising = goalFundraising;
         return this;
     }
 

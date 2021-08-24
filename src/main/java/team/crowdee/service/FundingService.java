@@ -5,8 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team.crowdee.domain.Funding;
+import team.crowdee.domain.dto.FundingDTO;
 import team.crowdee.domain.dto.ThumbNailDTO;
 import team.crowdee.repository.FundingRepository;
+import team.crowdee.util.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,8 +35,11 @@ public class FundingService {
             thumbNailDTOList.add(
                     ThumbNailDTO.builder()
                             .fundingId(funding.getFundingId())
+                            .creatorId(funding.getCreator().getCreatorId())
+                            .projectUrl(funding.getProjectUrl())
+                            .tag(funding.getTag())
                             .title(funding.getTitle())
-                            .goalFundraising(funding.getTotalFundraising())
+                            .goalFundraising(funding.getGoalFundraising())
                             .thumbNailUrl(funding.getThumbNailUrl())
                             .restDate(funding.getRestDays())
                             .summary(funding.getSummary())
@@ -42,10 +47,19 @@ public class FundingService {
                             .rateOfAchievement(funding.rateOfAchievement())
                             .build()
             );
+
         }
         return thumbNailDTOList;
     }
 
+    @Transactional(readOnly = true)
+    public FundingDTO findOneFunding(String projectUrl) {
+        List<Funding> fundingList = fundingRepository.findByParam("projectUrl", projectUrl);
+        if (fundingList.isEmpty()) {
+            return null;
+        }
+        return Utils.fundingEToD(fundingList.get(0));
+    }
 
 
 }
