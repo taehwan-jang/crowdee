@@ -44,7 +44,7 @@ public class CreatorService {
                 .BusinessNumber(creatorDTO.getBusinessNumber())
                 .accountInfo(account)
                 .build();
-
+        creatorRepository.save(creator);
         member.joinCreator(creator);
         return creator;
     }
@@ -55,16 +55,16 @@ public class CreatorService {
 
     //검증은 한번에 진행
     public boolean validation(CreatorDTO creatorDTO) {
-        if(StringUtils.hasText(creatorDTO.getAccountNumber())){
+        if(!StringUtils.hasText(creatorDTO.getAccountNumber())){
             return false;
         }
-        if(StringUtils.hasText(creatorDTO.getBankName())){
+        if(!StringUtils.hasText(creatorDTO.getBankName())){
             return false;
         }
-        if(StringUtils.hasText(creatorDTO.getCreatorNickName())){
+        if(!StringUtils.hasText(creatorDTO.getCreatorNickName())){
             return false;
         }
-        if(StringUtils.hasText(creatorDTO.getBankBookImageUrl())){
+        if(!StringUtils.hasText(creatorDTO.getBankBookImageUrl())){
             return false;
         }
         return true;

@@ -70,7 +70,7 @@ public class DummyData {
         creatorDTO.setBusinessNumber("1239192-12-12");
         creatorDTO.setCreatorNickName("투썸");
         creatorDTO.setBankBookImageUrl("imgu");
-        creatorDTO.setMemberId(1L);
+        creatorDTO.setMemberId(3L);
 
         creatorService.joinCreator(creatorDTO);
     }
