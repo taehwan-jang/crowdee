@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team.crowdee.domain.ThumbNail;
 import team.crowdee.domain.dto.ThumbNailDTO;
+import team.crowdee.repository.FundingCompRepository;
 import team.crowdee.repository.FundingRepository;
-import team.crowdee.repository.ThumbNailRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +19,7 @@ import java.util.List;
 public class FundingService {
 
     private final FundingRepository fundingRepository;
-    private final ThumbNailRepository thumbNailRepository;
+    private final FundingCompRepository fundingCompRepository;
 
     /**
      * 명확한 영역 구분을 위해 펀딩의 등록 수정 삭제는 creatorService 에서 진행
@@ -28,14 +28,14 @@ public class FundingService {
 
     @Transactional(readOnly = true)
     public List<ThumbNailDTO> findThumbNail() {
-        List<ThumbNail> thumbNailList = thumbNailRepository.findAll();
+        List<ThumbNail> thumbNailList = fundingCompRepository.findAllThumbNail();
         List<ThumbNailDTO> thumbNailDTOList = new ArrayList<>();
         for (ThumbNail thumbNail : thumbNailList) {
             thumbNailDTOList.add(
                     ThumbNailDTO.builder()
-                            .funding_id(thumbNail.getFunding().getFundingId())
+                            .fundingId(thumbNail.getFunding().getFundingId())
                             .title(thumbNail.getTitle())
-                            .goalFundraising(thumbNail.getFunding().getGoalFundraising())
+                            .goalFundraising(thumbNail.getFunding().getFundingStatus().getTotalFundraising())
                             .thumbNailUrl(thumbNail.getThumbNailUrl())
                             .restDate(thumbNail.getFunding().getRestDays())
                             .summery(thumbNail.getSummery())

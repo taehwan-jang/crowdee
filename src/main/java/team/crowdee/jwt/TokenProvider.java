@@ -1,5 +1,6 @@
 package team.crowdee.jwt;
 
+import com.sun.mail.util.BASE64DecoderStream;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -16,14 +17,18 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import javax.crypto.SecretKey;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.nio.charset.StandardCharsets;
+import java.net.URLDecoder;
+import java.nio.charset.Charset;
 import java.security.Key;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
+
 
 
 @Component
@@ -37,7 +42,7 @@ public class TokenProvider implements InitializingBean {
     private final long tokenValidityInMilliseconds;
 
 
-    private Key key;
+    private SecretKey key;
 
     public TokenProvider(
             @Value("${jwt.secret})") String secret,
@@ -52,6 +57,8 @@ public class TokenProvider implements InitializingBean {
     public void afterPropertiesSet() throws Exception {
         byte[] keyBytes = Decoders.BASE64.decode(secret);
         this.key = Keys.hmacShaKeyFor(keyBytes);
+        log.info("Decoder payload값 = {}", key);
+
     }
 
     // Authentication 객체에 포함되어있는 권한 정보들을 담은 토큰 생성
@@ -66,6 +73,7 @@ public class TokenProvider implements InitializingBean {
                 .setSubject(authentication.getName())
                 .claim(AUTHORITIES_KEY, authorities)
                 .signWith(key, SignatureAlgorithm.HS512)
+//                .signWith(SignatureAlgorithm.HS512, secret.getBytes(Charset.forName("UTF-8")))
                 .setExpiration(validity)
                 .compact();
     }
@@ -92,7 +100,9 @@ public class TokenProvider implements InitializingBean {
     // 토큰 검증
     public boolean validateToken(String token){
         try{
+            afterPropertiesSet();
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+//            Jwts.parserBuilder().setSigningKey(secret.getBytes(Charset.forName("UTF-8"))).build().parseClaimsJws(token.replace("{", "").replace("}","")).getBody();
             return true;
         }
         catch(io.jsonwebtoken.security.SecurityException | MalformedJwtException e){
@@ -108,13 +118,13 @@ public class TokenProvider implements InitializingBean {
         catch(IllegalArgumentException e){
             log.info("JWT 토큰이 잘못되었습니다.");
         }
+        catch(Exception e){
+            e.printStackTrace();
+            log.info("예외처리띠");
+        }
+
         return false;
 
     }
 
-    public boolean findCoffeeAll(HttpServletRequest request, HttpServletResponse response){
-        String token = request.getHeader("jwt");
-        boolean checkJWT = validateToken(token);
-        return checkJWT;
-    }
 }

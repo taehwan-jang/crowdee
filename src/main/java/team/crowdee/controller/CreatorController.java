@@ -6,19 +6,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team.crowdee.domain.Creator;
-import team.crowdee.domain.Funding;
-import team.crowdee.domain.FundingStatus;
-import team.crowdee.domain.Member;
-import team.crowdee.domain.dto.CreatorDTO;
-import team.crowdee.domain.dto.FundingIdDTO;
-import team.crowdee.domain.dto.ThumbNailDTO;
-import team.crowdee.domain.valuetype.AccountInfo;
+import team.crowdee.domain.dto.*;
 import team.crowdee.repository.MemberRepository;
 import team.crowdee.service.CreatorService;
 import team.crowdee.service.FundingService;
 import team.crowdee.service.MemberService;
-
-import javax.mail.MessagingException;
 
 @RestController
 @CrossOrigin
@@ -43,12 +35,37 @@ public class CreatorController {
         return new ResponseEntity<>("크리에이터 등록에 성공했습니다.", HttpStatus.OK);
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<?> createFunding(@RequestBody ThumbNailDTO thumbNailDTO) {
-        Long funding_id = creatorService.createThumbNail(thumbNailDTO);
-        if (funding_id == null) {
+    /**
+     * 최초 펀딩 작성시 단계별로 Entity 생성
+     * ThumbNail -> Schedule -> Detail -> Funding
+     */
+    @PostMapping("/create/thumbNail")
+    public ResponseEntity<?> createTempThumbNail(@RequestBody ThumbNailDTO thumbNailDTO) {
+        Long fundingId = creatorService.tempThumbNail(thumbNailDTO);
+        if (fundingId == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(new FundingIdDTO(funding_id),HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new FundingIdDTO(fundingId),HttpStatus.BAD_REQUEST);
     }
+
+    @PostMapping("/create/fundingPlan")
+    public ResponseEntity<?> createTempFundingPlan(@RequestBody FundingPlanDTO fundingPlanDTO) {
+        Long fundingId = creatorService.tempFundingPlan(fundingPlanDTO);
+        if (fundingId == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(new FundingIdDTO(fundingId),HttpStatus.BAD_REQUEST);
+    }
+
+    @PostMapping("/create/detail")
+    public ResponseEntity<?> createTempDetail(@RequestBody DetailDTO detailDTO) {
+        Long fundingId = creatorService.tempDetail(detailDTO);
+        if (fundingId == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(new FundingIdDTO(fundingId),HttpStatus.BAD_REQUEST);
+    }
+
+
+
 }

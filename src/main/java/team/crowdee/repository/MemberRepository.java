@@ -27,6 +27,14 @@ public class MemberRepository {
         return member.getMemberId();
     }
 
+    public Member findById(Long id) {
+        return em.find(Member.class, id);
+    }
+
+    public List<Member> findAll() {
+        return em.createQuery("select m from Member m", Member.class).getResultList();
+    }
+
     public Member login(String email) {
         List<Member> resultList = em.createQuery("select m from Member m where m.email=:email", Member.class)
                 .setParameter("email",email)
@@ -47,10 +55,6 @@ public class MemberRepository {
                 .setParameter("userId", userId);
          */
         em.remove(member);
-    }
-
-    public Member findById(Long id) {
-        return em.find(Member.class, id);
     }
 
     public List<Member> findByParam(String target,String param) {
@@ -76,10 +80,6 @@ public class MemberRepository {
 
     public List<Member> findMemberWithFollow(Long id) {
         return em.createQuery("select m from Member m join fetch m.following", Member.class).getResultList();
-    }
-
-    public List<Member> findAll() {
-        return em.createQuery("select m from Member m",Member.class).getResultList();
     }
 
 //    public List<Member> findSecessionMember(LocalDateTime today) {
