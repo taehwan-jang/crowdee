@@ -6,15 +6,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import team.crowdee.domain.*;
-import team.crowdee.domain.dto.CreatorDTO;
-import team.crowdee.domain.dto.DetailDTO;
-import team.crowdee.domain.dto.FundingPlanDTO;
-import team.crowdee.domain.dto.ThumbNailDTO;
+import team.crowdee.domain.dto.*;
 import team.crowdee.domain.valuetype.AccountInfo;
 import team.crowdee.repository.*;
+import team.crowdee.util.Utils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +25,6 @@ public class CreatorService {
     private final MemberRepository memberRepository;
     private final CreatorRepository creatorRepository;
     private final FundingRepository fundingRepository;
-    private final FundingCompRepository fundingCompRepository;
 
     public Creator joinCreator(CreatorDTO creatorDTO){
         /**
@@ -42,89 +41,113 @@ public class CreatorService {
         account.setBankBookImageUrl(creatorDTO.getBankBookImageUrl());
         account.setBankName(creatorDTO.getBankName());
         Creator creator = Creator.builder()
+                .status(Status.inspection)
                 .creatorNickName(creatorDTO.getCreatorNickName())
                 .BusinessNumber(creatorDTO.getBusinessNumber())
                 .accountInfo(account)
                 .build();
-
+        creatorRepository.save(creator);
         member.joinCreator(creator);
         return creator;
     }
 
+    public Creator findCreator(Long creatorId) {
+        return creatorRepository.findById(creatorId);
+    }
+
     //검증은 한번에 진행
     public boolean validation(CreatorDTO creatorDTO) {
-        if(StringUtils.hasText(creatorDTO.getAccountNumber())){
+        if(!StringUtils.hasText(creatorDTO.getAccountNumber())){
             return false;
         }
-        if(StringUtils.hasText(creatorDTO.getBankName())){
+        if(!StringUtils.hasText(creatorDTO.getBankName())){
             return false;
         }
-        if(StringUtils.hasText(creatorDTO.getCreatorNickName())){
+        if(!StringUtils.hasText(creatorDTO.getCreatorNickName())){
             return false;
         }
-        if(StringUtils.hasText(creatorDTO.getBankBookImageUrl())){
+        if(!StringUtils.hasText(creatorDTO.getBankBookImageUrl())){
             return false;
         }
         return true;
     }
-    /**
-     * 검증 절차 진행예정
-     */
-    public Long tempThumbNail(ThumbNailDTO thumbNailDTO) {
 
-        Creator creator = creatorRepository.findById(thumbNailDTO.getCreatorId());
-
-        ThumbNail thumbNail = ThumbNail.builder()
-                .title(thumbNailDTO.getTitle())
-                .thumbNailUrl(thumbNailDTO.getThumbNailUrl())
-                .category(thumbNailDTO.getCategory())
-                .tag(thumbNailDTO.getTag())
-                .summery(thumbNailDTO.getSummery())
-                .build();
-
-        Funding funding = Funding.builder()
-                .creator(creator)
-                .thumbNail(thumbNail)
-                .status(Status.inspection)
+    public FundingDTO tempFunding(String projectUrl,String email) {
+        String manageUrl = UUID.randomUUID().toString().replaceAll("-", "");
+        List<Creator> creatorList = creatorRepository.findByEmail(email);
+        if (creatorList.isEmpty()) {
+            throw new IllegalArgumentException("크리에이터가 없습니다.");
+        }
+        Creator findCreator = creatorList.get(0);
+        Funding tempFunding = Funding.builder()
+                .creator(findCreator)
                 .postDate(LocalDateTime.now())
+                .projectUrl(projectUrl)
+                .manageUrl(manageUrl)
+                .status(Status.editing)
                 .build();
-        thumbNail.createFunding(funding);
+        findCreator.getFundingList().add(tempFunding);
+        fundingRepository.save(tempFunding);
 
-        fundingCompRepository.saveThumbNail(thumbNail);
-        fundingRepository.save(funding);
-
-        return funding.getFundingId();
-    }
-
-    public Long tempFundingPlan(FundingPlanDTO fundingPlanDTO) {
-
-        Funding funding = fundingRepository.findById(fundingPlanDTO.getFundingId());
-        FundingPlan fundingPlan = FundingPlan.builder()
-                .goalFundraising(fundingPlanDTO.getGoalFundraising())
-                .startDate(fundingPlanDTO.getStartDate())
-                .endDate(fundingPlanDTO.getEndDate())
-                .minFundraising(fundingPlanDTO.getMinFundraising())
-                .maxBacker(fundingPlanDTO.getMaxBacker())
-                .build();
-        funding.addFundingPlan(fundingPlan);
-        fundingCompRepository.saveFundingPlan(fundingPlan);
-        return funding.getFundingId();
+        FundingDTO fundingDTO = Utils.fundingEToD(tempFunding);
+        return fundingDTO;
     }
 
 
-    public Long tempDetail(DetailDTO detailDTO) {
+    /**
+     * 검증 절차 필요없어~~ 나중에 한번에 등록 했을때 검수신청
+     */
+    public FundingDTO tempThumbNail(ThumbNailDTO thumbNailDTO,String manageUrl) {
 
-        Funding funding = fundingRepository.findById(detailDTO.getFundingId());
-        Detail detail = Detail.builder()
-                .funding(funding)
-                .content(detailDTO.getContent())
-                .budget(detailDTO.getBudget())
-                .schedule(detailDTO.getSchedule())
-                .aboutUs(detailDTO.getAboutUs())
-                .build();
-        funding.addDetail(detail);
-        fundingCompRepository.saveDetail(detail);
+        List<Funding> fundingList = fundingRepository.findByParam("manageUrl",manageUrl);
+        if (fundingList.isEmpty()) {
+            throw new IllegalArgumentException("존재하지 않는 펀딩입니다.");
+        }
+        Funding funding = fundingList.get(0);
+        funding
+                .thumbTitle(thumbNailDTO.getTitle())
+                .thumbUrl(thumbNailDTO.getThumbNailUrl())
+                .thumbCategory(thumbNailDTO.getCategory())
+                .thumbTag(thumbNailDTO.getTag())
+                .thumbSummary(thumbNailDTO.getSummary());
 
-        return funding.getFundingId();
+        FundingDTO fundingDTO = Utils.fundingEToD(funding);
+        return fundingDTO;
+    }
+
+    public FundingDTO tempFundingPlan(FundingPlanDTO fundingPlanDTO,String manageUrl) {
+
+        List<Funding> fundingList = fundingRepository.findByParam("manageUrl", manageUrl);
+        if (fundingList.isEmpty()) {
+            throw new IllegalArgumentException("존재하지 않는 펀딩입니다.");
+        }
+        Funding funding = fundingList.get(0);
+        funding
+                .planGoalFundraising(fundingPlanDTO.getGoalFundraising())
+                .planStartDate(fundingPlanDTO.getStartDate())
+                .planEndDate(fundingPlanDTO.getEndDate())
+                .planMinFundraising(fundingPlanDTO.getMinFundraising())
+                .planMaxBacker(fundingPlanDTO.getMaxBacker());
+
+        FundingDTO fundingDTO = Utils.fundingEToD(funding);
+        return fundingDTO;
+    }
+
+
+    public FundingDTO tempDetail(DetailDTO detailDTO, String manageUrl) {
+
+        List<Funding> fundingList = fundingRepository.findByParam("manageUrl", manageUrl);
+        if (fundingList.isEmpty()) {
+            throw new IllegalArgumentException("존재하지 않는 펀딩입니다.");
+        }
+        Funding funding = fundingList.get(0);
+        funding
+                .detailContent(detailDTO.getContent())
+                .detailBudget(detailDTO.getBudget())
+                .detailSchedule(detailDTO.getSchedule())
+                .detailAboutUs(detailDTO.getAboutUs());
+
+        FundingDTO fundingDTO = Utils.fundingEToD(funding);
+        return fundingDTO;
     }
 }

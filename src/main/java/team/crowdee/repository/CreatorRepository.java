@@ -23,6 +23,13 @@ public class CreatorRepository {
     public Creator findById(Long id) {
         return em.find(Creator.class, id);
     }
+
+    public List<Creator> findByEmail(String email) {
+        return em.createQuery("select c from Creator c join fetch c.member where c.member.email=:email", Creator.class)
+                .setParameter("email", email)
+                .getResultList();
+    }
+
     public List<Creator> findAll() {
         return em.createQuery("select c from Creator c", Creator.class).getResultList();
     }
