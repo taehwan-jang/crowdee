@@ -178,7 +178,7 @@ public class Funding {
     }
 
     public Double rateOfAchievement() {
-        double rawRate = (double) this.totalFundraising / (double) this.goalFundraising;
+        double rawRate = ((double) this.totalFundraising / (double) this.goalFundraising)*100;
         return Double.parseDouble(String.format("%.2f", rawRate));
 //        NPE 방지로 valueOf 사용
 //        String stringResult = String.valueOf(rawRate);
