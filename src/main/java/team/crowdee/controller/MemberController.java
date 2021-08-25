@@ -81,8 +81,6 @@ public class MemberController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO) {
 
-        Member loginMember = memberService.memberLogin(loginDTO);
-
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword());
 
@@ -94,17 +92,6 @@ public class MemberController {
         httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer" + jwt);
         ///////////////////////////////////////////////////////////////////////////
 
-
-        if (loginMember == null) {
-            //실패 : 멤버가 없기 때문에 예외
-            return new ResponseEntity<>("아이디 패스워드를 다시 확인해주세요.", HttpStatus.BAD_REQUEST);
-        }
-        if(loginMember.getSecessionDate()==null) {
-            boolean isSecession = StringUtils.hasText(loginMember.getSecessionDate());
-            if(isSecession){
-                return new ResponseEntity<>("탈퇴한 회원입니다.", HttpStatus.BAD_REQUEST);
-            }
-        }
         return new ResponseEntity<>(new TokenDTO(jwt), httpHeaders, HttpStatus.OK);
     }
 
@@ -157,10 +144,11 @@ public class MemberController {
     }
 
     @PostMapping("/coffee")
-    @PreAuthorize("hasAnyRole('backer')")
     public ResponseEntity<?> coffeeAll(HttpServletRequest request){
+
         String email = CustomJWTFilter.findEmail(request);
         String authority = CustomJWTFilter.findAuthority(request);
+
         System.out.println("authority = " + authority);
 
 

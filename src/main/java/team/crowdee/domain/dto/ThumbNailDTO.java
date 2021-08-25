@@ -11,7 +11,6 @@ public class ThumbNailDTO {
 
     private Long fundingId;
     private Long creatorId;
-    private String mangeUrl;
     private String projectUrl;
     private String thumbNailUrl;
     private String title;

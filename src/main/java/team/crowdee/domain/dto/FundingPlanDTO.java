@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Setter
 public class FundingPlanDTO {
 
-    private Long fundingId;
+    private String manageUrl;
     private int goalFundraising;//목표금액
     private int minFundraising;//최소금액
     private String startDate;//시작일(yyyy-mm-dd)

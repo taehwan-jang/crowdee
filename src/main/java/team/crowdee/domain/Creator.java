@@ -20,8 +20,8 @@ public class Creator {
     @Column(name = "creator_id")
     private Long creatorId;
     private String creatorNickName;
-
     private String BusinessNumber;
+    private Status status;
 
     @OneToOne(mappedBy = "creator")
     private Member member;

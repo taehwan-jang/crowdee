@@ -33,6 +33,6 @@ FundingDTO {
     private int visitCount;//방문횟수(조회수)
     private int likeCount;//좋아요 갯수?? 찜으로 바꿀것
     private int totalFundraising=0;//총 펀딩금액
-    private Status status;//현재 펀딩의 상태(심사/거절/진행/종료)
+    private Status status;//현재 펀딩의 상태(작성/심사/거절/진행/종료)
 
 }

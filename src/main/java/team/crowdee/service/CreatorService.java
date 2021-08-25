@@ -13,6 +13,7 @@ import team.crowdee.util.Utils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -40,6 +41,7 @@ public class CreatorService {
         account.setBankBookImageUrl(creatorDTO.getBankBookImageUrl());
         account.setBankName(creatorDTO.getBankName());
         Creator creator = Creator.builder()
+                .status(Status.inspection)
                 .creatorNickName(creatorDTO.getCreatorNickName())
                 .BusinessNumber(creatorDTO.getBusinessNumber())
                 .accountInfo(account)
@@ -69,15 +71,20 @@ public class CreatorService {
         }
         return true;
     }
-    public FundingDTO tempFunding(String projectUrl,Long creatorId) {
+
+    public FundingDTO tempFunding(String projectUrl,String email) {
         String manageUrl = UUID.randomUUID().toString().replaceAll("-", "");
-        Creator findCreator = creatorRepository.findById(creatorId);
+        List<Creator> creatorList = creatorRepository.findByEmail(email);
+        if (creatorList.isEmpty()) {
+            throw new IllegalArgumentException("크리에이터가 없습니다.");
+        }
+        Creator findCreator = creatorList.get(0);
         Funding tempFunding = Funding.builder()
                 .creator(findCreator)
                 .postDate(LocalDateTime.now())
                 .projectUrl(projectUrl)
                 .manageUrl(manageUrl)
-                .status(Status.inspection)
+                .status(Status.editing)
                 .build();
         findCreator.getFundingList().add(tempFunding);
         fundingRepository.save(tempFunding);
@@ -88,12 +95,15 @@ public class CreatorService {
 
 
     /**
-     * 검증 절차 진행예정
+     * 검증 절차 필요없어~~ 나중에 한번에 등록 했을때 검수신청
      */
-    public FundingDTO tempThumbNail(ThumbNailDTO thumbNailDTO) {
+    public FundingDTO tempThumbNail(ThumbNailDTO thumbNailDTO,String manageUrl) {
 
-        Funding funding = fundingRepository.findById(thumbNailDTO.getFundingId());
-
+        List<Funding> fundingList = fundingRepository.findByParam("manageUrl",manageUrl);
+        if (fundingList.isEmpty()) {
+            throw new IllegalArgumentException("존재하지 않는 펀딩입니다.");
+        }
+        Funding funding = fundingList.get(0);
         funding
                 .thumbTitle(thumbNailDTO.getTitle())
                 .thumbUrl(thumbNailDTO.getThumbNailUrl())
@@ -105,10 +115,13 @@ public class CreatorService {
         return fundingDTO;
     }
 
-    public FundingDTO tempFundingPlan(FundingPlanDTO fundingPlanDTO) {
+    public FundingDTO tempFundingPlan(FundingPlanDTO fundingPlanDTO,String manageUrl) {
 
-        Funding funding = fundingRepository.findById(fundingPlanDTO.getFundingId());
-
+        List<Funding> fundingList = fundingRepository.findByParam("manageUrl", manageUrl);
+        if (fundingList.isEmpty()) {
+            throw new IllegalArgumentException("존재하지 않는 펀딩입니다.");
+        }
+        Funding funding = fundingList.get(0);
         funding
                 .planGoalFundraising(fundingPlanDTO.getGoalFundraising())
                 .planStartDate(fundingPlanDTO.getStartDate())
@@ -121,9 +134,13 @@ public class CreatorService {
     }
 
 
-    public FundingDTO tempDetail(DetailDTO detailDTO) {
+    public FundingDTO tempDetail(DetailDTO detailDTO, String manageUrl) {
 
-        Funding funding = fundingRepository.findById(detailDTO.getFundingId());
+        List<Funding> fundingList = fundingRepository.findByParam("manageUrl", manageUrl);
+        if (fundingList.isEmpty()) {
+            throw new IllegalArgumentException("존재하지 않는 펀딩입니다.");
+        }
+        Funding funding = fundingList.get(0);
         funding
                 .detailContent(detailDTO.getContent())
                 .detailBudget(detailDTO.getBudget())
