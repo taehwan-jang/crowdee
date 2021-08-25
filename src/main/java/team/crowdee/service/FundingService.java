@@ -40,6 +40,7 @@ public class FundingService {
                             .tag(funding.getTag())
                             .title(funding.getTitle())
                             .goalFundraising(funding.getGoalFundraising())
+                            .totalFundraising(funding.getTotalFundraising())
                             .thumbNailUrl(funding.getThumbNailUrl())
                             .restDate(funding.getRestDays())
                             .summary(funding.getSummary())
@@ -47,7 +48,6 @@ public class FundingService {
                             .rateOfAchievement(funding.rateOfAchievement())
                             .build()
             );
-
         }
         return thumbNailDTOList;
     }
