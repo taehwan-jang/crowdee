@@ -18,7 +18,7 @@ public class CustomJWTFilter {
         if(payload.length==0){
             return null;
         }
-        return payload[7];//이메일 정보
+        return payload[3];//이메일 정보
     }
 
     public static String findAuthority(HttpServletRequest request) {
