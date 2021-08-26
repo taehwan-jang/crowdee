@@ -9,8 +9,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-public class
-FundingDTO {
+public class FundingDTO {
 
     private Long fundingId;
     private String projectUrl;

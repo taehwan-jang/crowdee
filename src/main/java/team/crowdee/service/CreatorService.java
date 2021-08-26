@@ -99,11 +99,7 @@ public class CreatorService {
      */
     public FundingDTO tempThumbNail(ThumbNailDTO thumbNailDTO,String manageUrl) {
 
-        List<Funding> fundingList = fundingRepository.findByParam("manageUrl",manageUrl);
-        if (fundingList.isEmpty()) {
-            throw new IllegalArgumentException("존재하지 않는 펀딩입니다.");
-        }
-        Funding funding = fundingList.get(0);
+        Funding funding = getFunding(manageUrl);
         funding
                 .thumbTitle(thumbNailDTO.getTitle())
                 .thumbUrl(thumbNailDTO.getThumbNailUrl())
@@ -117,11 +113,7 @@ public class CreatorService {
 
     public FundingDTO tempFundingPlan(FundingPlanDTO fundingPlanDTO,String manageUrl) {
 
-        List<Funding> fundingList = fundingRepository.findByParam("manageUrl", manageUrl);
-        if (fundingList.isEmpty()) {
-            throw new IllegalArgumentException("존재하지 않는 펀딩입니다.");
-        }
-        Funding funding = fundingList.get(0);
+        Funding funding = getFunding(manageUrl);
         funding
                 .planGoalFundraising(fundingPlanDTO.getGoalFundraising())
                 .planStartDate(fundingPlanDTO.getStartDate())
@@ -136,11 +128,7 @@ public class CreatorService {
 
     public FundingDTO tempDetail(DetailDTO detailDTO, String manageUrl) {
 
-        List<Funding> fundingList = fundingRepository.findByParam("manageUrl", manageUrl);
-        if (fundingList.isEmpty()) {
-            throw new IllegalArgumentException("존재하지 않는 펀딩입니다.");
-        }
-        Funding funding = fundingList.get(0);
+        Funding funding = getFunding(manageUrl);
         funding
                 .detailContent(detailDTO.getContent())
                 .detailBudget(detailDTO.getBudget())
@@ -149,5 +137,13 @@ public class CreatorService {
 
         FundingDTO fundingDTO = Utils.fundingEToD(funding);
         return fundingDTO;
+    }
+
+    private Funding getFunding(String manageUrl) {
+        List<Funding> fundingList = fundingRepository.findByParam("manageUrl", manageUrl);
+        if (fundingList.isEmpty()) {
+            throw new IllegalArgumentException("존재하지 않는 펀딩입니다.");
+        }
+        return fundingList.get(0);
     }
 }

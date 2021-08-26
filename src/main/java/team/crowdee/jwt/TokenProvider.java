@@ -100,7 +100,7 @@ public class TokenProvider implements InitializingBean {
     // 토큰 검증
     public boolean validateToken(String token){
         try{
-            afterPropertiesSet();
+//            afterPropertiesSet();
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
 //            Jwts.parserBuilder().setSigningKey(secret.getBytes(Charset.forName("UTF-8"))).build().parseClaimsJws(token.replace("{", "").replace("}","")).getBody();
             return true;

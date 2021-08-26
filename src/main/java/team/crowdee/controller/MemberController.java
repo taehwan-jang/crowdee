@@ -144,21 +144,21 @@ public class MemberController {
         return new ResponseEntity<>("탈퇴 되었습니다", HttpStatus.OK);
     }
 
-    @PostMapping("/coffee")
+    @PostMapping("/coffee")//creator
     public ResponseEntity<?> coffeeAll(HttpServletRequest request){
 
         String email = CustomJWTFilter.findEmail(request);
+        System.out.println("email = " + email);
         String authority = CustomJWTFilter.findAuthority(request);
-
         System.out.println("authority = " + authority);
 
-
-        List<Member> email1 = memberRepository.findByParam("email", email);
-        for (Member member : email1) {
-            System.out.println("member.getUserName() = " + member.getUserName());
+        if (StringUtils.hasText(authority)) {
+            if(authority.equals("backer")) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
         }
-
-        return new ResponseEntity<>(HttpStatus.OK);
+        List<Member> email1 = memberRepository.findByParam("email", email);
+        return new ResponseEntity<>(email1.get(0).getNickName(),HttpStatus.OK);
     }
 
 

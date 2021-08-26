@@ -18,6 +18,7 @@ public class ThumbNailDTO {
     private String tag;
     private int rateOfAchievement;
     private int goalFundraising;
+    private int totalFundraising;
     private String category;
     private int restDate;
 
