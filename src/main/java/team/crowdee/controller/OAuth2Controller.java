@@ -8,8 +8,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class OAuth2Controller {
 
-    @GetMapping({"","/"})
+    @GetMapping("/home")
     public String getAuthorizationMessage(){
+        log.info("메인페이지");
         return "home";
     }
 
