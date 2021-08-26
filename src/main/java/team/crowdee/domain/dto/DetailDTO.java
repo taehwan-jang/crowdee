@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class DetailDTO {
 
-    private Long fundingId;
+    private String manageUrl;
     private String content;
     private String budget;
     private String schedule;

@@ -28,9 +28,6 @@ public class FundingRepository {
         return em.createQuery("select f from Funding f", Funding.class).getResultList();
     }
 
-    public List<Funding> findToThumbNail() {
-        return em.createQuery("select f from Funding f join fetch f.fundingStatus", Funding.class).getResultList();
-    }
 
     public List<Funding> findByParam(String target, String param) {
         String query = "select f from Funding f where f."+target+"=:param";

@@ -41,9 +41,8 @@ public class MemberService {
         if (validationPw(memberDTO) == false && validationNick(memberDTO) == false && validationEmail(memberDTO) == false) {
             return null;
         }
-//        String authKey = mimeEmailService.sendAuthMail(memberDTO.getEmail());
         Set<Authority> authorities = new HashSet<Authority>();
-        authorities.add(new Authority("backer"));
+        authorities.add(Authority.builder().authorityName("backer").build());
         Member member = Member.builder()
                 .password(passwordEncoder.encode(memberDTO.getPassword())) //패스워드암호화
                 .userName(memberDTO.getUserName())
@@ -55,10 +54,6 @@ public class MemberService {
                 .authorities(authorities)
                 .userState(UserState.backer)
                 .build();
-
-//        //이메일 인증후 emailcert Y로 변경 확인후 저장
-//        if (memberDTO.getEmailCert() == "Y") {
-//        }
         Long saveMember = memberRepository.save(member);
         return member.getMemberId();
     }

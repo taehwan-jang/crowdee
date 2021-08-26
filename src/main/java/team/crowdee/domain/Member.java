@@ -39,7 +39,7 @@ public class Member {
     @JoinTable(
             name = "member_authority",
             joinColumns = {@JoinColumn(name = "member_id", referencedColumnName = "member_id")},
-            inverseJoinColumns = {@JoinColumn(name = "authority_name", referencedColumnName = "authority_name")}
+            inverseJoinColumns = {@JoinColumn(name = "authority_id", referencedColumnName = "authority_id")}
     )
     @Builder.Default
     private Set<Authority> authorities = new HashSet<>();

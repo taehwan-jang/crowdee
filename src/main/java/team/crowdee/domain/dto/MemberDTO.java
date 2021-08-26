@@ -25,7 +25,6 @@ public class MemberDTO {
     private String emailCert; //이메일 인증 받았을때 //o
     private LocalDateTime registDate;
     private String secessionDate;
-    @Enumerated(EnumType.STRING)
     private UserState userState;
     private Set<Authority> authorities;
 

@@ -3,13 +3,11 @@ package team.crowdee.controller;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
-import java.util.Base64;
 
 import static java.util.Base64.*;
 
@@ -100,13 +98,22 @@ public class SimpleTest {
     public void 상남자_어디갔노() throws Exception {
         //given
         String token = "eyJhbGciOiJub25lIn0.eyJzdWIiOiJjcm93ZGVlZnVuZGluZ0BnbWFpbC5jb20iLCJhdXRoIjoiIiwiZXhwIjoxNjI5NzEwOTU1fQ.aasdilfhasd";
-        String regex = ".";
-        String[] split = token.split(regex);
+        String[] split = token.split("\\.");
         for (String s : split) {
             System.out.println("s = " + s);
         }
         //when
 
         //then
+    }
+
+
+    @Test
+    public void 문자열자르기() {
+        String testString = "123.456.789";
+        String[] split = testString.split("\\.");
+        for (String s : split) {
+            System.out.println("s = " + s);
+        }
     }
 }
