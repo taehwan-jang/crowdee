@@ -59,6 +59,23 @@ public class DummyData {
         memberDTO2.setUserName("창작자");
 
         memberService.join(memberDTO2);
+
+
+    }
+
+    @Test
+    @Rollback(value = false)
+    public void 권한두개부여() {
+        MemberDTO memberDTO2 = new MemberDTO();
+        memberDTO2.setEmail("memberCreator@gmail.com");
+        memberDTO2.setPassword("1q2w3e4r!");
+        memberDTO2.setEmailCert("WETSVZK");
+        memberDTO2.setMobile("010-1231-1231");
+        memberDTO2.setNickName("크리에이터");
+        memberDTO2.setRegistDate(LocalDateTime.now());
+        memberDTO2.setUserName("창작자");
+
+        memberService.join(memberDTO2);
     }
 
     @Test
