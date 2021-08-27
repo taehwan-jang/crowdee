@@ -9,12 +9,13 @@ import team.crowdee.domain.dto.FundingDTO;
 import team.crowdee.domain.dto.ThumbNailDTO;
 import team.crowdee.service.FundingService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 @RestController
 @Slf4j
-@RequestMapping("/contents")
+@RequestMapping("contents")
 @RequiredArgsConstructor
 @CrossOrigin
 public class FundingController {
@@ -24,7 +25,9 @@ public class FundingController {
     @GetMapping
     public ResponseEntity<?> showAllThumbNail() {
         Map<String, List<ThumbNailDTO>> thumbNail = fundingService.findThumbNail();
-        return new ResponseEntity<>(thumbNail, HttpStatus.OK);
+        List<Map<String, List<ThumbNailDTO>>> thumbNailList = new ArrayList<>();
+        thumbNailList.add(thumbNail);
+        return new ResponseEntity<>(thumbNailList, HttpStatus.OK);
     }
 
     @GetMapping("/{projectUrl}")
@@ -36,8 +39,8 @@ public class FundingController {
         return new ResponseEntity<>(fundingDTO, HttpStatus.OK);
     }
 
-    @GetMapping("/searchTag/{tag}")
-    public ResponseEntity<?> searchTag(@PathVariable String tag) {
+    @PostMapping("/searchTag")
+    public ResponseEntity<?> searchTag(@RequestBody String tag) {
         List<ThumbNailDTO> thumbNailDTO = fundingService.findTag(tag);
         if (thumbNailDTO.isEmpty()) {
             return new ResponseEntity<>("검색결과가 없습니다.", HttpStatus.BAD_REQUEST);

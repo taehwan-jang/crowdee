@@ -40,7 +40,7 @@ public class FundingRepository {
         String query = "select f from Funding f " +
                 "left join fetch f.orders " +
                 "where f.tag " +
-                "like %"+tag+"% " +
+                "like '%"+tag+"%' " +
                 "and f.status='progress'";
         return em.createQuery(query, Funding.class).getResultList();
     }
