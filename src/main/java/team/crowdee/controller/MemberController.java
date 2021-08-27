@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import team.crowdee.domain.Member;
 import team.crowdee.domain.dto.*;
 import team.crowdee.jwt.CustomJWTFilter;
+import team.crowdee.jwt.CustomTokenProvider;
 import team.crowdee.jwt.JwtFilter;
 import team.crowdee.jwt.TokenProvider;
 import team.crowdee.repository.MemberRepository;
@@ -42,8 +43,8 @@ public class MemberController {
     private final MimeEmailService mimeEmailService;
     private final MemberService memberService;
     private final MemberRepository memberRepository;
-    private final TokenProvider tokenProvider;
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    private final CustomTokenProvider customTokenProvider;
+
 
     @PostMapping("/emailCert")
     public ResponseEntity<?> emailCert(@RequestParam String email) throws MessagingException {
@@ -81,18 +82,14 @@ public class MemberController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO) {
 
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword());
+        String jwt = customTokenProvider.getToken(loginDTO);
+        String userNickName = memberService.getUserNickName(loginDTO.getEmail());
 
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        String jwt = tokenProvider.createToken(authentication);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer" + jwt);
         ///////////////////////////////////////////////////////////////////////////
 
-        return new ResponseEntity<>(new TokenDTO(jwt), httpHeaders, HttpStatus.OK);
+        return new ResponseEntity<>(new TokenDTO(jwt,userNickName), httpHeaders, HttpStatus.OK);
     }
 
     //비밀번호 찾기

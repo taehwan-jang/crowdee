@@ -217,6 +217,14 @@ public class MemberService {
         }
     }
 
+    public String getUserNickName(String email) {
+        List<Member> byEmail = memberRepository.findByEmail(email);
+        if (byEmail.isEmpty()) {
+            throw new IllegalArgumentException("회원이 아닙니다.");
+        }
+        return byEmail.get(0).getNickName();
+    }
+
 }
 
 

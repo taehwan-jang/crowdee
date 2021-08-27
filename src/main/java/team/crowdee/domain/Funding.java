@@ -2,10 +2,8 @@ package team.crowdee.domain;
 
 import lombok.*;
 import team.crowdee.domain.valuetype.Address;
-import team.crowdee.domain.valuetype.Coordinate;
 
 import javax.persistence.*;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
