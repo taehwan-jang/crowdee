@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import team.crowdee.domain.Member;
 import team.crowdee.domain.dto.*;
 import team.crowdee.jwt.CustomJWTFilter;
+import team.crowdee.jwt.CustomTokenProvider;
 import team.crowdee.jwt.JwtFilter;
 import team.crowdee.jwt.TokenProvider;
 import team.crowdee.repository.MemberRepository;
@@ -25,7 +26,6 @@ import team.crowdee.service.MemberService;
 import team.crowdee.util.MimeEmailService;
 import team.crowdee.util.SendEmailService;
 import javax.mail.MessagingException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.nio.charset.StandardCharsets;
@@ -43,8 +43,8 @@ public class MemberController {
     private final MimeEmailService mimeEmailService;
     private final MemberService memberService;
     private final MemberRepository memberRepository;
-    private final TokenProvider tokenProvider;
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    private final CustomTokenProvider customTokenProvider;
+
 
     @PostMapping("/emailCert")
     public ResponseEntity<?> emailCert(@RequestParam String email) throws MessagingException {
@@ -58,7 +58,6 @@ public class MemberController {
         return new ResponseEntity<>(key, HttpStatus.OK);
 
     }
-
     //회원가입
     @PostMapping("/signUp")
     public ResponseEntity<?> signUp(@RequestBody MemberDTO memberDTO) throws MessagingException {
@@ -68,31 +67,16 @@ public class MemberController {
         }
         return new ResponseEntity<>("회원가입이완료되었습니다.", HttpStatus.CREATED);
     }
-
-    @GetMapping("/signUpConfirm")
-    public ResponseEntity<?> signUpConfirm(@RequestParam String email, @RequestParam String authKey) {
-        Member member = memberService.signUpConfirm(email,authKey);
-        if (member == null) {
-            return new ResponseEntity<>("인증에 실패했습니다.", HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>("인증이 완료되었습니다.", HttpStatus.OK);
-    }
-
     //로그인
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO) {
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword());
 
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        String jwt = tokenProvider.createToken(authentication);
+        String jwt = customTokenProvider.getToken(loginDTO);
+        String userNickName = memberService.getUserNickName(loginDTO.getEmail());
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer" + jwt);
-        ///////////////////////////////////////////////////////////////////////////
 
-        return new ResponseEntity<>(new TokenDTO(jwt), httpHeaders, HttpStatus.OK);
+        return new ResponseEntity<>(new TokenDTO(jwt,userNickName), httpHeaders, HttpStatus.OK);
     }
 
     //비밀번호 찾기
@@ -127,7 +111,7 @@ public class MemberController {
     public ResponseEntity<?> edit(@RequestBody MemberDTO memberDTO) {
         Member member = memberService.memberEdit(memberDTO);
         if(member == null ){
-            return new ResponseEntity<>("닉네임 중복으로 다시 확인해주세요.", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("중복된 닉네임 입니다.", HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>("정보가 수정되었습니다", HttpStatus.OK);
     }
@@ -142,22 +126,5 @@ public class MemberController {
         }
         return new ResponseEntity<>("탈퇴 되었습니다", HttpStatus.OK);
     }
-
-    @PostMapping("/coffee")//creator
-    public ResponseEntity<?> coffeeAll(HttpServletRequest request){
-
-        String email = CustomJWTFilter.findEmail(request);
-        String authority = CustomJWTFilter.findAuthority(request);
-
-        if (StringUtils.hasText(authority)) {
-            if(authority.equals("backer")) {
-                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-            }
-        }
-        List<Member> email1 = memberRepository.findByParam("email", email);
-        return new ResponseEntity<>(email1.get(0).getNickName(),HttpStatus.OK);
-    }
-
-
 
 }

@@ -1,10 +1,8 @@
 package team.crowdee.domain;
 import lombok.*;
 import team.crowdee.domain.valuetype.Address;
-import team.crowdee.domain.valuetype.Coordinate;
 
 import javax.persistence.*;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
@@ -38,6 +36,7 @@ public class Funding {
     private String thumbNailUrl;//file이름 -> 여러건일경우 리스트?
     private String category;//카테고리
     private String tag;
+    private int rateOfAchievement=0;
 
     /**
      * 메인 컨텐츠 (Detail)
@@ -157,8 +156,6 @@ public class Funding {
         this.address = address;
         return this;
     }
-
-
     //==========조회용 로직 일부 추가===========//
     public int totalParticipant() {
 
@@ -172,12 +169,9 @@ public class Funding {
         return Period.between(start, end).getDays();
     }
 
-    public int rateOfAchievement() {
-        double rawRate = ((double) this.totalFundraising / (double) this.goalFundraising)*100;
-        return (int)rawRate;
-//        NPE 방지로 valueOf 사용
-//        String stringResult = String.valueOf(rawRate);
-//        return stringResult.substring(0, stringResult.lastIndexOf(".") + 2);
+    public void increaseAchievement() {
+        int rawRate = (int)(((double) this.totalFundraising / (double) this.goalFundraising)*100);
+        this.rateOfAchievement = rawRate;
     }
 
     //방문횟수 추가
@@ -188,6 +182,7 @@ public class Funding {
     //펀딩 참여시 총 펀딩금액 추가
     public void plusTotalFundraising(int amount) {
         this.totalFundraising += amount;
+        increaseAchievement();
     }
 
 }
