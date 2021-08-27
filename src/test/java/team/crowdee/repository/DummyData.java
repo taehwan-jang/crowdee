@@ -14,7 +14,6 @@ import team.crowdee.service.CreatorService;
 import team.crowdee.service.MemberService;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 

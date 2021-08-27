@@ -27,29 +27,6 @@ public class FundingController {
         return new ResponseEntity<>(thumbNail, HttpStatus.OK);
     }
 
-    /**
-     * map("new",ThumbNailDTO) 최신펀딩 가져오기(시작일기준)
-     */
-
-    /**
-     * map("under",ThumbNailDTO) 달성직전 가져오기(참여율 기준으로 100미만인 펀딩)
-     */
-
-    /**
-     * map("over",ThumbNailDTO) 달성직전 가져오기(참여율 기준으로 100초과인 펀딩 & maxBacker 여유)
-     */
-
-    /**
-     * map("popular",ThumbNailDTO) 관심도순 가져오기(조회수)
-     */
-
-    /**
-     * 검색 가져오기
-     */
-
-
-
-
     @GetMapping("/{projectUrl}")
     public ResponseEntity<?> showFundingDetail(@PathVariable String projectUrl) {
         FundingDTO fundingDTO = fundingService.findOneFunding(projectUrl);
@@ -58,6 +35,21 @@ public class FundingController {
         }
         return new ResponseEntity<>(fundingDTO, HttpStatus.OK);
     }
+
+    @GetMapping("/searchTag/{tag}")
+    public ResponseEntity<?> searchTag(@PathVariable String tag) {
+        List<ThumbNailDTO> thumbNailDTO = fundingService.findTag(tag);
+        if (thumbNailDTO.isEmpty()) {
+            return new ResponseEntity<>("검색결과가 없습니다.", HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(thumbNailDTO, HttpStatus.OK);
+    }
+
+    /**
+     * 검색 가져오기
+     */
+
+
     /**
      * 찜하기 로직
      */
