@@ -21,5 +21,6 @@ public class ThumbNailDTO {
     private int totalFundraising;
     private String category;
     private int restDate;
+    private int participant;
 
 }

@@ -40,4 +40,52 @@ public class FundingRepository {
         String query = "select f from Funding f where f.tag like %"+tag+"%";
         return em.createQuery(query, Funding.class).getResultList();
     }
+
+    public List<Funding> findNewFunding() {
+        return em.createQuery("select f from Funding f " +
+                "left join fetch f.orders " +
+                "where f.status='progress' " +
+                "order by f.startDate " +
+                "desc")
+                .setFirstResult(0)
+                .setMaxResults(3)
+                .getResultList();
+    }
+    public List<Funding> findUnderFunding() {
+        return em.createQuery("select f from Funding f " +
+                "left join fetch f.orders " +
+                "where f.status='progress' " +
+                "and f.rateOfAchievement < 100 " +
+                "order by f.rateOfAchievement " +
+                "desc")
+                .setFirstResult(0)
+                .setMaxResults(3)
+                .getResultList();
+    }
+
+    public List<Funding> findOverFunding() {
+        return em.createQuery("select f from Funding f " +
+                "left join fetch f.orders " +
+                "where f.status='progress' " +
+                "and f.rateOfAchievement >= 100 " +
+                "and f.orders.size < f.maxBacker " +
+                "order by f.rateOfAchievement " +
+                "desc")
+                .setFirstResult(0)
+                .setMaxResults(3)
+                .getResultList();
+    }
+    public List<Funding> findPopularFunding() {
+        return em.createQuery("select f from Funding f " +
+                "left join fetch f.orders " +
+                "where f.status='progress' " +
+                "order by f.visitCount " +
+                "desc")
+                .setFirstResult(0)
+                .setMaxResults(3)
+                .getResultList();
+    }
+
+
+
 }

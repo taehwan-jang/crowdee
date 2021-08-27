@@ -10,6 +10,7 @@ import team.crowdee.domain.dto.ThumbNailDTO;
 import team.crowdee.service.FundingService;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @Slf4j
@@ -22,8 +23,8 @@ public class FundingController {
 
     @GetMapping
     public ResponseEntity<?> showAllThumbNail() {
-        List<ThumbNailDTO> thumbNailList = fundingService.findThumbNail();
-        return new ResponseEntity<>(thumbNailList, HttpStatus.OK);
+        Map<String, List<ThumbNailDTO>> thumbNail = fundingService.findThumbNail();
+        return new ResponseEntity<>(thumbNail, HttpStatus.OK);
     }
 
     /**

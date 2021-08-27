@@ -11,7 +11,9 @@ import team.crowdee.repository.FundingRepository;
 import team.crowdee.util.Utils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -26,12 +28,53 @@ public class FundingService {
      * FundingService - backer 의 Funding 참여에 수행하는 비즈니스로직
      */
 
+    /**
+     * map("new",ThumbNailDTO) 최신펀딩 가져오기(시작일기준)
+     */
+
+    /**
+     * map("under",ThumbNailDTO) 달성직전 가져오기(참여율 기준으로 100미만인 펀딩)
+     */
+
+    /**
+     * map("over",ThumbNailDTO) 초과펀딩 가져오기(참여율 기준으로 100초과인 펀딩 & maxBacker 여유)
+     */
+
+    /**
+     * map("popular",ThumbNailDTO) 관심도순 가져오기(조회수)
+     */
+
     @Transactional(readOnly = true)
-    public List<ThumbNailDTO> findThumbNail() {
-        List<ThumbNailDTO> thumbNailDTOList = new ArrayList<>();
-        List<Funding> fundingList = fundingRepository.findAll();
-        for (Funding funding : fundingList) {
-            thumbNailDTOList.add(
+    public Map<String,List<ThumbNailDTO>> findThumbNail() {
+        Map<String,List<ThumbNailDTO>> map = new HashMap<>();
+
+        List<ThumbNailDTO> newThumbNail = new ArrayList<>();
+        List<Funding> fundingList1 = fundingRepository.findNewFunding();
+        fundingToThumbNail(newThumbNail, fundingList1);
+
+        List<ThumbNailDTO> underThumbNail = new ArrayList<>();
+        List<Funding> fundingList2 = fundingRepository.findUnderFunding();
+        fundingToThumbNail(underThumbNail, fundingList2);
+
+        List<ThumbNailDTO> overThumbNail = new ArrayList<>();
+        List<Funding> fundingList3 = fundingRepository.findOverFunding();
+        fundingToThumbNail(overThumbNail, fundingList3);
+
+        List<ThumbNailDTO> popularThumbNail = new ArrayList<>();
+        List<Funding> fundingList4 = fundingRepository.findPopularFunding();
+        fundingToThumbNail(popularThumbNail, fundingList4);
+
+        map.put("new", newThumbNail);
+        map.put("under", underThumbNail);
+        map.put("over", overThumbNail);
+        map.put("popular", popularThumbNail);
+
+        return map;
+    }
+
+    private void fundingToThumbNail(List<ThumbNailDTO> newThumbNail, List<Funding> fundingList1) {
+        for (Funding funding : fundingList1) {
+            newThumbNail.add(
                     ThumbNailDTO.builder()
                             .fundingId(funding.getFundingId())
                             .creatorId(funding.getCreator().getCreatorId())
@@ -44,11 +87,11 @@ public class FundingService {
                             .restDate(funding.getRestDays())
                             .summary(funding.getSummary())
                             .category(funding.getCategory())
-                            .rateOfAchievement(funding.rateOfAchievement())
+                            .rateOfAchievement(funding.getRateOfAchievement())
+                            .participant(funding.totalParticipant())
                             .build()
             );
         }
-        return thumbNailDTOList;
     }
 
     @Transactional(readOnly = true)

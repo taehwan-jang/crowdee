@@ -161,7 +161,6 @@ public class Funding {
         this.address = address;
         return this;
     }
-
     //==========조회용 로직 일부 추가===========//
     public int totalParticipant() {
 

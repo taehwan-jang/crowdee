@@ -65,6 +65,20 @@ public class DummyData {
 
     @Test
     @Rollback(value = false)
+    public void 크리에이터_더미데이터() {
+        CreatorDTO creatorDTO = new CreatorDTO();
+        creatorDTO.setAccountNumber("123-123123-123");
+        creatorDTO.setBankName("신한");
+        creatorDTO.setBusinessNumber("1239192-12-12");
+        creatorDTO.setCreatorNickName("투썸");
+        creatorDTO.setBankBookImageUrl("imgu");
+        creatorDTO.setMemberId(4L);
+
+        creatorService.joinCreator(creatorDTO);
+    }
+
+    @Test
+    @Rollback(value = false)
     public void 권한두개부여() {
         MemberDTO memberDTO2 = new MemberDTO();
         memberDTO2.setEmail("memberCreator@gmail.com");
@@ -76,20 +90,6 @@ public class DummyData {
         memberDTO2.setUserName("창작자");
 
         memberService.join(memberDTO2);
-    }
-
-    @Test
-    @Rollback(value = false)
-    public void 크리에이터_더미데이터() {
-        CreatorDTO creatorDTO = new CreatorDTO();
-        creatorDTO.setAccountNumber("123-123123-123");
-        creatorDTO.setBankName("신한");
-        creatorDTO.setBusinessNumber("1239192-12-12");
-        creatorDTO.setCreatorNickName("투썸");
-        creatorDTO.setBankBookImageUrl("imgu");
-        creatorDTO.setMemberId(3L);
-
-        creatorService.joinCreator(creatorDTO);
     }
 
     @Test
@@ -112,6 +112,7 @@ public class DummyData {
                 .aboutUs("크리에이터에 관한 정보")
                 .goalFundraising(1200000)
                 .minFundraising(20000)
+                .rateOfAchievement(26)
                 .startDate("2021-08-12")
                 .endDate("2021-09-15")
                 .maxBacker(30)
@@ -145,6 +146,7 @@ public class DummyData {
                 .visitCount(300)
                 .likeCount(15)
                 .totalFundraising(360000)
+                .rateOfAchievement(120)
                 .status(Status.progress)
                 .build();
         fundingRepository.save(funding1);
@@ -171,6 +173,7 @@ public class DummyData {
                 .visitCount(400)
                 .likeCount(40)
                 .totalFundraising(250000)
+                .rateOfAchievement(180)
                 .status(Status.progress)
                 .build();
         fundingRepository.save(funding3);
@@ -197,6 +200,7 @@ public class DummyData {
                 .visitCount(240)
                 .likeCount(200)
                 .totalFundraising(400000)
+                .rateOfAchievement(90)
                 .status(Status.progress)
                 .build();
         fundingRepository.save(funding4);
@@ -223,7 +227,8 @@ public class DummyData {
                 .visitCount(0)
                 .likeCount(0)
                 .totalFundraising(200000)
-                .status(Status.progress)
+                .rateOfAchievement(20)
+                .status(Status.confirm)
                 .build();
         fundingRepository.save(funding5);
 
@@ -249,7 +254,8 @@ public class DummyData {
                 .visitCount(120)
                 .likeCount(10)
                 .totalFundraising(260000)
-                .status(Status.progress)
+                .rateOfAchievement(25)
+                .status(Status.confirm)
                 .build();
         fundingRepository.save(funding6);
 
@@ -275,7 +281,8 @@ public class DummyData {
                 .visitCount(200)
                 .likeCount(25)
                 .totalFundraising(640000)
-                .status(Status.progress)
+                .rateOfAchievement(110)
+                .status(Status.confirm)
                 .build();
         fundingRepository.save(funding7);
 
@@ -301,6 +308,7 @@ public class DummyData {
                 .visitCount(40)
                 .likeCount(11)
                 .totalFundraising(240000)
+                .rateOfAchievement(40)
                 .status(Status.progress)
                 .build();
         fundingRepository.save(funding8);
@@ -327,6 +335,7 @@ public class DummyData {
                 .visitCount(250)
                 .likeCount(10)
                 .totalFundraising(1200000)
+                .rateOfAchievement(150)
                 .status(Status.progress)
                 .build();
         fundingRepository.save(funding9);
@@ -353,7 +362,8 @@ public class DummyData {
                 .visitCount(1204)
                 .likeCount(12)
                 .totalFundraising(320000)
-                .status(Status.progress)
+                .rateOfAchievement(20)
+                .status(Status.confirm)
                 .build();
         fundingRepository.save(funding10);
 
@@ -379,6 +389,7 @@ public class DummyData {
                 .visitCount(322)
                 .likeCount(72)
                 .totalFundraising(320000)
+                .rateOfAchievement(50)
                 .status(Status.progress)
                 .build();
         fundingRepository.save(funding11);
@@ -405,7 +416,8 @@ public class DummyData {
                 .visitCount(20000)
                 .likeCount(1500)
                 .totalFundraising(800000)
-                .status(Status.progress)
+                .rateOfAchievement(200)
+                .status(Status.confirm)
                 .build();
         fundingRepository.save(funding12);
 
@@ -431,6 +443,7 @@ public class DummyData {
                 .visitCount(124)
                 .likeCount(11)
                 .totalFundraising(32000)
+                .rateOfAchievement(15)
                 .status(Status.progress)
                 .build();
         fundingRepository.save(funding13);
