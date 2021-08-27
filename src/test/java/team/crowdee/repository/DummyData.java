@@ -60,11 +60,11 @@ public class DummyData {
         memberService.join(memberDTO2);
 
 
-    }
-
-    @Test
-    @Rollback(value = false)
-    public void 크리에이터_더미데이터() {
+//    }
+//
+//    @Test
+//    @Rollback(value = false)
+//    public void 크리에이터_더미데이터() {
         CreatorDTO creatorDTO = new CreatorDTO();
         creatorDTO.setAccountNumber("123-123123-123");
         creatorDTO.setBankName("신한");
@@ -74,31 +74,31 @@ public class DummyData {
         creatorDTO.setMemberId(4L);
 
         creatorService.joinCreator(creatorDTO);
-    }
+//    }
+//
+//    @Test
+//    @Rollback(value = false)
+//    public void 권한두개부여() {
+        MemberDTO memberDTO3 = new MemberDTO();
+        memberDTO3.setEmail("memberCreator@gmail.com");
+        memberDTO3.setPassword("1q2w3e4r!");
+        memberDTO3.setEmailCert("WETSVZK");
+        memberDTO3.setMobile("010-1231-1231");
+        memberDTO3.setNickName("크리에이터");
+        memberDTO3.setRegistDate(LocalDateTime.now());
+        memberDTO3.setUserName("창작자");
 
-    @Test
-    @Rollback(value = false)
-    public void 권한두개부여() {
-        MemberDTO memberDTO2 = new MemberDTO();
-        memberDTO2.setEmail("memberCreator@gmail.com");
-        memberDTO2.setPassword("1q2w3e4r!");
-        memberDTO2.setEmailCert("WETSVZK");
-        memberDTO2.setMobile("010-1231-1231");
-        memberDTO2.setNickName("크리에이터");
-        memberDTO2.setRegistDate(LocalDateTime.now());
-        memberDTO2.setUserName("창작자");
-
-        memberService.join(memberDTO2);
-    }
-
-    @Test
-    @Rollback(value = false)
-    public void 펀딩더미데이터() {
+        memberService.join(memberDTO3);
+//    }
+//
+//    @Test
+//    @Rollback(value = false)
+//    public void 펀딩더미데이터() {
         List<Creator> byEmail = creatorRepository.findByEmail("forCreator@gmail.com");
 
         Funding funding = Funding.builder()
                 .creator(byEmail.get(0))
-                .projectUrl("testProject")
+                .projectUrl("summerNight")
                 .manageUrl(UUID.randomUUID().toString().replaceAll("-", ""))
                 .title("한여름밤의 꿈")
                 .summary("서울예술대학교 공연 포스터")
@@ -109,16 +109,16 @@ public class DummyData {
                 .budget("공연 예산에 관한 정보들")
                 .schedule("일정에 관한 정보들")
                 .aboutUs("크리에이터에 관한 정보")
-                .goalFundraising(1200000)
+                .goalFundraising(250000)
                 .minFundraising(20000)
-                .rateOfAchievement(26)
-                .startDate("2021-08-12")
+                .rateOfAchievement(0)
+                .startDate("2021-08-28")
                 .endDate("2021-09-15")
                 .maxBacker(30)
                 .postDate(LocalDateTime.now())
-                .visitCount(1204)
-                .likeCount(12)
-                .totalFundraising(320000)
+                .visitCount(0)
+                .likeCount(0)
+                .totalFundraising(0)
                 .status(Status.progress)
                 .build();
         fundingRepository.save(funding);
@@ -165,14 +165,14 @@ public class DummyData {
                 .aboutUs("크리에이터에 관한 정보")
                 .goalFundraising(1500000)
                 .minFundraising(35000)
-                .startDate("2021-08-21")
+                .startDate("2021-08-27")
                 .endDate("2021-09-22")
                 .maxBacker(25)
                 .postDate(LocalDateTime.now())
-                .visitCount(400)
-                .likeCount(40)
-                .totalFundraising(250000)
-                .rateOfAchievement(180)
+                .visitCount(10)
+                .likeCount(4)
+                .totalFundraising(15000)
+                .rateOfAchievement(10)
                 .status(Status.progress)
                 .build();
         fundingRepository.save(funding3);
@@ -219,15 +219,15 @@ public class DummyData {
                 .aboutUs("크리에이터에 관한 정보")
                 .goalFundraising(1000000)
                 .minFundraising(25000)
-                .startDate("2021-08-30")
+                .startDate("2021-08-11")
                 .endDate("2021-09-15")
                 .maxBacker(60)
                 .postDate(LocalDateTime.now())
-                .visitCount(0)
-                .likeCount(0)
-                .totalFundraising(200000)
-                .rateOfAchievement(20)
-                .status(Status.confirm)
+                .visitCount(29000)
+                .likeCount(200)
+                .totalFundraising(2000000)
+                .rateOfAchievement(200)
+                .status(Status.progress)
                 .build();
         fundingRepository.save(funding5);
 
@@ -250,11 +250,11 @@ public class DummyData {
                 .endDate("2021-09-30")
                 .maxBacker(100)
                 .postDate(LocalDateTime.now())
-                .visitCount(120)
+                .visitCount(12000)
                 .likeCount(10)
                 .totalFundraising(260000)
-                .rateOfAchievement(25)
-                .status(Status.confirm)
+                .rateOfAchievement(13)
+                .status(Status.progress)
                 .build();
         fundingRepository.save(funding6);
 
@@ -341,28 +341,28 @@ public class DummyData {
 
         Funding funding10 = Funding.builder()
                 .creator(byEmail.get(0))
-                .projectUrl("testProject")
+                .projectUrl("antiGone")
                 .manageUrl(UUID.randomUUID().toString().replaceAll("-", ""))
-                .title("제목을 나타내는 영역")
-                .summary("요약정보를 나타내는 부분임")
-                .thumbNailUrl("https://cdn.notefolio.net/img/5a/af/5aaf36082b60a519aac5db918f67fabd809ee35def6cfd2020855da5e6565db0_v1.jpg")
-                .category("piano")
-                .tag("#공연,#연주,#졸업,#음대")
+                .title("안티고네")
+                .summary("team소시민 서울예대")
+                .thumbNailUrl("https://cdn.notefolio.net/img/54/4d/544d8b6b6a0f4d6c2c2e35bebf519995bf01e93c2447758ee051879e1e6a8bdc_v1.jpg")
+                .category("theater")
+                .tag("#서울예대,#안티고네,#연극")
                 .content("이건 대충 컨텐츠")
                 .budget("공연 예산에 관한 정보들")
                 .schedule("일정에 관한 정보들")
                 .aboutUs("크리에이터에 관한 정보")
-                .goalFundraising(1200000)
+                .goalFundraising(250000)
                 .minFundraising(20000)
-                .startDate("2021-08-30")
+                .startDate("2021-08-27")
                 .endDate("2021-09-15")
                 .maxBacker(30)
                 .postDate(LocalDateTime.now())
-                .visitCount(1204)
+                .visitCount(112)
                 .likeCount(12)
-                .totalFundraising(320000)
-                .rateOfAchievement(20)
-                .status(Status.confirm)
+                .totalFundraising(240000)
+                .rateOfAchievement(90)
+                .status(Status.progress)
                 .build();
         fundingRepository.save(funding10);
 
@@ -385,7 +385,7 @@ public class DummyData {
                 .endDate("2021-09-10")
                 .maxBacker(55)
                 .postDate(LocalDateTime.now())
-                .visitCount(322)
+                .visitCount(1322)
                 .likeCount(72)
                 .totalFundraising(320000)
                 .rateOfAchievement(50)

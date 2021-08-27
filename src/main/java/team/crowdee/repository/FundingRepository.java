@@ -52,7 +52,7 @@ public class FundingRepository {
                 "order by f.startDate " +
                 "desc",Funding.class)
                 .setFirstResult(0)
-                .setMaxResults(3)
+                .setMaxResults(4)
                 .getResultList();
     }
     public List<Funding> findUnderFunding() {
@@ -63,7 +63,7 @@ public class FundingRepository {
                 "order by f.rateOfAchievement " +
                 "desc",Funding.class)
                 .setFirstResult(0)
-                .setMaxResults(3)
+                .setMaxResults(4)
                 .getResultList();
     }
 
@@ -76,7 +76,7 @@ public class FundingRepository {
                 "order by f.rateOfAchievement " +
                 "desc",Funding.class)
                 .setFirstResult(0)
-                .setMaxResults(3)
+                .setMaxResults(4)
                 .getResultList();
     }
     public List<Funding> findPopularFunding() {
@@ -86,7 +86,7 @@ public class FundingRepository {
                 "order by f.visitCount " +
                 "desc",Funding.class)
                 .setFirstResult(0)
-                .setMaxResults(3)
+                .setMaxResults(4)
                 .getResultList();
     }
 
