@@ -45,8 +45,8 @@ public class FundingService {
      */
 
     @Transactional(readOnly = true)
-    public Map<String,List<ThumbNailDTO>> findThumbNail() {
-        Map<String,List<ThumbNailDTO>> map = new HashMap<>();
+    public List<List<ThumbNailDTO>> findThumbNail() {
+        List<List<ThumbNailDTO>> thumbNailList = new ArrayList<>();
 
         List<ThumbNailDTO> newThumbNail = new ArrayList<>();
         List<Funding> fundingList1 = fundingRepository.findNewFunding();
@@ -64,12 +64,12 @@ public class FundingService {
         List<Funding> fundingList4 = fundingRepository.findPopularFunding();
         fundingToThumbNail(popularThumbNail, fundingList4);
 
-        map.put("new", newThumbNail);
-        map.put("under", underThumbNail);
-        map.put("over", overThumbNail);
-        map.put("popular", popularThumbNail);
+        thumbNailList.add(newThumbNail);
+        thumbNailList.add(underThumbNail);
+        thumbNailList.add(overThumbNail);
+        thumbNailList.add(popularThumbNail);
 
-        return map;
+        return thumbNailList;
     }
 
     public List<ThumbNailDTO> findTag(String tag) {

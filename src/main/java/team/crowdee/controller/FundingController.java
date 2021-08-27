@@ -24,10 +24,8 @@ public class FundingController {
 
     @GetMapping
     public ResponseEntity<?> showAllThumbNail() {
-        Map<String, List<ThumbNailDTO>> thumbNail = fundingService.findThumbNail();
-        List<Map<String, List<ThumbNailDTO>>> thumbNailList = new ArrayList<>();
-        thumbNailList.add(thumbNail);
-        return new ResponseEntity<>(thumbNailList, HttpStatus.OK);
+        List<List<ThumbNailDTO>> thumbNail = fundingService.findThumbNail();
+        return new ResponseEntity<>(thumbNail, HttpStatus.OK);
     }
 
     @GetMapping("/{projectUrl}")
