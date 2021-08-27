@@ -176,20 +176,6 @@ public class MemberService {
         }
         return false;
     }
-
-    //이메일 인증
-    @Transactional
-    public Member signUpConfirm(String email, String authKey) {
-        List<Member> members = memberRepository.findToConfirm(email,authKey);
-        if (members.isEmpty()) {
-            return null;
-        }
-        Member member = members.get(0);
-        member.setEmailCert("Y");
-        member.setUserState(UserState.backer);
-        return member;
-    }
-
     //회원탈퇴
     @Transactional
     public Member deleteMember(MemberDTO memberDTO) { //비번 값을 보내준다고 가정

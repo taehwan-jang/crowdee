@@ -9,6 +9,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import team.crowdee.domain.dto.LoginDTO;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Component
 @RequiredArgsConstructor
 public class CustomTokenProvider {
@@ -24,7 +26,6 @@ public class CustomTokenProvider {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String jwt = tokenProvider.createToken(authentication);
-
         return jwt;
     }
 

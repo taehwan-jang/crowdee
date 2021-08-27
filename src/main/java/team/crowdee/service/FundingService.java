@@ -31,7 +31,6 @@ public class FundingService {
         List<ThumbNailDTO> thumbNailDTOList = new ArrayList<>();
         List<Funding> fundingList = fundingRepository.findAll();
         for (Funding funding : fundingList) {
-
             thumbNailDTOList.add(
                     ThumbNailDTO.builder()
                             .fundingId(funding.getFundingId())
