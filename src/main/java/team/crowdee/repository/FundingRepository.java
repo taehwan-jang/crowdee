@@ -37,7 +37,11 @@ public class FundingRepository {
     }
 
     public List<Funding> findByTag(String tag) {
-        String query = "select f from Funding f where f.tag like %"+tag+"%";
+        String query = "select f from Funding f " +
+                "left join fetch f.orders " +
+                "where f.tag " +
+                "like %"+tag+"% " +
+                "and f.status='progress'";
         return em.createQuery(query, Funding.class).getResultList();
     }
 
@@ -46,7 +50,7 @@ public class FundingRepository {
                 "left join fetch f.orders " +
                 "where f.status='progress' " +
                 "order by f.startDate " +
-                "desc")
+                "desc",Funding.class)
                 .setFirstResult(0)
                 .setMaxResults(3)
                 .getResultList();
@@ -57,7 +61,7 @@ public class FundingRepository {
                 "where f.status='progress' " +
                 "and f.rateOfAchievement < 100 " +
                 "order by f.rateOfAchievement " +
-                "desc")
+                "desc",Funding.class)
                 .setFirstResult(0)
                 .setMaxResults(3)
                 .getResultList();
@@ -70,7 +74,7 @@ public class FundingRepository {
                 "and f.rateOfAchievement >= 100 " +
                 "and f.orders.size < f.maxBacker " +
                 "order by f.rateOfAchievement " +
-                "desc")
+                "desc",Funding.class)
                 .setFirstResult(0)
                 .setMaxResults(3)
                 .getResultList();
@@ -80,9 +84,17 @@ public class FundingRepository {
                 "left join fetch f.orders " +
                 "where f.status='progress' " +
                 "order by f.visitCount " +
-                "desc")
+                "desc",Funding.class)
                 .setFirstResult(0)
                 .setMaxResults(3)
+                .getResultList();
+    }
+
+    public List<Funding> findToInspection() {
+        return em.createQuery("select f from Funding f " +
+                "join fetch f.creator " +
+                "where f.status='insepction'",
+                Funding.class)
                 .getResultList();
     }
 

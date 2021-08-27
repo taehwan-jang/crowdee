@@ -72,6 +72,14 @@ public class FundingService {
         return map;
     }
 
+    public List<ThumbNailDTO> findTag(String tag) {
+
+        List<Funding> fundingList = fundingRepository.findByTag(tag);
+        List<ThumbNailDTO> tagThumbNail = new ArrayList<>();
+        fundingToThumbNail(tagThumbNail, fundingList);
+        return tagThumbNail;
+    }
+
     private void fundingToThumbNail(List<ThumbNailDTO> newThumbNail, List<Funding> fundingList1) {
         for (Funding funding : fundingList1) {
             newThumbNail.add(
@@ -94,14 +102,15 @@ public class FundingService {
         }
     }
 
-    @Transactional(readOnly = true)
     public FundingDTO findOneFunding(String projectUrl) {
         List<Funding> fundingList = fundingRepository.findByParam("projectUrl", projectUrl);
         if (fundingList.isEmpty()) {
             return null;
         }
+        fundingList.get(0).plusVisitCount();//조회수 증가
         return Utils.fundingEToD(fundingList.get(0));
     }
+
 
 
 }
