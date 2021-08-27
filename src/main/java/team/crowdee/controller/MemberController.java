@@ -148,9 +148,7 @@ public class MemberController {
     public ResponseEntity<?> coffeeAll(HttpServletRequest request){
 
         String email = CustomJWTFilter.findEmail(request);
-        System.out.println("email = " + email);
         String authority = CustomJWTFilter.findAuthority(request);
-        System.out.println("authority = " + authority);
 
         if (StringUtils.hasText(authority)) {
             if(authority.equals("backer")) {

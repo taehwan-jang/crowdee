@@ -32,7 +32,6 @@ public class CustomJWTFilter {
     }
 
     public static String[] getPayload(String bearerToken) {
-
         if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")){
             String[] token = bearerToken.substring(7).split("\\.");
             Base64.Decoder decoder = getDecoder();
@@ -42,6 +41,35 @@ public class CustomJWTFilter {
             return strings;//payload 배열
         }
         return null;
+    }
+
+    public static boolean isBacker(HttpServletRequest request) {
+        String authority = findAuthority(request);
+        if (StringUtils.hasText(authority)) {
+            if (!authority.contains("backer")) {
+                return false;
+            }
+        }
+        return true;
+    }
+    public static boolean isCreator(HttpServletRequest request) {
+        String authority = findAuthority(request);
+        if (StringUtils.hasText(authority)) {
+            if (!authority.contains("creator")) {
+                return false;
+            }
+        }
+        return true;
+    }
+    public static boolean isAdmin(HttpServletRequest request) {
+        String authority = findAuthority(request);
+        if (StringUtils.hasText(authority)) {
+            if (!authority.contains("admin")) {
+                return false;
+            }
+        }
+        return true;
+
     }
 
 
