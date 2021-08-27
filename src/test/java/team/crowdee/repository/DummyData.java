@@ -13,6 +13,7 @@ import team.crowdee.domain.dto.MemberDTO;
 import team.crowdee.service.CreatorService;
 import team.crowdee.service.MemberService;
 
+import javax.mail.MessagingException;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
@@ -74,7 +75,6 @@ public class DummyData {
         memberDTO2.setNickName("크리에이터");
         memberDTO2.setRegistDate(LocalDateTime.now());
         memberDTO2.setUserName("창작자");
-
         memberService.join(memberDTO2);
     }
 
@@ -91,12 +91,64 @@ public class DummyData {
 
         creatorService.joinCreator(creatorDTO);
     }
+    @Test
+    @Rollback(value = false)
+    public void 크리에이터등록() {
+        CreatorDTO creatorDTO = new CreatorDTO();
+        creatorDTO.setMemberId(4L);
+        creatorDTO.setAccountNumber("1233424234324");
+        creatorDTO.setBankName("국민은행");
+        creatorDTO.setBankBookImageUrl("imsdfjskdfdsjfl");
+        creatorDTO.setCreatorNickName("성두현천재");
+        creatorDTO.setBusinessNumber("00000000");
+        Creator creator = creatorService.joinCreator(creatorDTO);
+    }
+    @Test
+    @Rollback(value = false)
+    public void 크리에이터등록1() {
+        CreatorDTO creatorDTO = new CreatorDTO();
+        creatorDTO.setMemberId(7L);
+        creatorDTO.setAccountNumber("1233424234324");
+        creatorDTO.setBankName("우리은행");
+        creatorDTO.setBankBookImageUrl("imsdfjskdfdsjfl");
+        creatorDTO.setCreatorNickName("성두현천재");
+        creatorDTO.setBusinessNumber("00000000");
+        Creator creator = creatorService.joinCreator(creatorDTO);
+    }
+    @Test
+    @Rollback(value = false)
+    public void 크리에이터등록2() {
+        CreatorDTO creatorDTO = new CreatorDTO();
+        creatorDTO.setMemberId(10L);
+        creatorDTO.setAccountNumber("1233424234324");
+        creatorDTO.setBankName("두현은행");
+        creatorDTO.setBankBookImageUrl("imsdfjskdfdsjfl");
+        creatorDTO.setCreatorNickName("성두현천재");
+        creatorDTO.setBusinessNumber("00000000");
+        Creator creator = creatorService.joinCreator(creatorDTO);
+    }
+
+    @Test
+    @Rollback(value = false)
+    public void 더미데이터_삽입() throws MessagingException {
+        MemberDTO memberDTO = new MemberDTO();
+        for (int i = 0; i < 10; i++) {
+            memberDTO.setUserName("시버럴"+i);
+            memberDTO.setPassword("1q2w3e4r!");
+            memberDTO.setNickName("테스트"+i);
+            memberDTO.setEmail("crowdeefunding@gmail.com");
+            memberDTO.setEmailCert("Y"+i);
+            memberDTO.setMobile("010-1234-123"+i);
+            memberDTO.setRegistDate(LocalDateTime.now());
+            memberService.join(memberDTO);
+        }
+
+    }
 
     @Test
     @Rollback(value = false)
     public void 펀딩더미데이터() {
-        List<Creator> byEmail = creatorRepository.findByEmail("forCreator@gmail.com");
-
+        List<Creator> byEmail = creatorRepository.findByEmail("crowdeefunding@gmail.com");
         Funding funding = Funding.builder()
                 .creator(byEmail.get(0))
                 .projectUrl("testProject")

@@ -81,7 +81,6 @@ public class MemberController {
     //로그인
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO) {
-
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword());
 

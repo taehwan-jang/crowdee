@@ -11,7 +11,6 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Setter
 public class Authority {
-
     @Id
     @GeneratedValue
     @Column(name ="authority_id",length = 50)

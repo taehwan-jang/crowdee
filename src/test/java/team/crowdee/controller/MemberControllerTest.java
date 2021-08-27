@@ -34,6 +34,8 @@ class MemberControllerTest {
     private MemberRepository memberRepository;
     @Autowired
     private EntityManager em;
+    @Autowired
+    private AdminController adminController;
 
     @Test
     @Rollback(value = false)
@@ -49,6 +51,16 @@ class MemberControllerTest {
                             .build()
             );
         }
+    }
+
+    @Test
+    public void 미주짱() throws Exception {
+        ResponseEntity<?> responseEntity = adminController.allMember();
+    }
+    @Test
+    public void 두현짱() throws Exception {
+        ResponseEntity<?> responseEntity = adminController.findAllCreator();
+
     }
 
     @Test

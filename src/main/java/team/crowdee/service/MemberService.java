@@ -31,10 +31,10 @@ import java.util.regex.Pattern;
 @EnableScheduling
 @Transactional(readOnly = true)
 public class MemberService {
+
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final MimeEmailService mimeEmailService;
-
     @Transactional
     public Long join(MemberDTO memberDTO) {
         //비밀번호검증:8-16자리 대문자소문자특수문자 포함 // 닉네임 중복검증 //이메일 중복검증 형식검증
