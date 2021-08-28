@@ -1,15 +1,13 @@
 package team.crowdee.util;
 
 
-import team.crowdee.domain.Creator;
-import team.crowdee.domain.Funding;
-import team.crowdee.domain.Member;
-import team.crowdee.domain.Status;
+import team.crowdee.domain.*;
 import team.crowdee.domain.dto.*;
 import team.crowdee.domain.valuetype.AccountInfo;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Set;
 
 public class Utils {
 
@@ -56,7 +54,7 @@ public class Utils {
         backerDTO.setEmailCert(member.getEmailCert());
         backerDTO.setRegistDate(member.getRegistDate());
         backerDTO.setSecessionDate(member.getSecessionDate());
-        backerDTO.setUserState(member.getUserState());
+      //  backerDTO.setUserState(member.getUserState());
         backerDTO.setAuthorities(member.getAuthorities());
 
         return backerDTO;
@@ -88,7 +86,7 @@ public class Utils {
         creatorBackDTO.setEmailCert(member.getEmailCert());
         creatorBackDTO.setRegistDate(member.getRegistDate());
         creatorBackDTO.setSecessionDate(member.getSecessionDate());
-        creatorBackDTO.setUserState(member.getUserState());
+       // creatorBackDTO.setUserState(member.getUserState());
         creatorBackDTO.setAuthorities(member.getAuthorities());
         creatorBackDTO.setCreatorNickName(creator.getCreatorNickName());
         creatorBackDTO.setBusinessNumber(creator.getBusinessNumber());
@@ -127,6 +125,21 @@ public class Utils {
         inspectionDTO.setCreatorId(creatorId);
         inspectionDTO.setFundingId(funding.getFundingId());
         return inspectionDTO;
+    }
+
+    public static MemberDTO inspectionMember(Member member) {
+        MemberDTO memberDTO = new MemberDTO();
+        Set<Authority> authorities = member.getAuthorities();
+        for (Authority authority : authorities) {
+            String authorityName = authority.getAuthorityName();
+        }
+
+        memberDTO.setMemberId(member.getMemberId());
+        memberDTO.setUserName(member.getUserName());
+        memberDTO.setEmail(member.getEmail());
+        memberDTO.setRegistDate(member.getRegistDate());
+        memberDTO.setAuthorities(authorities);
+        return memberDTO;
     }
 
 

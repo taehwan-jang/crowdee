@@ -45,7 +45,6 @@ public class MemberController {
     private final MemberRepository memberRepository;
     private final CustomTokenProvider customTokenProvider;
 
-
     @PostMapping("/emailCert")
     public ResponseEntity<?> emailCert(@RequestParam String email) throws MessagingException {
         List<Member> findMember = memberRepository.findByParam("email", email);

@@ -47,6 +47,24 @@ public class AdminService {
          */
     }
 
+    public List<InspectionDTO> findInspectionMember() {
+        List<Member> toInspection = memberRepository.findToInspection();
+        if (toInspection.isEmpty()) {
+            return null;
+        }
+        List<InspectionDTO> list = new ArrayList<>();
+        for (int i=0; i<toInspection.size(); i++){
+//            InspectionDTO inspectionDTO = Utils.inspectionFunding(toInspection.get(i));
+//            list.add(inspectionDTO);
+        }
+        return list;
+        /**
+         * 위 toInspection 에 funding 들이 담겨있고 creator 도 포함되어 있음.
+         * 필요한 데이터 DTO에 담아서 list로 뿌려줄것
+         */
+    }
+
+
     public BackerDTO oneBacker(Long backerId) {
         Member member = memberRepository.findById(backerId);
         if (member == null) {

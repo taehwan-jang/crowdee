@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import team.crowdee.domain.Funding;
 import team.crowdee.domain.dto.*;
 import team.crowdee.jwt.CustomTokenProvider;
 import team.crowdee.jwt.JwtFilter;
@@ -47,10 +46,17 @@ public class AdminController {
        // inspectionDTOS.get(0).getId()
         return new ResponseEntity<>(inspectionDTOS, HttpStatus.OK);
     }
+
+    @GetMapping("/findInspectionMember")
+    public ResponseEntity<?> findInspectionMember() {
+        List<InspectionDTO> inspectionDTOS = adminService.inspectionList();
+        // inspectionDTOS.get(0).getId()
+        return new ResponseEntity<>(inspectionDTOS, HttpStatus.OK);
+    }
+
     //백커 상세조회
     @GetMapping("/backerView/{memberId}")
     public ResponseEntity<?> backerView(@PathVariable("memberId") Long backerId) { //주소에 파라미터값 추가
-
         BackerDTO backerDTO = adminService.oneBacker(backerId);
         System.out.println("과연?" + backerDTO.getNickName());
         if (backerDTO == null) {

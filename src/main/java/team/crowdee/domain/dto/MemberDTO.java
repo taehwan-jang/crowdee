@@ -2,6 +2,7 @@ package team.crowdee.domain.dto;
 
 import lombok.*;
 import team.crowdee.domain.Authority;
+import team.crowdee.domain.Status;
 import team.crowdee.domain.UserState;
 import team.crowdee.domain.valuetype.Address;
 
@@ -25,8 +26,9 @@ public class MemberDTO {
     private String emailCert; //이메일 인증 받았을때 //o
     private LocalDateTime registDate;
     private String secessionDate;
-    private UserState userState;
+    private Status status;
     private Set<Authority> authorities;
+    private String authoriy;
 
 
     /**
