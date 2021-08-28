@@ -13,6 +13,7 @@ import team.crowdee.domain.dto.PaymentDTO;
 import team.crowdee.domain.dto.ThumbNailDTO;
 import team.crowdee.repository.FundingRepository;
 import team.crowdee.repository.MemberRepository;
+import team.crowdee.repository.OrderRepository;
 import team.crowdee.util.MimeEmailService;
 import team.crowdee.util.Utils;
 
@@ -28,6 +29,7 @@ public class FundingService {
 
     private final FundingRepository fundingRepository;
     private final MemberRepository memberRepository;
+    private final OrderRepository orderRepository;
     private final MimeEmailService mimeEmailService;
 
     @Transactional(readOnly = true)
@@ -131,19 +133,22 @@ public class FundingService {
     }
 
     public void participation(Long fundingId, PaymentDTO paymentDTO, String email) {
+        //참여 했던 펀딩인지 어떻게 확인하는가.
         Funding funding = fundingRepository.findById(fundingId);
+        List<Order> orders = funding.getOrders();
+        for (Order order : orders) {
+            if (order.getMember().getEmail().equals(email)) {
+                throw new IllegalStateException("이미 참여한 펀딩입니다.");
+            }
+        }
+        if (funding.getMinFundraising() > paymentDTO.getAmount()) {
+            throw new IllegalArgumentException("최소 금액 이상 펀딩 가능합니다.");
+        }
         List<Member> memberList = memberRepository.findByEmail(email);
         if (memberList.isEmpty()) {
             throw new IllegalArgumentException("회원 정보를 찾을 수 없습니다.");
         }
-        /**
-         *     private String imp_uid;
-         *     private String paid_amount;
-         *     private String apply_num;
-         *     결제 이후 초기화 값
-         */
         Member member = memberList.get(0);
-
         Payment payment = Payment.builder()
                 .name(funding.getTitle())
                 .amount(paymentDTO.getAmount())
@@ -153,8 +158,7 @@ public class FundingService {
                 .buyer_addr(paymentDTO.getBuyer_addr())
                 .buyer_postcode(paymentDTO.getBuyer_postcode())
                 .build();
-
-
+        orderRepository.paymentSave(payment);
         Order order = Order.builder()
                 .funding(funding)
                 .member(member)
@@ -164,8 +168,6 @@ public class FundingService {
 
         member.participationFunding(order);
         funding.addParticipants(order);
-
-
     }
 
 

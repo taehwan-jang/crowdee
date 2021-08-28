@@ -63,17 +63,16 @@ public class CreatorController {
     @GetMapping("/create/funding/{projectUrl}")
     public ResponseEntity<?> createFunding(@PathVariable String projectUrl, HttpServletRequest request) {
         boolean flag = customJWTFilter.isCreator(request);
-        HttpHeaders httpHeaders = customJWTFilter.getHeaders(request);
         if (!flag) {
-            return new ResponseEntity<>("크리에이터만 펀딩을 등록할 수 있습니다.",httpHeaders, HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>("크리에이터만 펀딩을 등록할 수 있습니다.", HttpStatus.FORBIDDEN);
         }
 
         String email = customJWTFilter.findEmail(request);
         FundingDTO tempFundingDTO = creatorService.tempFunding(projectUrl,email);
         if (tempFundingDTO == null) {
-            return new ResponseEntity<>(httpHeaders,HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(tempFundingDTO,httpHeaders, HttpStatus.OK);
+        return new ResponseEntity<>(tempFundingDTO, HttpStatus.OK);
     }
 
     /**
@@ -102,16 +101,14 @@ public class CreatorController {
                                                    @PathVariable String manageUrl,
                                                    HttpServletRequest request) {
         boolean flag = customJWTFilter.isCreator(request);
-        HttpHeaders httpHeaders = customJWTFilter.getHeaders(request);
-
         if (!flag) {
-            return new ResponseEntity<>("크리에이터만 펀딩을 등록할 수 있습니다.",httpHeaders, HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>("크리에이터만 펀딩을 등록할 수 있습니다.", HttpStatus.FORBIDDEN);
         }
         FundingDTO fundingDTO = creatorService.tempFundingPlan(fundingPlanDTO,manageUrl);
         if (fundingDTO == null) {
-            return new ResponseEntity<>(httpHeaders,HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(fundingDTO,httpHeaders,HttpStatus.OK);
+        return new ResponseEntity<>(fundingDTO,HttpStatus.OK);
     }
 
     @PostMapping("/create/detail/{manageUrl}")
@@ -119,16 +116,14 @@ public class CreatorController {
                                               @PathVariable String manageUrl,
                                               HttpServletRequest request) {
         boolean flag = customJWTFilter.isCreator(request);
-        HttpHeaders httpHeaders = customJWTFilter.getHeaders(request);
-
         if (!flag) {
-            return new ResponseEntity<>("크리에이터만 펀딩을 등록할 수 있습니다.",httpHeaders,HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>("크리에이터만 펀딩을 등록할 수 있습니다.",HttpStatus.FORBIDDEN);
         }
         FundingDTO fundingDTO = creatorService.tempDetail(detailDTO,manageUrl);
         if (fundingDTO == null) {
-            return new ResponseEntity<>(httpHeaders,HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(fundingDTO,httpHeaders,HttpStatus.OK);
+        return new ResponseEntity<>(fundingDTO,HttpStatus.OK);
     }
 
     @GetMapping("/create/{manageUrl}")

@@ -82,9 +82,7 @@ public class Funding {
         if (restTicket <= 0) {
             throw new IllegalStateException("남은 티켓이 없습니다.");
         }
-        totalFundraising += order.getPayment().getAmount();
-        restTicket += 1;
-
+        plusTotalFundraising(order.getPayment().getAmount());
         orders.add(order);
         order.addFunding(this);
     }
@@ -136,6 +134,10 @@ public class Funding {
         this.maxBacker = maxBacker;
         return this;
     }
+    public Funding planRestTicket(int restTicket) {
+        this.restTicket = restTicket;
+        return this;
+    }
     public Funding detailContent(String content) {
         this.content = content;
         return this;
@@ -180,17 +182,18 @@ public class Funding {
 
     public void increaseAchievement() {
         int rawRate = (int)(((double) this.totalFundraising / (double) this.goalFundraising)*100);
-        this.rateOfAchievement = rawRate;
+        rateOfAchievement = rawRate;
     }
 
     //방문횟수 추가
     public void plusVisitCount() {
-        this.visitCount += 1;
+        visitCount += 1;
     }
 
     //펀딩 참여시 총 펀딩금액 추가
     public void plusTotalFundraising(int amount) {
-        this.totalFundraising += amount;
+        totalFundraising += amount;
+        restTicket -= 1;
         increaseAchievement();
     }
 

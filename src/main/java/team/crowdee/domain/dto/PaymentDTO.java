@@ -9,6 +9,7 @@ import java.util.Date;
 @Setter
 public class PaymentDTO {
 
+    private Long fundingId;
     private String init = "INIpayTest";
     private String pg = "kakaopay";
     private String pay_method = "card";

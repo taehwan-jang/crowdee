@@ -103,8 +103,7 @@ public class FundingController {
      * 5.
      */
     @PostMapping("/participation")
-    public ResponseEntity<?> participation(@RequestBody Long fundingId,
-                                           @RequestBody PaymentDTO paymentDTO,
+    public ResponseEntity<?> participation(@RequestBody PaymentDTO paymentDTO,
                                            HttpServletRequest request) {
         //https://smujihoon.tistory.com/103 결제 관련 참고 로직
         boolean flag = customJWTFilter.isBacker(request);
@@ -112,10 +111,8 @@ public class FundingController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         String email = customJWTFilter.findEmail(request);
-        fundingService.participation(fundingId,paymentDTO,email);
-
-
-        return null;
+        fundingService.participation(paymentDTO.getFundingId(),paymentDTO,email);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 

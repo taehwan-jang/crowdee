@@ -119,7 +119,8 @@ public class CreatorService {
                 .planStartDate(fundingPlanDTO.getStartDate())
                 .planEndDate(fundingPlanDTO.getEndDate())
                 .planMinFundraising(fundingPlanDTO.getMinFundraising())
-                .planMaxBacker(fundingPlanDTO.getMaxBacker());
+                .planMaxBacker(fundingPlanDTO.getMaxBacker())
+                .planRestTicket(fundingPlanDTO.getMaxBacker());
 
         FundingDTO fundingDTO = Utils.fundingEToD(funding);
         return fundingDTO;

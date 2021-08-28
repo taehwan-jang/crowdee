@@ -85,7 +85,7 @@ public class DummyData {
         creatorDTO.setBusinessNumber("1239192-12-12");
         creatorDTO.setCreatorNickName("투썸");
         creatorDTO.setBankBookImageUrl("imgu");
-        creatorDTO.setMemberId(4L);
+        creatorDTO.setMemberId(3L);
 
         creatorService.joinCreator(creatorDTO);
 //    }
@@ -129,6 +129,7 @@ public class DummyData {
                 .startDate("2021-08-28")
                 .endDate("2021-09-15")
                 .maxBacker(30)
+                .restTicket(30)
                 .postDate(LocalDateTime.now())
                 .visitCount(0)
                 .likeCount(0)
@@ -154,13 +155,14 @@ public class DummyData {
                 .minFundraising(10000)
                 .startDate("2021-08-19")
                 .endDate("2021-09-11")
-                .maxBacker(30)
+                .maxBacker(50)
+                .restTicket(0)
                 .postDate(LocalDateTime.now())
                 .visitCount(300)
                 .likeCount(15)
-                .totalFundraising(360000)
-                .rateOfAchievement(120)
-                .status(Status.inspection)
+                .totalFundraising(500000)
+                .rateOfAchievement(100)
+                .status(Status.progress)
                 .build();
         fundingRepository.save(funding1);
 
@@ -181,13 +183,14 @@ public class DummyData {
                 .minFundraising(35000)
                 .startDate("2021-08-27")
                 .endDate("2021-09-22")
-                .maxBacker(25)
+                .maxBacker(50)
+                .restTicket(40)
                 .postDate(LocalDateTime.now())
                 .visitCount(10)
                 .likeCount(4)
-                .totalFundraising(15000)
-                .rateOfAchievement(10)
-                .status(Status.inspection)
+                .totalFundraising(350000)
+                .rateOfAchievement(55)
+                .status(Status.progress)
                 .build();
         fundingRepository.save(funding3);
 
@@ -209,12 +212,13 @@ public class DummyData {
                 .startDate("2021-08-10")
                 .endDate("2021-09-20")
                 .maxBacker(100)
+                .restTicket(100)
                 .postDate(LocalDateTime.now())
                 .visitCount(240)
                 .likeCount(200)
-                .totalFundraising(400000)
-                .rateOfAchievement(90)
-                .status(Status.inspection)
+                .totalFundraising(0)
+                .rateOfAchievement(0)
+                .status(Status.progress)
                 .build();
         fundingRepository.save(funding4);
 
@@ -236,6 +240,7 @@ public class DummyData {
                 .startDate("2021-08-11")
                 .endDate("2021-09-15")
                 .maxBacker(60)
+                .restTicket(3)
                 .postDate(LocalDateTime.now())
                 .visitCount(29000)
                 .likeCount(200)
@@ -263,11 +268,12 @@ public class DummyData {
                 .startDate("2021-08-11")
                 .endDate("2021-09-30")
                 .maxBacker(100)
+                .restTicket(2)
                 .postDate(LocalDateTime.now())
                 .visitCount(12000)
                 .likeCount(10)
-                .totalFundraising(260000)
-                .rateOfAchievement(13)
+                .totalFundraising(760000)
+                .rateOfAchievement(90)
                 .status(Status.progress)
                 .build();
         fundingRepository.save(funding6);
@@ -290,12 +296,13 @@ public class DummyData {
                 .startDate("2021-08-30")
                 .endDate("2021-09-15")
                 .maxBacker(50)
+                .restTicket(1)
                 .postDate(LocalDateTime.now())
                 .visitCount(200)
                 .likeCount(25)
                 .totalFundraising(640000)
                 .rateOfAchievement(110)
-                .status(Status.confirm)
+                .status(Status.progress)
                 .build();
         fundingRepository.save(funding7);
 

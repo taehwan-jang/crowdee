@@ -74,7 +74,7 @@ public class FundingRepository {
                 "left join fetch f.orders " +
                 "where f.status='progress' " +
                 "and f.rateOfAchievement >= 100 " +
-                "and f.orders.size < f.maxBacker " +
+                "and f.restTicket > 0 " +
                 "order by f.rateOfAchievement " +
                 "desc",Funding.class)
                 .setFirstResult(0)
@@ -96,8 +96,8 @@ public class FundingRepository {
         return em.createQuery("select f from Funding f " +
                 "left join fetch f.orders " +
                 "where f.status='progress' " +
-                "and f.orders.size<f.maxBacker " +
-                "and f.orders.size+5>=f.maxBacker " +
+                "and f.restTicket < 3 " +
+                "and f.restTicket > 0 " +
                 "order by f.orders.size " +
                 "desc",Funding.class)
                 .setFirstResult(0)

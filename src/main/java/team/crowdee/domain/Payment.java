@@ -23,11 +23,16 @@ public class Payment {
     private Order order;
 
     //아임포트 가맹점 정보
+    @Builder.Default
     private String init = "INIpayTest";
     //default PG사 카카오페이
+    @Builder.Default
     private String pg = "kakaopay";
+    @Builder.Default
     private String pay_method = "card";
+    @Builder.Default
     private String merchant_uid = "merchant_" + new Date().getTime();
+
     private String name;
     private int amount;
     private String buyer_email;
