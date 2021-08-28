@@ -30,7 +30,9 @@ public class FundingRepository {
 
 
     public List<Funding> findByParam(String target, String param) {
-        String query = "select f from Funding f where f."+target+"=:param";
+        String query = "select f from Funding f " +
+                "left join fetch f.orders " +
+                "where f."+target+"=:param ";
         return em.createQuery(query, Funding.class)
                 .setParameter("param", param)
                 .getResultList();
@@ -40,34 +42,35 @@ public class FundingRepository {
         String query = "select f from Funding f " +
                 "left join fetch f.orders " +
                 "where f.tag " +
-                "like %"+tag+"% " +
+                "like '%"+tag+"%' " +
                 "and f.status='progress'";
         return em.createQuery(query, Funding.class).getResultList();
     }
 
-    public List<Funding> findNewFunding() {
+    public List<Funding> findNewFunding(int max) {
         return em.createQuery("select f from Funding f " +
                 "left join fetch f.orders " +
                 "where f.status='progress' " +
                 "order by f.startDate " +
                 "desc",Funding.class)
                 .setFirstResult(0)
-                .setMaxResults(3)
+                .setMaxResults(max)
                 .getResultList();
     }
-    public List<Funding> findUnderFunding() {
+    public List<Funding> findVergeOfSuccess(int max) {
         return em.createQuery("select f from Funding f " +
                 "left join fetch f.orders " +
                 "where f.status='progress' " +
                 "and f.rateOfAchievement < 100 " +
+                "and f.rateOfAchievement > 80 " +
                 "order by f.rateOfAchievement " +
                 "desc",Funding.class)
                 .setFirstResult(0)
-                .setMaxResults(3)
+                .setMaxResults(max)
                 .getResultList();
     }
 
-    public List<Funding> findOverFunding() {
+    public List<Funding> findExcessFunding(int max) {
         return em.createQuery("select f from Funding f " +
                 "left join fetch f.orders " +
                 "where f.status='progress' " +
@@ -76,17 +79,30 @@ public class FundingRepository {
                 "order by f.rateOfAchievement " +
                 "desc",Funding.class)
                 .setFirstResult(0)
-                .setMaxResults(3)
+                .setMaxResults(max)
                 .getResultList();
     }
-    public List<Funding> findPopularFunding() {
+    public List<Funding> findPopularFunding(int max) {
         return em.createQuery("select f from Funding f " +
                 "left join fetch f.orders " +
                 "where f.status='progress' " +
                 "order by f.visitCount " +
                 "desc",Funding.class)
                 .setFirstResult(0)
-                .setMaxResults(3)
+                .setMaxResults(max)
+                .getResultList();
+    }
+
+    public List<Funding> findOutOfStock(int max) {
+        return em.createQuery("select f from Funding f " +
+                "left join fetch f.orders " +
+                "where f.status='progress' " +
+                "and f.orders.size<f.maxBacker " +
+                "and f.orders.size+5>=f.maxBacker " +
+                "order by f.orders.size " +
+                "desc",Funding.class)
+                .setFirstResult(0)
+                .setMaxResults(max)
                 .getResultList();
     }
 

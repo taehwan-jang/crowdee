@@ -5,22 +5,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-import team.crowdee.domain.Authority;
-import team.crowdee.domain.Creator;
-import team.crowdee.domain.Member;
-import team.crowdee.domain.dto.*;
-import team.crowdee.repository.CreatorRepository;
-import team.crowdee.repository.MemberRepository;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import team.crowdee.domain.dto.AllMemberDTO;
+import team.crowdee.domain.dto.BackerDTO;
+import team.crowdee.domain.dto.CreatorBackDTO;
 import team.crowdee.service.AdminService;
-
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 @Slf4j
 @Controller
-@CrossOrigin
 @RequiredArgsConstructor
 @RequestMapping("/admin")
 public class AdminController {
@@ -28,18 +24,6 @@ public class AdminController {
      * admin 관련 로직
      */
     private final AdminService adminService;
-
-    @PostMapping("getFunding")
-    public ResponseEntity<?> getFunding(){
-        List<ThumbNailDTO> funding = adminService.getFunding();
-    }
-
-    @GetMapping("/findAllCreator")
-    public ResponseEntity<?> findAllCreator() {
-
-        List<CreatorDTO> creatorDTOS = adminService.AllCreator();
-        return new ResponseEntity<>(creatorDTOS, HttpStatus.OK);
-    }
 
     //백커 상세조회
     @GetMapping("/backerView/{memberId}")
@@ -61,7 +45,9 @@ public class AdminController {
         }
         return new ResponseEntity<>(creatorBackDTO, HttpStatus.OK);
     }
+
     //전체회원조회
+
 //    @PostMapping("/findMemberAll")
 //    public ResponseEntity<?> allMember() {
 //        List<AllMemberDTO> allMemberDTO = adminService.AllMember();
@@ -70,14 +56,12 @@ public class AdminController {
 //        }
 //        return new ResponseEntity<>(allMemberDTO, HttpStatus.OK);
 //    }
+
     //전체회원조회
+
     @GetMapping("/findMemberAll")
     public ResponseEntity<?> allMember() {
         List<AllMemberDTO> allMemberDTO = adminService.AllMember();
-        for (AllMemberDTO memberDTO : allMemberDTO) {
-            System.out.println( memberDTO.getMemberId());
-
-        }
         if(allMemberDTO == null) {
             return new ResponseEntity<>("회원정보 전체 조회 실패", HttpStatus.BAD_REQUEST);
         }

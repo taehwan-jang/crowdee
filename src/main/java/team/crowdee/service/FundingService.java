@@ -11,9 +11,7 @@ import team.crowdee.repository.FundingRepository;
 import team.crowdee.util.Utils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @Slf4j
@@ -45,34 +43,34 @@ public class FundingService {
      */
 
     @Transactional(readOnly = true)
-    public Map<String,List<ThumbNailDTO>> findThumbNail() {
-        Map<String,List<ThumbNailDTO>> map = new HashMap<>();
+    public List<List<ThumbNailDTO>> mainThumbNail() {
+        List<List<ThumbNailDTO>> thumbNailList = new ArrayList<>();
 
         List<ThumbNailDTO> newThumbNail = new ArrayList<>();
-        List<Funding> fundingList1 = fundingRepository.findNewFunding();
+        List<Funding> fundingList1 = fundingRepository.findNewFunding(4);
         fundingToThumbNail(newThumbNail, fundingList1);
 
         List<ThumbNailDTO> underThumbNail = new ArrayList<>();
-        List<Funding> fundingList2 = fundingRepository.findUnderFunding();
+        List<Funding> fundingList2 = fundingRepository.findVergeOfSuccess(4);
         fundingToThumbNail(underThumbNail, fundingList2);
 
         List<ThumbNailDTO> overThumbNail = new ArrayList<>();
-        List<Funding> fundingList3 = fundingRepository.findOverFunding();
+        List<Funding> fundingList3 = fundingRepository.findExcessFunding(4);
         fundingToThumbNail(overThumbNail, fundingList3);
 
         List<ThumbNailDTO> popularThumbNail = new ArrayList<>();
-        List<Funding> fundingList4 = fundingRepository.findPopularFunding();
+        List<Funding> fundingList4 = fundingRepository.findPopularFunding(4);
         fundingToThumbNail(popularThumbNail, fundingList4);
 
-        map.put("new", newThumbNail);
-        map.put("under", underThumbNail);
-        map.put("over", overThumbNail);
-        map.put("popular", popularThumbNail);
+        thumbNailList.add(newThumbNail);
+        thumbNailList.add(underThumbNail);
+        thumbNailList.add(overThumbNail);
+        thumbNailList.add(popularThumbNail);
 
-        return map;
+        return thumbNailList;
     }
 
-    public List<ThumbNailDTO> findTag(String tag) {
+    public List<ThumbNailDTO> tagView(String tag) {
 
         List<Funding> fundingList = fundingRepository.findByTag(tag);
         List<ThumbNailDTO> tagThumbNail = new ArrayList<>();
@@ -80,9 +78,42 @@ public class FundingService {
         return tagThumbNail;
     }
 
-    private void fundingToThumbNail(List<ThumbNailDTO> newThumbNail, List<Funding> fundingList1) {
+    public List<ThumbNailDTO> categoryView(String category) {
+        List<Funding> fundingList = fundingRepository.findByParam("category",category);
+        List<ThumbNailDTO> categoryResult = new ArrayList<>();
+        fundingToThumbNail(categoryResult, fundingList);
+        return categoryResult;
+    }
+
+    public List<ThumbNailDTO> selectedMenu(String menu) {
+        List<Funding> fundingList =null;
+        switch (menu) {
+            case "startDate":
+                fundingList=fundingRepository.findNewFunding(100);
+                break;
+            case "visitCount":
+                fundingList=fundingRepository.findPopularFunding(100);
+                break;
+            case "outOfStock":
+                fundingList=fundingRepository.findOutOfStock(100);
+                break;
+            case "vergeOfSuccess":
+                fundingList = fundingRepository.findVergeOfSuccess(100);
+                break;
+            case "excess":
+                fundingList=fundingRepository.findExcessFunding(100);
+                break;
+            default:
+                return null;
+        }
+        List<ThumbNailDTO> thumbNailDTOList = new ArrayList<>();
+        fundingToThumbNail(thumbNailDTOList,fundingList);
+        return thumbNailDTOList;
+    }
+
+    private void fundingToThumbNail(List<ThumbNailDTO> thumbNailDTOList, List<Funding> fundingList1) {
         for (Funding funding : fundingList1) {
-            newThumbNail.add(
+            thumbNailDTOList.add(
                     ThumbNailDTO.builder()
                             .fundingId(funding.getFundingId())
                             .creatorId(funding.getCreator().getCreatorId())
