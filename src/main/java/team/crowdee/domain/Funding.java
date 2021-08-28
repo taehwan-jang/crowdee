@@ -1,5 +1,4 @@
 package team.crowdee.domain;
-
 import lombok.*;
 import team.crowdee.domain.valuetype.Address;
 
@@ -10,23 +9,19 @@ import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-
 @Entity
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 public class Funding {
-
     @Id
     @GeneratedValue
     @Column(name = "funding_id")
     private Long fundingId;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "creator_id")
     private Creator creator;
-
     /**
      * 조회를 위한 project Url과 관리를 위한 management Url 생성
      */

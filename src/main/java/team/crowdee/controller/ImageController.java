@@ -28,15 +28,12 @@ public class ImageController {
 
     @PostMapping(value = "/image")
     public ResponseEntity<?> upload(@RequestParam("file") MultipartFile file) throws Exception {
-
         String imgUrl = fileUtils.uploadImage(file);
         String filename = imgUrl.substring(imgUrl.lastIndexOf("/"));
-
         Map<String, String> toEditor = new HashMap<>();
         toEditor.put("filename", filename);
         toEditor.put("uploaded", "1");
         toEditor.put("url", imgUrl);
-
         return new ResponseEntity<>(toEditor, HttpStatus.OK);
     }
 

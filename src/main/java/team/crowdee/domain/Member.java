@@ -17,7 +17,6 @@ import java.util.Set;
 @Getter
 @Setter
 public class Member {
-
     @Id
     @GeneratedValue
     @Column(name = "member_id")
@@ -31,10 +30,7 @@ public class Member {
     private String emailCert; //이메일 인증 받았을때 //o
     private LocalDateTime registDate;
     private String secessionDate;
-
-    @Enumerated(EnumType.STRING)
-    private UserState userState;
-
+    private Status status;
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "member_authority",
@@ -56,10 +52,8 @@ public class Member {
     @JoinColumn(name = "creator_id")
     private Creator creator;
 
-
     public void joinCreator(Creator creator) {
         this.creator = creator;
-        this.userState = UserState.creator;
         creator.setMember(this);
 
     }

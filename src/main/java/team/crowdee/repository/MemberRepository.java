@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.stereotype.Repository;
 import team.crowdee.domain.Creator;
 import team.crowdee.domain.Follow;
+import team.crowdee.domain.Funding;
 import team.crowdee.domain.Member;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -106,11 +107,18 @@ public class MemberRepository {
         em.flush();
     }
 
-
     @EntityGraph(attributePaths = "authorities")
     public List<Member> findOneWithAuthoritiesByEmail(String email) {
         return em.createQuery("select m from Member m where m.email=:email", Member.class)
                 .setParameter("email", email)
+                .getResultList();
+    }
+
+    public List<Member> findToInspection() {
+        return em.createQuery("select m from Member m " +
+                        "join fetch m.creator " +
+                        "where m.status='inspection'",
+                Member.class)
                 .getResultList();
     }
 
