@@ -10,12 +10,15 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 import team.crowdee.domain.Creator;
+import team.crowdee.domain.Funding;
 import team.crowdee.domain.Member;
 import team.crowdee.domain.dto.FindMailDTO;
 import team.crowdee.domain.dto.LoginDTO;
 import team.crowdee.domain.dto.MemberDTO;
 import team.crowdee.domain.valuetype.Address;
+import team.crowdee.repository.FundingRepository;
 import team.crowdee.repository.MemberRepository;
+import team.crowdee.service.AdminService;
 
 import javax.mail.MessagingException;
 import javax.persistence.EntityManager;
@@ -35,7 +38,11 @@ class MemberControllerTest {
     @Autowired
     private EntityManager em;
     @Autowired
-    private AdminController adminController;
+    private AdminService adminService;
+    @Autowired
+    private FundingRepository fundingRepository;
+
+
 
     @Test
     @Rollback(value = false)
@@ -55,13 +62,14 @@ class MemberControllerTest {
 
     @Test
     public void 미주짱() throws Exception {
-        ResponseEntity<?> responseEntity = adminController.allMember();
-    }
-    @Test
-    public void 두현짱() throws Exception {
-        ResponseEntity<?> responseEntity = adminController.findAllCreator();
+
 
     }
+//    @Test
+//    public void 두현짱() throws Exception {
+//        ResponseEntity<?> responseEntity = adminController.findAllCreator();
+//
+//    }
 
     @Test
     public void 크리에이터테스트() throws Exception {

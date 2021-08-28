@@ -14,7 +14,9 @@ import team.crowdee.service.CreatorService;
 import team.crowdee.service.MemberService;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @ExtendWith(SpringExtension.class)
@@ -33,10 +35,27 @@ public class DummyData {
     private CreatorRepository creatorRepository;
     @Autowired
     private FundingRepository fundingRepository;
-
+    @Test
+    @Rollback(value = false)
+    public void 관리자더미데이터() throws Exception {
+        MemberDTO memberDTO1 = new MemberDTO();
+        memberDTO1.setEmail("forMember@gmail.com");
+        memberDTO1.setPassword("1q2w3e4r!");
+        memberDTO1.setEmailCert("TAWOETHD");
+        memberDTO1.setMobile("010-1231-1231");
+        memberDTO1.setNickName("테스트닉네임");
+        memberDTO1.setRegistDate(LocalDateTime.now());
+        memberDTO1.setUserName("크라우디");
+        memberDTO1.setUserState(
+                UserState.admin
+        );
+        memberService.join(memberDTO1);
+    }
     @Test
     @Rollback(value = false)
     public void 멤버_더미데이터() throws Exception {
+
+
         MemberDTO memberDTO = new MemberDTO();
         memberDTO.setEmail("forMember@gmail.com");
         memberDTO.setPassword("1q2w3e4r!");
@@ -146,7 +165,7 @@ public class DummyData {
                 .likeCount(15)
                 .totalFundraising(360000)
                 .rateOfAchievement(120)
-                .status(Status.progress)
+                .status(Status.inspection)
                 .build();
         fundingRepository.save(funding1);
 
@@ -173,7 +192,7 @@ public class DummyData {
                 .likeCount(4)
                 .totalFundraising(15000)
                 .rateOfAchievement(10)
-                .status(Status.progress)
+                .status(Status.inspection)
                 .build();
         fundingRepository.save(funding3);
 
@@ -200,7 +219,7 @@ public class DummyData {
                 .likeCount(200)
                 .totalFundraising(400000)
                 .rateOfAchievement(90)
-                .status(Status.progress)
+                .status(Status.inspection)
                 .build();
         fundingRepository.save(funding4);
 

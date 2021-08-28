@@ -109,7 +109,7 @@ public class FundingRepository {
     public List<Funding> findToInspection() {
         return em.createQuery("select f from Funding f " +
                 "join fetch f.creator " +
-                "where f.status='insepction'",
+                "where f.status='inspection'",
                 Funding.class)
                 .getResultList();
     }

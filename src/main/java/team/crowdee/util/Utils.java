@@ -113,5 +113,21 @@ public class Utils {
         return allMemberDTO;
     }
 
+    public static InspectionDTO inspectionFunding(Funding funding) {
+        InspectionDTO inspectionDTO = new InspectionDTO();
+        Long creatorId = funding.getCreator().getCreatorId();
+        Status status = funding.getStatus();
+        String inspection = status.toString();
+        inspectionDTO.setCategory(funding.getCategory());
+        inspectionDTO.setStatus(inspection);
+        inspectionDTO.setStartDate(funding.getStartDate());
+        inspectionDTO.setEndDate(funding.getEndDate());
+        inspectionDTO.setTitle(funding.getTitle());
+        inspectionDTO.setSummary(funding.getSummary());
+        inspectionDTO.setCreatorId(creatorId);
+        inspectionDTO.setFundingId(funding.getFundingId());
+        return inspectionDTO;
+    }
+
 
 }
