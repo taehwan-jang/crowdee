@@ -52,7 +52,7 @@ public class MimeEmailService {
                 "<img style='width:300px; display:block; margin-left:auto; margin-right:auto;' src= 'http://localhost:8081/api/image/img/crowdeeImg.png' />" +
                  "<div style='text-align:center;'>" +
                     "<h1>[펀딩 참여 완료]</h1><br>" + memberDTO.getUserName() + "님 께서 참여하신 "+ fundingDTO.getTitle() + " 펀딩이 정상적으로 참여 완료되었습니다." +
-                    "<p><img src='"+fundingDTO.getThumbNailUrl()+"'/></p>" +
+                    "<p><img style='width:300px; src='"+fundingDTO.getThumbNailUrl()+"'/></p>" +
                     "<p>펀딩 목표금액이 달성되거나, 펀딩 종료 시 추가로 안내메일 발송됩니다.</p>" +
                     "<p>참여펀딩 바로가기 : http://localhost:8081/contents/" + fundingDTO.getProjectUrl()+ "</p>" +
                     "<h3>Crowdee 펀딩에 참여해주셔서 감사합니다.</h3>" +
