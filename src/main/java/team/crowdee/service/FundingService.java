@@ -5,11 +5,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team.crowdee.domain.Funding;
+import team.crowdee.domain.Member;
+import team.crowdee.domain.Order;
+import team.crowdee.domain.Payment;
 import team.crowdee.domain.dto.FundingDTO;
+import team.crowdee.domain.dto.PaymentDTO;
 import team.crowdee.domain.dto.ThumbNailDTO;
 import team.crowdee.repository.FundingRepository;
+import team.crowdee.repository.MemberRepository;
+import team.crowdee.util.MimeEmailService;
 import team.crowdee.util.Utils;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,27 +27,8 @@ import java.util.List;
 public class FundingService {
 
     private final FundingRepository fundingRepository;
-
-    /**
-     * 명확한 영역 구분을 위해 펀딩의 등록 수정 삭제는 creatorService 에서 진행
-     * FundingService - backer 의 Funding 참여에 수행하는 비즈니스로직
-     */
-
-    /**
-     * map("new",ThumbNailDTO) 최신펀딩 가져오기(시작일기준)
-     */
-
-    /**
-     * map("under",ThumbNailDTO) 달성직전 가져오기(참여율 기준으로 100미만인 펀딩)
-     */
-
-    /**
-     * map("over",ThumbNailDTO) 초과펀딩 가져오기(참여율 기준으로 100초과인 펀딩 & maxBacker 여유)
-     */
-
-    /**
-     * map("popular",ThumbNailDTO) 관심도순 가져오기(조회수)
-     */
+    private final MemberRepository memberRepository;
+    private final MimeEmailService mimeEmailService;
 
     @Transactional(readOnly = true)
     public List<List<ThumbNailDTO>> mainThumbNail() {
@@ -140,6 +128,44 @@ public class FundingService {
         }
         fundingList.get(0).plusVisitCount();//조회수 증가
         return Utils.fundingEToD(fundingList.get(0));
+    }
+
+    public void participation(Long fundingId, PaymentDTO paymentDTO, String email) {
+        Funding funding = fundingRepository.findById(fundingId);
+        List<Member> memberList = memberRepository.findByEmail(email);
+        if (memberList.isEmpty()) {
+            throw new IllegalArgumentException("회원 정보를 찾을 수 없습니다.");
+        }
+        /**
+         *     private String imp_uid;
+         *     private String paid_amount;
+         *     private String apply_num;
+         *     결제 이후 초기화 값
+         */
+        Member member = memberList.get(0);
+
+        Payment payment = Payment.builder()
+                .name(funding.getTitle())
+                .amount(paymentDTO.getAmount())
+                .buyer_email(paymentDTO.getBuyer_email())
+                .buyer_name(paymentDTO.getBuyer_name())
+                .buyer_tel(paymentDTO.getBuyer_tel())
+                .buyer_addr(paymentDTO.getBuyer_addr())
+                .buyer_postcode(paymentDTO.getBuyer_postcode())
+                .build();
+
+
+        Order order = Order.builder()
+                .funding(funding)
+                .member(member)
+                .orderDate(LocalDateTime.now())
+                .payment(payment)
+                .build();
+
+        member.participationFunding(order);
+        funding.addParticipants(order);
+
+
     }
 
 

@@ -28,7 +28,7 @@ public class MemberDTO {
     private String secessionDate;
     private Status status;
     private Set<Authority> authorities;
-    private String authoriy;
+    private String authority;
 
 
     /**

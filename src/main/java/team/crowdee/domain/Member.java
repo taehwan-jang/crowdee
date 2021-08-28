@@ -30,6 +30,8 @@ public class Member {
     private String emailCert; //이메일 인증 받았을때 //o
     private LocalDateTime registDate;
     private String secessionDate;
+
+    @Enumerated(EnumType.STRING)
     private Status status;
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
@@ -44,7 +46,7 @@ public class Member {
     @Builder.Default
     private List<Follow> following = new ArrayList<>(); // follow 다시 생각해봐
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member",cascade = CascadeType.ALL)
     @Builder.Default
     private List<Order> orders = new ArrayList<>();
 
@@ -56,6 +58,10 @@ public class Member {
         this.creator = creator;
         creator.setMember(this);
 
+    }
+    public void participationFunding(Order order) {
+        this.orders.add(order);
+        order.addMember(this);
     }
 
     //=====수정을 위한 패턴=====//

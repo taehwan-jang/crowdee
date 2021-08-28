@@ -54,6 +54,7 @@ public class Funding {
     private String startDate;//시작일(yyyy-mm-dd)
     private String endDate;//종료일(yyyy-mm-dd)
     private int maxBacker;//최대후원자수
+    private int restTicket;//남은 자리
 
     private LocalDateTime postDate;//등록일
 
@@ -71,11 +72,22 @@ public class Funding {
     @Enumerated(EnumType.STRING)
     private Status status;//현재 펀딩의 상태(심사/거절/진행/종료)
 
-    @OneToMany(mappedBy = "funding")
+    @OneToMany(mappedBy = "funding",cascade = CascadeType.ALL)
     @Builder.Default
-
     private List<Order> orders = new ArrayList<>();
 
+
+    //=======펀딩 참여 로직=======//
+    public void addParticipants(Order order) {
+        if (restTicket <= 0) {
+            throw new IllegalStateException("남은 티켓이 없습니다.");
+        }
+        totalFundraising += order.getPayment().getAmount();
+        restTicket += 1;
+
+        orders.add(order);
+        order.addFunding(this);
+    }
 
     //=======Setter 대용=======//
     public Funding thumbTitle(String title) {
@@ -142,9 +154,6 @@ public class Funding {
         this.aboutUs = aboutUs;
         return this;
     }
-
-
-
 
     public Funding changeStatus(Status status) {
         this.status = status;

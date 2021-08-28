@@ -14,9 +14,7 @@ import team.crowdee.service.CreatorService;
 import team.crowdee.service.MemberService;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 @ExtendWith(SpringExtension.class)
@@ -46,9 +44,6 @@ public class DummyData {
         memberDTO1.setNickName("테스트닉네임");
         memberDTO1.setRegistDate(LocalDateTime.now());
         memberDTO1.setUserName("크라우디");
-        memberDTO1.setUserState(
-                UserState.admin
-        );
         memberService.join(memberDTO1);
     }
     @Test

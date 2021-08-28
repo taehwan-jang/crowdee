@@ -22,14 +22,22 @@ public class Order {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "funding_id")
     private Funding funding;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "payment_id")
     private Payment payment;
 
     private LocalDateTime orderDate;
+
+    public void addMember(Member member) {
+        this.member = member;
+    }
+
+    public void addFunding(Funding funding) {
+        this.funding = funding;
+    }
 
 }

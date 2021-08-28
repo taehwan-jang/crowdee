@@ -8,9 +8,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team.crowdee.domain.dto.FundingDTO;
+import team.crowdee.domain.dto.PaymentDTO;
 import team.crowdee.domain.dto.ThumbNailDTO;
+import team.crowdee.jwt.CustomJWTFilter;
 import team.crowdee.service.FundingService;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -22,6 +25,7 @@ import java.util.concurrent.TimeUnit;
 public class FundingController {
 
     private final FundingService fundingService;
+    private final CustomJWTFilter customJWTFilter;
 
     /**
      * token 유무 확인 후 header 값 전달
@@ -47,9 +51,9 @@ public class FundingController {
         return new ResponseEntity<>(fundingDTO, HttpStatus.OK);
     }
 
-    /**
+    /**ㄴㅇㄹ
      * 검색 가져오기
-     * 1.tag--ok
+     * 1.tag--okㅁㄴㅇㄹㅁㄴㅇㄹㅁㄴㅇㄹㅁㄴㅇㄹㅁ
      * 2.제목
      * 3.카테고리--ok
      * 4.creatorNickName
@@ -80,14 +84,6 @@ public class FundingController {
         return new ResponseEntity<>(thumbNailDTOList,HttpStatus.OK);
     }
 
-    /*
-    1. 신규등록펀딩(startdate)
-    2. 방문자가많은펀딩(visitcount)
-    3. 마감임박펀딩(enddate)
-    4. 성공임박(달성률)(80<rateofachvement<100)
-    5. 초과달성펀딩(ROA>100%)
-    */
-
 
 
 
@@ -99,7 +95,28 @@ public class FundingController {
 
     /**
      * 참여하기 로직
+     *
+     * 1. projectUrl? fundingId?인덱스로 찾는게 더 나으니 인덱스를 보내라 하자
+     * 2. paymentDTO 통해 결제에 필요한 정보들 수집
+     * 4. 결제금액 , 최소금액 비교
+     * 3. fundingId 를 통해 funding 객체를 가져오고 Order 객체 생성
+     * 5.
      */
+    @PostMapping("/participation")
+    public ResponseEntity<?> participation(@RequestBody Long fundingId,
+                                           @RequestBody PaymentDTO paymentDTO,
+                                           HttpServletRequest request) {
+        //https://smujihoon.tistory.com/103 결제 관련 참고 로직
+        boolean flag = customJWTFilter.isBacker(request);
+        if (!flag) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        String email = customJWTFilter.findEmail(request);
+        fundingService.participation(fundingId,paymentDTO,email);
+
+
+        return null;
+    }
 
 
 
