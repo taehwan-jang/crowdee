@@ -56,7 +56,8 @@ public class MimeEmailService {
                     "<p>펀딩 목표금액이 달성되거나, 펀딩 종료 시 추가로 안내메일 발송됩니다.</p>" +
                     "<p>참여펀딩 바로가기 : http://localhost:8081/contents/" + fundingDTO.getProjectUrl()+ "</p>" +
                     "<h3>Crowdee 펀딩에 참여해주셔서 감사합니다.</h3>" +
-                "</div>";
+                "<br></div>";
+
         joinMessage.setSubject("[Crowdee] " + fundingDTO.getTitle() + " 펀딩 참여가 완료되었습니다.");
         joinMessage.setFrom("Crowdee.funding@gmail.com");
         joinMessage.setText(mailContent, "UTF-8", "html");
