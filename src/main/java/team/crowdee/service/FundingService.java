@@ -88,19 +88,19 @@ public class FundingService {
     public List<ThumbNailDTO> selectedMenu(String menu) {
         List<Funding> fundingList =null;
         switch (menu) {
-            case "startDate":
+            case "startDate"://시작일 최신순
                 fundingList=fundingRepository.findNewFunding(100);
                 break;
-            case "visitCount":
+            case "visitCount"://조회수
                 fundingList=fundingRepository.findPopularFunding(100);
                 break;
-            case "outOfStock":
+            case "outOfStock"://order.size+5 <= maxBacker
                 fundingList=fundingRepository.findOutOfStock(100);
                 break;
-            case "vergeOfSuccess":
+            case "vergeOfSuccess"://성공률 80~100사이
                 fundingList = fundingRepository.findVergeOfSuccess(100);
                 break;
-            case "excess":
+            case "excess"://성공률 100% 초과
                 fundingList=fundingRepository.findExcessFunding(100);
                 break;
             default:

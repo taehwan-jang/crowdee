@@ -97,8 +97,6 @@ public class CreatorController {
         return new ResponseEntity<>(fundingDTO,httpHeaders,HttpStatus.OK);
     }
 
-
-
     @PostMapping("/create/fundingPlan/{manageUrl}")
     public ResponseEntity<?> createTempFundingPlan(@RequestBody FundingPlanDTO fundingPlanDTO,
                                                    @PathVariable String manageUrl,

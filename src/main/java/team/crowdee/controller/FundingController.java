@@ -2,6 +2,8 @@ package team.crowdee.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.CacheControl;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +12,7 @@ import team.crowdee.domain.dto.ThumbNailDTO;
 import team.crowdee.service.FundingService;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @Slf4j
@@ -25,8 +28,14 @@ public class FundingController {
      */
     @GetMapping
     public ResponseEntity<?> showAllThumbNail() {
+        //main 요청시 cache 사용 설정 추가
+        CacheControl cacheControl = CacheControl
+                .maxAge(60, TimeUnit.SECONDS)
+                .mustRevalidate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setCacheControl(cacheControl);
         List<List<ThumbNailDTO>> thumbNail = fundingService.mainThumbNail();
-        return new ResponseEntity<>(thumbNail, HttpStatus.OK);
+        return new ResponseEntity<>(thumbNail,headers, HttpStatus.OK);
     }
 
     @GetMapping("/{projectUrl}")

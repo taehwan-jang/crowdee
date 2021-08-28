@@ -28,7 +28,6 @@ public class FundingRepository {
         return em.createQuery("select f from Funding f", Funding.class).getResultList();
     }
 
-
     public List<Funding> findByParam(String target, String param) {
         String query = "select f from Funding f " +
                 "left join fetch f.orders " +
