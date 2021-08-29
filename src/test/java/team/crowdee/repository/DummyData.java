@@ -468,6 +468,19 @@ public class DummyData {
                 .build();
         fundingRepository.save(funding13);
 
+        MemberDTO memberDTO6 = new MemberDTO();
+        memberDTO6.setEmail("jth0602@gmail.com");
+        memberDTO6.setPassword("1q2w3e4r!");
+        memberDTO6.setEmailCert("TAWOETHD");
+        memberDTO6.setMobile("010-2395-9602");
+        memberDTO6.setNickName("크라우디보스");
+        memberDTO6.setRegistDate(LocalDateTime.now());
+        memberDTO6.setUserName("장태환");
+
+        memberService.join(memberDTO6);
+
+
+
     }
 
 

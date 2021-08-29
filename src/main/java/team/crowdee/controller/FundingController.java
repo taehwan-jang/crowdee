@@ -104,7 +104,7 @@ public class FundingController {
      */
     @PostMapping("/participation")
     public ResponseEntity<?> participation(@RequestBody PaymentDTO paymentDTO,
-                                           HttpServletRequest request) {
+                                           HttpServletRequest request) throws Exception {
         //https://smujihoon.tistory.com/103 결제 관련 참고 로직
         boolean flag = customJWTFilter.isBacker(request);
         if (!flag) {

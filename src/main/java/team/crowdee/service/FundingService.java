@@ -132,7 +132,7 @@ public class FundingService {
         return Utils.fundingEToD(fundingList.get(0));
     }
 
-    public void participation(Long fundingId, PaymentDTO paymentDTO, String email) {
+    public void participation(Long fundingId, PaymentDTO paymentDTO, String email) throws Exception {
         //참여 했던 펀딩인지 어떻게 확인하는가.
         Funding funding = fundingRepository.findById(fundingId);
         List<Order> orders = funding.getOrders();
@@ -149,6 +149,7 @@ public class FundingService {
             throw new IllegalArgumentException("회원 정보를 찾을 수 없습니다.");
         }
         Member member = memberList.get(0);
+        mimeEmailService.joinFundingMail(member, funding);
         Payment payment = Payment.builder()
                 .name(funding.getTitle())
                 .amount(paymentDTO.getAmount())

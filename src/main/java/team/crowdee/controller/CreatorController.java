@@ -50,6 +50,20 @@ public class CreatorController {
         return new ResponseEntity<>("심사목록에 추가되었습니다.",httpHeaders, HttpStatus.OK);
     }
 
+    @PostMapping("/project-start")
+    public ResponseEntity<?> checkAuthority(HttpServletRequest request) {
+        boolean creator = customJWTFilter.isCreator(request);
+        if (creator) {
+            return new ResponseEntity<>(HttpStatus.OK);//200
+        }
+        boolean backer = customJWTFilter.isBacker(request);
+        if (backer) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);//403
+        }
+        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);//401
+
+    }
+
     @GetMapping("/checkUrl/{projectUrl}")
     public ResponseEntity<?> checkProjectUrl(@PathVariable String projectUrl) {
         List<Funding> fundingList = fundingRepository.findByParam("projectUrl", projectUrl);
@@ -127,9 +141,14 @@ public class CreatorController {
     }
 
     @GetMapping("/create/{manageUrl}")
-    public ResponseEntity<?> askInspection(@PathVariable String manageUrl) {
-
-        return null;
+    public ResponseEntity<?> askInspection(@PathVariable String manageUrl,
+                                           HttpServletRequest request) {
+        boolean flag = customJWTFilter.isCreator(request);
+        if (!flag) {
+            return new ResponseEntity<>("크리에이터만 펀딩을 등록할 수 있습니다.",HttpStatus.FORBIDDEN);
+        }
+        FundingDTO fundingDTO = creatorService.changeStatus(manageUrl);
+        return new ResponseEntity<>(fundingDTO,HttpStatus.OK);
     }
 
 

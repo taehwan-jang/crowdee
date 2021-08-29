@@ -38,7 +38,7 @@ class MimeEmailServiceTest {
         fundingDTO.setThumbNailUrl("naver.com");
         fundingDTO.setProjectUrl("test");
 
-        mimeEmailService.joinFundingMail(memberDTO, fundingDTO);
+//        mimeEmailService.joinFundingMail(memberDTO, fundingDTO);
 
     }
 

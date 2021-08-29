@@ -147,4 +147,15 @@ public class CreatorService {
         }
         return fundingList.get(0);
     }
+
+    public FundingDTO changeStatus(String manageUrl) {
+        List<Funding> fundingList = fundingRepository.findByParam("manageUrl", manageUrl);
+        if (fundingList.isEmpty()) {
+            throw new IllegalArgumentException("존재하지 않는 펀딩입니다.");
+        }
+        Funding funding = fundingList.get(0);
+        funding.changeStatus(Status.inspection);
+        FundingDTO fundingDTO = Utils.fundingEToD(funding);
+        return fundingDTO;
+    }
 }
