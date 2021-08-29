@@ -42,10 +42,6 @@ public class Member {
     @Builder.Default
     private Set<Authority> authorities = new HashSet<>();
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-    @Builder.Default
-    private List<Follow> following = new ArrayList<>(); // follow 다시 생각해봐
-
     @OneToMany(mappedBy = "member",cascade = CascadeType.ALL)
     @Builder.Default
     private List<Order> orders = new ArrayList<>();

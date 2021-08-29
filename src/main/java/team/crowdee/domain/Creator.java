@@ -24,9 +24,6 @@ public class Creator {
 
     @OneToOne(mappedBy = "creator")
     private Member member;
-    @OneToMany(mappedBy = "creator")
-    @Builder.Default
-    private List<Follow> follows = new ArrayList<>();
 
     @OneToMany(mappedBy = "creator")
     private List<Funding> fundingList = new ArrayList<>();//creator 가 진행한 funding 리스트

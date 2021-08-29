@@ -5,13 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.stereotype.Repository;
 import team.crowdee.domain.Creator;
-import team.crowdee.domain.Follow;
-import team.crowdee.domain.Funding;
 import team.crowdee.domain.Member;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -96,11 +92,6 @@ public class MemberRepository {
 
     public Creator findCreator(Long id) {
         return em.find(Creator.class, id);
-    }
-
-    public Long saveFollow(Follow follow) {
-        em.persist(follow);
-        return follow.getFollowId();
     }
 
     public void flush() {

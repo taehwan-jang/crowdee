@@ -36,6 +36,9 @@ public class CustomJWTFilter {
         if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")){
             String[] token = bearerToken.substring(7).split("\\.");
             Base64.Decoder decoder = getDecoder();
+            if (token.length == 1) {
+                return null;
+            }
             byte[] keyBytes = decoder.decode(token[1].getBytes());
             String payload = new String(keyBytes);
             String[] strings = payload.split("\"");
