@@ -174,7 +174,6 @@ public class Funding {
     }
     //==========조회용 로직 일부 추가===========//
     public int totalParticipant() {
-
         return getOrders().size();
     }
 

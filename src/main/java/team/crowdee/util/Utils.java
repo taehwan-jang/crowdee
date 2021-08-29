@@ -34,6 +34,7 @@ public class Utils {
         fundingDTO.setGoalFundraising(funding.getGoalFundraising());
         fundingDTO.setMinFundraising(funding.getMinFundraising());
         fundingDTO.setMaxBacker(funding.getMaxBacker());
+        fundingDTO.setTotalBacker(funding.totalParticipant());
         fundingDTO.setStartDate(funding.getStartDate());
         fundingDTO.setEndDate(funding.getEndDate());
         fundingDTO.setVisitCount(funding.getVisitCount());
@@ -63,7 +64,7 @@ public class Utils {
         CreatorDTO creatorDTO = new CreatorDTO();
         Status status = creator.getStatus();
         String statuses = status.toString();
-        creatorDTO.setCreatorid(creator.getCreatorId());
+        creatorDTO.setCreatorId(creator.getCreatorId());
         creatorDTO.setCreatorNickName(creator.getCreatorNickName());
         creatorDTO.setBankBookImageUrl(creator.getAccountInfo().getBankBookImageUrl());
         creatorDTO.setMemberId(creator.getMember().getMemberId());

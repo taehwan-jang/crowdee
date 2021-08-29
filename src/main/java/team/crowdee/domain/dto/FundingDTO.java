@@ -28,6 +28,7 @@ public class FundingDTO {
     private String startDate;//시작일(yyyy-mm-dd)
     private String endDate;//종료일(yyyy-mm-dd)
     private int maxBacker;//최대후원자수
+    private int totalBacker;//현재후원자수
     private LocalDateTime postDate;//등록일
     private int visitCount;//방문횟수(조회수)
     private int likeCount;//좋아요 갯수?? 찜으로 바꿀것
