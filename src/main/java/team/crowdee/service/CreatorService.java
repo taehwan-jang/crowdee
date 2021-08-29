@@ -41,6 +41,9 @@ public class CreatorService {
         account.setBankBookImageUrl(creatorDTO.getBankBookImageUrl());
         account.setBankName(creatorDTO.getBankName());
         Creator creator = Creator.builder()
+                .aboutMe(creatorDTO.getAboutMe())
+                .career(creatorDTO.getCareer())
+                .profileImgUrl(creatorDTO.getProfileImgUrl())
                 .status(Status.inspection)
                 .creatorNickName(creatorDTO.getCreatorNickName())
                 .BusinessNumber(creatorDTO.getBusinessNumber())
