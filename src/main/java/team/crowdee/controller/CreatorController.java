@@ -50,7 +50,7 @@ public class CreatorController {
         return new ResponseEntity<>("심사목록에 추가되었습니다.",httpHeaders, HttpStatus.OK);
     }
 
-    @PostMapping("/project-start")
+    @GetMapping("/project-start")
     public ResponseEntity<?> checkAuthority(HttpServletRequest request) {
         boolean creator = customJWTFilter.isCreator(request);
         if (creator) {
