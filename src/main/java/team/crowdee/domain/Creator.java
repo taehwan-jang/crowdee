@@ -19,6 +19,9 @@ public class Creator {
     @Column(name = "creator_id")
     private Long creatorId;
     private String creatorNickName;
+    private String profileImgUrl;
+    private String aboutMe;
+    private String career;
     private String BusinessNumber;
     private Status status;
 

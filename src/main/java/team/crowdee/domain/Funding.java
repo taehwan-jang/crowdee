@@ -22,6 +22,7 @@ public class Funding {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "creator_id")
     private Creator creator;
+
     /**
      * 조회를 위한 project Url과 관리를 위한 management Url 생성
      */
@@ -65,7 +66,11 @@ public class Funding {
      * 펀딩의 상태
      */
     private int visitCount;//방문횟수(조회수)
-    private int likeCount;//좋아요 갯수?? 찜으로 바꿀것
+
+    @ManyToMany
+    @Builder.Default
+    private List<Member> memberList;//좋아요 갯수?? 찜으로 바꿀것
+
     private int totalFundraising = 0;//총 펀딩금액
 
 

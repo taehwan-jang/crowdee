@@ -37,7 +37,6 @@ public class Utils {
         fundingDTO.setStartDate(funding.getStartDate());
         fundingDTO.setEndDate(funding.getEndDate());
         fundingDTO.setVisitCount(funding.getVisitCount());
-        fundingDTO.setLikeCount(funding.getLikeCount());
         fundingDTO.setTotalFundraising(funding.getTotalFundraising());
         fundingDTO.setStatus(funding.getStatus());
         return fundingDTO;

@@ -74,7 +74,7 @@ public class CreatorController {
 
     }
 
-    @GetMapping("/create/funding/{projectUrl}")
+    @PostMapping("/create/funding/{projectUrl}")
     public ResponseEntity<?> createFunding(@PathVariable String projectUrl, HttpServletRequest request) {
         boolean flag = customJWTFilter.isCreator(request);
         if (!flag) {
