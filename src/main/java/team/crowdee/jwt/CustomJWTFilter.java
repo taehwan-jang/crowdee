@@ -59,19 +59,25 @@ public class CustomJWTFilter {
         if (StringUtils.hasText(authority)) {
             if (!authority.contains("backer")) {
                 return false;
+            } else {
+                return true;
             }
+
         }
-        return true;
+        return false;
     }
     public boolean isCreator(HttpServletRequest request) {
         String authority = findAuthority(request);
         if (StringUtils.hasText(authority)) {
             if (!authority.contains("creator")) {
                 return false;
+            } else {
+                return true;
             }
         }
-        return true;
+        return false;
     }
+
     public boolean isAdmin(HttpServletRequest request) {
         String authority = findAuthority(request);
         if (StringUtils.hasText(authority)) {
