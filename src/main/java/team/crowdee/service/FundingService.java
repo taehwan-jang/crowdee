@@ -124,7 +124,7 @@ public class FundingService {
     }
 
     public FundingDTO findOneFunding(String projectUrl) {
-        List<Funding> fundingList = fundingRepository.findByParam("projectUrl", projectUrl);
+        List<Funding> fundingList = fundingRepository.findByUrl(projectUrl);
         if (fundingList.isEmpty()) {
             return null;
         }

@@ -50,6 +50,13 @@ public class Member {
     @JoinColumn(name = "creator_id")
     private Creator creator;
 
+    @ManyToMany
+    @JoinTable(name = "member_funding",
+            joinColumns = {@JoinColumn(name = "member_id", referencedColumnName = "member_id")},
+            inverseJoinColumns = {@JoinColumn(name = "funding_id", referencedColumnName = "funding_id")})
+    @Builder.Default
+    private List<Funding> fundingList = new ArrayList<>();
+
     public void joinCreator(Creator creator) {
         this.creator = creator;
         creator.setMember(this);

@@ -15,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 public class Funding {
+
     @Id
     @GeneratedValue
     @Column(name = "funding_id")
@@ -67,10 +68,9 @@ public class Funding {
      */
     private int visitCount;//방문횟수(조회수)
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "fundingList")
     @Builder.Default
-    private List<Member> memberList;//좋아요 갯수?? 찜으로 바꿀것
-
+    private List<Member> memberList = new ArrayList<>();//좋아요 갯수?? 찜으로 바꿀것
     private int totalFundraising = 0;//총 펀딩금액
 
 
@@ -174,6 +174,7 @@ public class Funding {
     }
     //==========조회용 로직 일부 추가===========//
     public int totalParticipant() {
+
         return getOrders().size();
     }
 
