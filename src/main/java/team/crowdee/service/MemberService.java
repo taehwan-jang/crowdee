@@ -7,6 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team.crowdee.domain.Authority;
+import team.crowdee.domain.Status;
 import team.crowdee.domain.UserState;
 import team.crowdee.domain.Member;
 import team.crowdee.domain.dto.ChangePassDTO;
@@ -31,10 +32,10 @@ import java.util.regex.Pattern;
 @EnableScheduling
 @Transactional(readOnly = true)
 public class MemberService {
+
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final MimeEmailService mimeEmailService;
-
     @Transactional
     public Long join(MemberDTO memberDTO) {
         //비밀번호검증:8-16자리 대문자소문자특수문자 포함 // 닉네임 중복검증 //이메일 중복검증 형식검증
@@ -43,7 +44,7 @@ public class MemberService {
         }
         Set<Authority> authorities = new HashSet<Authority>();
         authorities.add(Authority.builder().authorityName("backer").build());
-        authorities.add(Authority.builder().authorityName("creator").build());
+//        authorities.add(Authority.builder().authorityName("creator").build());
         Member member = Member.builder()
                 .password(passwordEncoder.encode(memberDTO.getPassword())) //패스워드암호화
                 .userName(memberDTO.getUserName())
@@ -53,7 +54,7 @@ public class MemberService {
                 .email(memberDTO.getEmail())
                 .emailCert(memberDTO.getEmailCert())
                 .authorities(authorities)
-                .userState(UserState.backer)
+                .status(Status.member)
                 .build();
         Long saveMember = memberRepository.save(member);
         return member.getMemberId();
@@ -176,20 +177,6 @@ public class MemberService {
         }
         return false;
     }
-
-    //이메일 인증
-    @Transactional
-    public Member signUpConfirm(String email, String authKey) {
-        List<Member> members = memberRepository.findToConfirm(email,authKey);
-        if (members.isEmpty()) {
-            return null;
-        }
-        Member member = members.get(0);
-        member.setEmailCert("Y");
-        member.setUserState(UserState.backer);
-        return member;
-    }
-
     //회원탈퇴
     @Transactional
     public Member deleteMember(MemberDTO memberDTO) { //비번 값을 보내준다고 가정
@@ -216,6 +203,29 @@ public class MemberService {
             memberRepository.delete(member);
         }
     }
+
+    public String getUserNickName(String email) {
+        List<Member> byEmail = memberRepository.findByEmail(email);
+        if (byEmail.isEmpty()) {
+            throw new IllegalArgumentException("회원이 아닙니다.");
+        }
+        return byEmail.get(0).getNickName();
+    }
+
+//    public String getAdminLogin(String email){
+//        List<Member> byEmail = memberRepository.findByEmail(email);
+//
+//        String nickName = byEmail.get(0).getNickName();
+//        if (byEmail.isEmpty()) {
+//            throw new IllegalArgumentException("회원이아닙니다");
+//        }
+//        if (byEmail.get(0).getStatus().equals()) {
+//            nickName="관리자";
+//            return nickName;
+//        }
+//        return nickName;
+//
+//    }
 
 }
 

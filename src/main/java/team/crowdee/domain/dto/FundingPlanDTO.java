@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class FundingPlanDTO {
-
     private String manageUrl;
     private int goalFundraising;//목표금액
     private int minFundraising;//최소금액

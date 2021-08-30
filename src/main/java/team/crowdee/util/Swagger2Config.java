@@ -20,16 +20,17 @@ public class Swagger2Config {
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("team.crowdee.controller"))
                 .paths(PathSelectors.any())
-                .build();
+                .build()
+                .apiInfo(apiInfo());
     }
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("제목 작성")
-                .version("버전작성")
-                .description("설명 작성")
-                .license("라이센스작성")
-                .licenseUrl("라이센스 URL작성")
+                .title("크라우디 api document")
+                .version("1.0")
+                .description("api 문서입니다.")
+                .license("")
+                .licenseUrl("")
                 .build();
     }
 }
