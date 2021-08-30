@@ -5,12 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.stereotype.Repository;
 import team.crowdee.domain.Creator;
-import team.crowdee.domain.Follow;
 import team.crowdee.domain.Member;
+import team.crowdee.domain.Status;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -71,6 +69,12 @@ public class MemberRepository {
                 .getResultList();
     }
 
+    public List<Member> findByStatus(Status status) {
+        return em.createQuery("select m from Member m where m.status=:status", Member.class)
+                .setParameter("status", status)
+                .getResultList();
+    }
+
     public List<Member> findToConfirm(String email, String emailCert) {
         return em.createQuery("select m from Member m where m.email=:email and m.emailCert=:emailCert", Member.class)
                 .setParameter("email",email)
@@ -97,20 +101,22 @@ public class MemberRepository {
         return em.find(Creator.class, id);
     }
 
-    public Long saveFollow(Follow follow) {
-        em.persist(follow);
-        return follow.getFollowId();
-    }
-
     public void flush() {
         em.flush();
     }
-
 
     @EntityGraph(attributePaths = "authorities")
     public List<Member> findOneWithAuthoritiesByEmail(String email) {
         return em.createQuery("select m from Member m where m.email=:email", Member.class)
                 .setParameter("email", email)
+                .getResultList();
+    }
+
+    public List<Member> findToInspection() {
+        return em.createQuery("select m from Member m " +
+                        "join fetch m.creator " +
+                        "where m.status='inspection'",
+                Member.class)
                 .getResultList();
     }
 

@@ -20,15 +20,20 @@ public class Creator {
     @Column(name = "creator_id")
     private Long creatorId;
     private String creatorNickName;
+    private String profileImgUrl;
+    private String aboutMe;
+    private String career;
     private String BusinessNumber;
+
+    @Enumerated(EnumType.STRING)
     private Status status;
 
     @OneToOne(mappedBy = "creator")
     private Member member;
 
-    @OneToMany(mappedBy = "creator")
-    @Builder.Default
-    private List<Follow> follows = new ArrayList<>();
+//    @OneToMany(mappedBy = "creator")
+//    @Builder.Default
+//    private List<Follow> follows = new ArrayList<>();
 
 
     @OneToMany(mappedBy = "creator")

@@ -17,7 +17,6 @@ import java.util.Set;
 @Getter
 @Setter
 public class Member {
-
     @Id
     @GeneratedValue
     @Column(name = "member_id")
@@ -33,8 +32,7 @@ public class Member {
     private String secessionDate;
 
     @Enumerated(EnumType.STRING)
-    private UserState userState;
-
+    private Status status;
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "member_authority",
@@ -44,11 +42,7 @@ public class Member {
     @Builder.Default
     private Set<Authority> authorities = new HashSet<>();
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-    @Builder.Default
-    private List<Follow> following = new ArrayList<>(); // follow 다시 생각해봐
-
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member",cascade = CascadeType.ALL)
     @Builder.Default
     private List<Order> orders = new ArrayList<>();
 
@@ -59,9 +53,18 @@ public class Member {
 
     public void joinCreator(Creator creator) {
         this.creator = creator;
-        this.userState = UserState.creator;
         creator.setMember(this);
+    }
 
+    public void acceptCreator(Authority authority){
+        this.status = Status.confirm;
+        this.authorities.add(authority);
+        creator.setStatus(Status.confirm);
+    }
+
+    public void participationFunding(Order order) {
+        this.orders.add(order);
+        order.addMember(this);
     }
 
     //=====수정을 위한 패턴=====//
