@@ -15,7 +15,6 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 public class Funding {
-
     @Id
     @GeneratedValue
     @Column(name = "funding_id")
@@ -23,7 +22,6 @@ public class Funding {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "creator_id")
     private Creator creator;
-
     /**
      * 조회를 위한 project Url과 관리를 위한 management Url 생성
      */
@@ -90,6 +88,10 @@ public class Funding {
         plusTotalFundraising(order.getPayment().getAmount());
         orders.add(order);
         order.addFunding(this);
+    }
+
+    public void acceptFunding(){
+        this.status = Status.confirm;
     }
 
     //=======Setter 대용=======//

@@ -23,6 +23,8 @@ public class Creator {
     private String aboutMe;
     private String career;
     private String BusinessNumber;
+
+    @Enumerated(EnumType.STRING)
     private Status status;
 
     @OneToOne(mappedBy = "creator")

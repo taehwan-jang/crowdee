@@ -3,6 +3,7 @@ package team.crowdee.repository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import team.crowdee.domain.Funding;
+import team.crowdee.domain.Status;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -119,6 +120,12 @@ public class FundingRepository {
                 "join fetch f.creator " +
                 "where f.status='inspection'",
                 Funding.class)
+                .getResultList();
+    }
+
+    public List<Funding> findByStatus(Status status) {
+        return em.createQuery("select f from Funding f where f.status=:status", Funding.class)
+                .setParameter("status", status)
                 .getResultList();
     }
 

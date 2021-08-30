@@ -72,10 +72,6 @@ public class Member {
         this.orders.add(order);
         order.addMember(this);
     }
-    public void participationFunding(Order order) {
-        this.orders.add(order);
-        order.addMember(this);
-    }
 
     //=====수정을 위한 패턴=====//
 
