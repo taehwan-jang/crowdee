@@ -104,6 +104,7 @@ public class CreatorService {
         Funding funding = getFunding(manageUrl);
         funding
                 .thumbTitle(thumbNailDTO.getTitle())
+                .thumbSubTitle(thumbNailDTO.getSubTitle())
                 .thumbUrl(thumbNailDTO.getThumbNailUrl())
                 .thumbCategory(thumbNailDTO.getCategory())
                 .thumbTag(thumbNailDTO.getTag())

@@ -16,6 +16,7 @@ public class FundingViewDTO {
     private String projectUrl;
     private String manageUrl;
     private String title;
+    private String subTitle;
     private String summary;//요약
     private String thumbNailUrl;//file이름 -> 여러건일경우 리스트?
     private String category;//카테고리
@@ -30,7 +31,6 @@ public class FundingViewDTO {
     private String endDate;//종료일(yyyy-mm-dd)
     private int maxBacker;//최대후원자수
     private int totalBacker;//현재후원자수
-    private LocalDateTime postDate;//등록일
     private int visitCount;//방문횟수(조회수)
     private int totalFundraising=0;//총 펀딩금액
     private Status status;//현재 펀딩의 상태(작성/심사/거절/진행/종료)
@@ -40,9 +40,10 @@ public class FundingViewDTO {
     private String profileImgUrl;
     private String career;
     private String creatorNickName;
-    private List<SimpleFundingListDTO> fundingList = new ArrayList<>();
+    private List<SimpleFundingListDTO> fundingList;
 
     //=========찜여부 체크=============//
+    private String memberList;
     private boolean isWish;
 
 }

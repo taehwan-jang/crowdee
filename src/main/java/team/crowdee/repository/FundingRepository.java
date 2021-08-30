@@ -130,5 +130,14 @@ public class FundingRepository {
     }
 
 
-
+    public List<Funding> findByCreatorForIntroduce(Long creatorId) {
+        return em.createQuery("select f from Funding f " +
+                "where f.status='progress' " +
+                "and f.creator.creatorId=:creatorId " +
+                "order by f.rateOfAchievement desc", Funding.class)
+                .setParameter("creatorId", creatorId)
+                .setFirstResult(0)
+                .setMaxResults(3)
+                .getResultList();
+    }
 }
