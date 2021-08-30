@@ -49,8 +49,8 @@ public class FundingRepository {
 
     public List<Funding> findByUrl(String projectUrl) {
         return em.createQuery("select f from Funding f " +
-                    "join fetch f.creator " +
-                    "join fetch f.memberList " +
+                    "left join fetch f.creator " +
+                    "left join fetch f.memberList " +
                     "where f.projectUrl =:projectUrl", Funding.class)
                 .setParameter("projectUrl",projectUrl)
                 .getResultList();

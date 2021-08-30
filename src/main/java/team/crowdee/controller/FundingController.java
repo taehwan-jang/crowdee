@@ -51,8 +51,12 @@ public class FundingController {
         if (fundingViewDTO == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        if (fundingViewDTO.getMemberList().contains(email)) {
-            fundingViewDTO.setWish(true);
+        if (!fundingViewDTO.getMemberList().isEmpty() && StringUtils.hasText(email)) {
+            if (fundingViewDTO.getMemberList().contains(email)) {
+                fundingViewDTO.setWish(true);
+            }
+        } else {
+            fundingViewDTO.setWish(false);
         }
         return new ResponseEntity<>(fundingViewDTO, HttpStatus.OK);
     }

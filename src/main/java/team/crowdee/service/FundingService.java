@@ -185,12 +185,21 @@ public class FundingService {
 
     public boolean addOrRemoveMemberToFunding(String email, Long fundingId) {
         Funding funding = fundingRepository.findById(fundingId);
+        List<Member> findMemberList = memberRepository.findByEmail(email);
+        if (findMemberList.isEmpty()) {
+            throw new IllegalArgumentException("존재하지 않는 회원입니다.");
+        }
+        Member requestMember = findMemberList.get(0);
         List<Member> memberList = funding.getMemberList();
         for (Member member : memberList) {
             if (member.getEmail().equals(email)) {
-                return true;
+                funding.getMemberList().remove(requestMember);
+                member.getFundingList().remove(funding);
+                return false;
             }
         }
-        return false;
+        funding.getMemberList().add(requestMember);
+        requestMember.getFundingList().add(funding);
+        return true;
     }
 }
