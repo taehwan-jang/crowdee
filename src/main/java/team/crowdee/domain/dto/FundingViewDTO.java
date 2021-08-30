@@ -5,10 +5,12 @@ import lombok.Setter;
 import team.crowdee.domain.Status;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
-public class FundingDTO {
+public class FundingViewDTO {
 
     private Long fundingId;
     private String projectUrl;
@@ -32,5 +34,15 @@ public class FundingDTO {
     private int visitCount;//방문횟수(조회수)
     private int totalFundraising=0;//총 펀딩금액
     private Status status;//현재 펀딩의 상태(작성/심사/거절/진행/종료)
+
+    //=========크리에이터 관련 정보===========//
+    private String aboutMe;
+    private String profileImgUrl;
+    private String career;
+    private String creatorNickName;
+    private List<SimpleFundingListDTO> fundingList = new ArrayList<>();
+
+    //=========찜여부 체크=============//
+    private boolean isWish;
 
 }

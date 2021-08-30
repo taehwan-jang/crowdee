@@ -7,7 +7,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import team.crowdee.domain.dto.FundingDTO;
+import team.crowdee.domain.dto.FundingViewDTO;
 import team.crowdee.domain.dto.PaymentDTO;
 import team.crowdee.domain.dto.ThumbNailDTO;
 import team.crowdee.jwt.CustomJWTFilter;
@@ -44,11 +44,11 @@ public class FundingController {
 
     @GetMapping("/{projectUrl}")
     public ResponseEntity<?> showFundingDetail(@PathVariable String projectUrl) {
-        FundingDTO fundingDTO = fundingService.findOneFunding(projectUrl);
-        if (fundingDTO == null) {
+        FundingViewDTO fundingViewDTO = fundingService.findOneFunding(projectUrl);
+        if (fundingViewDTO == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(fundingDTO, HttpStatus.OK);
+        return new ResponseEntity<>(fundingViewDTO, HttpStatus.OK);
     }
 
     /**ㄴㅇㄹ

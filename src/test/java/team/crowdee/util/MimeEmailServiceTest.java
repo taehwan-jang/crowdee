@@ -7,14 +7,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
-import team.crowdee.domain.Funding;
-import team.crowdee.domain.Member;
-import team.crowdee.domain.dto.FundingDTO;
+import team.crowdee.domain.dto.FundingViewDTO;
 import team.crowdee.domain.dto.MemberDTO;
 
 import javax.mail.MessagingException;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -33,10 +29,10 @@ class MimeEmailServiceTest {
         memberDTO.setPassword("Abcd12345!@");
         memberDTO.setEmail("yhansol145@naver.com");
 
-        FundingDTO fundingDTO = new FundingDTO();
-        fundingDTO.setTitle("한솔맨의 일상");
-        fundingDTO.setThumbNailUrl("naver.com");
-        fundingDTO.setProjectUrl("test");
+        FundingViewDTO fundingViewDTO = new FundingViewDTO();
+        fundingViewDTO.setTitle("한솔맨의 일상");
+        fundingViewDTO.setThumbNailUrl("naver.com");
+        fundingViewDTO.setProjectUrl("test");
 
 //        mimeEmailService.joinFundingMail(memberDTO, fundingDTO);
 
@@ -51,12 +47,12 @@ class MimeEmailServiceTest {
         memberDTO.setPassword("Abcd12345!@");
         memberDTO.setEmail("yhansol145@naver.com");
 
-        FundingDTO fundingDTO = new FundingDTO();
-        fundingDTO.setTitle("한솔맨의 일상");
-        fundingDTO.setThumbNailUrl("naver.com");
-        fundingDTO.setProjectUrl("test");
+        FundingViewDTO fundingViewDTO = new FundingViewDTO();
+        fundingViewDTO.setTitle("한솔맨의 일상");
+        fundingViewDTO.setThumbNailUrl("naver.com");
+        fundingViewDTO.setProjectUrl("test");
 
-        mimeEmailService.successFundingMail(memberDTO, fundingDTO);
+        mimeEmailService.successFundingMail(memberDTO, fundingViewDTO);
 
     }
 
@@ -69,12 +65,12 @@ class MimeEmailServiceTest {
         memberDTO.setPassword("Abcd12345!@");
         memberDTO.setEmail("yhansol145@naver.com");
 
-        FundingDTO fundingDTO = new FundingDTO();
-        fundingDTO.setTitle("한솔맨의 일상");
-        fundingDTO.setThumbNailUrl("naver.com");
-        fundingDTO.setProjectUrl("test");
+        FundingViewDTO fundingViewDTO = new FundingViewDTO();
+        fundingViewDTO.setTitle("한솔맨의 일상");
+        fundingViewDTO.setThumbNailUrl("naver.com");
+        fundingViewDTO.setProjectUrl("test");
 
-        mimeEmailService.failFundingMail(memberDTO, fundingDTO);
+        mimeEmailService.failFundingMail(memberDTO, fundingViewDTO);
 
     }
 }

@@ -7,6 +7,7 @@ import team.crowdee.domain.valuetype.AccountInfo;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Set;
 
 public class Utils {
@@ -16,31 +17,65 @@ public class Utils {
     }
 //더미데이터5개 (크리에이터랑 펀딩) 만들기
 
-    public static FundingDTO fundingEToD(Funding funding) {
-        FundingDTO fundingDTO = new FundingDTO();
-        fundingDTO.setFundingId(funding.getFundingId());
-        fundingDTO.setProjectUrl(funding.getProjectUrl());
-        fundingDTO.setManageUrl(funding.getManageUrl());
-        fundingDTO.setThumbNailUrl(funding.getThumbNailUrl());
-        fundingDTO.setTitle(funding.getTitle());
-        fundingDTO.setSummary(funding.getSummary());
-        fundingDTO.setCategory(funding.getCategory());
-        fundingDTO.setTag(funding.getTag());
-        fundingDTO.setContent(funding.getContent());
-        fundingDTO.setBudget(funding.getBudget());
-        fundingDTO.setSchedule(funding.getSchedule());
-        fundingDTO.setAboutUs(funding.getAboutUs());
-        fundingDTO.setPostDate(funding.getPostDate());
-        fundingDTO.setGoalFundraising(funding.getGoalFundraising());
-        fundingDTO.setMinFundraising(funding.getMinFundraising());
-        fundingDTO.setMaxBacker(funding.getMaxBacker());
-        fundingDTO.setTotalBacker(funding.totalParticipant());
-        fundingDTO.setStartDate(funding.getStartDate());
-        fundingDTO.setEndDate(funding.getEndDate());
-        fundingDTO.setVisitCount(funding.getVisitCount());
-        fundingDTO.setTotalFundraising(funding.getTotalFundraising());
-        fundingDTO.setStatus(funding.getStatus());
-        return fundingDTO;
+    public static FundingViewDTO fundingEToD(Funding funding, List<SimpleFundingListDTO> fundingList) {
+        FundingViewDTO fundingViewDTO = new FundingViewDTO();
+        fundingViewDTO.setFundingId(funding.getFundingId());
+        fundingViewDTO.setProjectUrl(funding.getProjectUrl());
+        fundingViewDTO.setManageUrl(funding.getManageUrl());
+        fundingViewDTO.setThumbNailUrl(funding.getThumbNailUrl());
+        fundingViewDTO.setTitle(funding.getTitle());
+        fundingViewDTO.setSummary(funding.getSummary());
+        fundingViewDTO.setCategory(funding.getCategory());
+        fundingViewDTO.setTag(funding.getTag());
+        fundingViewDTO.setContent(funding.getContent());
+        fundingViewDTO.setBudget(funding.getBudget());
+        fundingViewDTO.setSchedule(funding.getSchedule());
+        fundingViewDTO.setAboutUs(funding.getAboutUs());
+        fundingViewDTO.setPostDate(funding.getPostDate());
+        fundingViewDTO.setGoalFundraising(funding.getGoalFundraising());
+        fundingViewDTO.setMinFundraising(funding.getMinFundraising());
+        fundingViewDTO.setMaxBacker(funding.getMaxBacker());
+        fundingViewDTO.setTotalBacker(funding.totalParticipant());
+        fundingViewDTO.setStartDate(funding.getStartDate());
+        fundingViewDTO.setEndDate(funding.getEndDate());
+        fundingViewDTO.setVisitCount(funding.getVisitCount());
+        fundingViewDTO.setTotalFundraising(funding.getTotalFundraising());
+        fundingViewDTO.setStatus(funding.getStatus());
+        //========크리에이터 정보========//
+        fundingViewDTO.setAboutMe(funding.getCreator().getAboutMe());
+        fundingViewDTO.setCareer(funding.getCreator().getCareer());
+        fundingViewDTO.setCreatorNickName(funding.getCreator().getCreatorNickName());
+        fundingViewDTO.setProfileImgUrl(funding.getCreator().getProfileImgUrl());
+        fundingViewDTO.setFundingList(fundingList);
+
+        return fundingViewDTO;
+    }
+    public static FundingViewDTO fundingEToD(Funding funding) {
+        FundingViewDTO fundingViewDTO = new FundingViewDTO();
+        fundingViewDTO.setFundingId(funding.getFundingId());
+        fundingViewDTO.setProjectUrl(funding.getProjectUrl());
+        fundingViewDTO.setManageUrl(funding.getManageUrl());
+        fundingViewDTO.setThumbNailUrl(funding.getThumbNailUrl());
+        fundingViewDTO.setTitle(funding.getTitle());
+        fundingViewDTO.setSummary(funding.getSummary());
+        fundingViewDTO.setCategory(funding.getCategory());
+        fundingViewDTO.setTag(funding.getTag());
+        fundingViewDTO.setContent(funding.getContent());
+        fundingViewDTO.setBudget(funding.getBudget());
+        fundingViewDTO.setSchedule(funding.getSchedule());
+        fundingViewDTO.setAboutUs(funding.getAboutUs());
+        fundingViewDTO.setPostDate(funding.getPostDate());
+        fundingViewDTO.setGoalFundraising(funding.getGoalFundraising());
+        fundingViewDTO.setMinFundraising(funding.getMinFundraising());
+        fundingViewDTO.setMaxBacker(funding.getMaxBacker());
+        fundingViewDTO.setTotalBacker(funding.totalParticipant());
+        fundingViewDTO.setStartDate(funding.getStartDate());
+        fundingViewDTO.setEndDate(funding.getEndDate());
+        fundingViewDTO.setVisitCount(funding.getVisitCount());
+        fundingViewDTO.setTotalFundraising(funding.getTotalFundraising());
+        fundingViewDTO.setStatus(funding.getStatus());
+
+        return fundingViewDTO;
     }
 
     //backer

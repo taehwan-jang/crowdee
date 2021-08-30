@@ -11,7 +11,6 @@ import team.crowdee.domain.valuetype.AccountInfo;
 import team.crowdee.repository.*;
 import team.crowdee.util.Utils;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -75,7 +74,7 @@ public class CreatorService {
         return true;
     }
 
-    public FundingDTO tempFunding(String projectUrl,String email) {
+    public FundingViewDTO tempFunding(String projectUrl, String email) {
         String manageUrl = UUID.randomUUID().toString().replaceAll("-", "");
         List<Creator> creatorList = creatorRepository.findByEmail(email);
         if (creatorList.isEmpty()) {
@@ -92,15 +91,15 @@ public class CreatorService {
         findCreator.getFundingList().add(tempFunding);
         fundingRepository.save(tempFunding);
 
-        FundingDTO fundingDTO = Utils.fundingEToD(tempFunding);
-        return fundingDTO;
+        FundingViewDTO fundingViewDTO = Utils.fundingEToD(tempFunding);
+        return fundingViewDTO;
     }
 
 
     /**
      * 검증 절차 필요없어~~ 나중에 한번에 등록 했을때 검수신청
      */
-    public FundingDTO tempThumbNail(ThumbNailDTO thumbNailDTO,String manageUrl) {
+    public FundingViewDTO tempThumbNail(ThumbNailDTO thumbNailDTO, String manageUrl) {
 
         Funding funding = getFunding(manageUrl);
         funding
@@ -110,11 +109,11 @@ public class CreatorService {
                 .thumbTag(thumbNailDTO.getTag())
                 .thumbSummary(thumbNailDTO.getSummary());
 
-        FundingDTO fundingDTO = Utils.fundingEToD(funding);
-        return fundingDTO;
+        FundingViewDTO fundingViewDTO = Utils.fundingEToD(funding);
+        return fundingViewDTO;
     }
 
-    public FundingDTO tempFundingPlan(FundingPlanDTO fundingPlanDTO,String manageUrl) {
+    public FundingViewDTO tempFundingPlan(FundingPlanDTO fundingPlanDTO, String manageUrl) {
 
         Funding funding = getFunding(manageUrl);
         funding
@@ -125,12 +124,12 @@ public class CreatorService {
                 .planMaxBacker(fundingPlanDTO.getMaxBacker())
                 .planRestTicket(fundingPlanDTO.getMaxBacker());
 
-        FundingDTO fundingDTO = Utils.fundingEToD(funding);
-        return fundingDTO;
+        FundingViewDTO fundingViewDTO = Utils.fundingEToD(funding);
+        return fundingViewDTO;
     }
 
 
-    public FundingDTO tempDetail(DetailDTO detailDTO, String manageUrl) {
+    public FundingViewDTO tempDetail(DetailDTO detailDTO, String manageUrl) {
 
         Funding funding = getFunding(manageUrl);
         funding
@@ -139,8 +138,8 @@ public class CreatorService {
                 .detailSchedule(detailDTO.getSchedule())
                 .detailAboutUs(detailDTO.getAboutUs());
 
-        FundingDTO fundingDTO = Utils.fundingEToD(funding);
-        return fundingDTO;
+        FundingViewDTO fundingViewDTO = Utils.fundingEToD(funding);
+        return fundingViewDTO;
     }
 
     private Funding getFunding(String manageUrl) {
@@ -151,14 +150,14 @@ public class CreatorService {
         return fundingList.get(0);
     }
 
-    public FundingDTO changeStatus(String manageUrl) {
+    public FundingViewDTO changeStatus(String manageUrl) {
         List<Funding> fundingList = fundingRepository.findByParam("manageUrl", manageUrl);
         if (fundingList.isEmpty()) {
             throw new IllegalArgumentException("존재하지 않는 펀딩입니다.");
         }
         Funding funding = fundingList.get(0);
         funding.changeStatus(Status.inspection);
-        FundingDTO fundingDTO = Utils.fundingEToD(funding);
-        return fundingDTO;
+        FundingViewDTO fundingViewDTO = Utils.fundingEToD(funding);
+        return fundingViewDTO;
     }
 }

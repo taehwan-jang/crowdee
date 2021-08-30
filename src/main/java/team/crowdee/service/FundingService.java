@@ -4,12 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import team.crowdee.domain.Funding;
-import team.crowdee.domain.Member;
-import team.crowdee.domain.Order;
-import team.crowdee.domain.Payment;
-import team.crowdee.domain.dto.FundingDTO;
+import team.crowdee.domain.*;
+import team.crowdee.domain.dto.FundingViewDTO;
 import team.crowdee.domain.dto.PaymentDTO;
+import team.crowdee.domain.dto.SimpleFundingListDTO;
 import team.crowdee.domain.dto.ThumbNailDTO;
 import team.crowdee.repository.FundingRepository;
 import team.crowdee.repository.MemberRepository;
@@ -123,13 +121,26 @@ public class FundingService {
         }
     }
 
-    public FundingDTO findOneFunding(String projectUrl) {
+    public FundingViewDTO findOneFunding(String projectUrl) {
         List<Funding> fundingList = fundingRepository.findByUrl(projectUrl);
         if (fundingList.isEmpty()) {
             return null;
         }
-        fundingList.get(0).plusVisitCount();//조회수 증가
-        return Utils.fundingEToD(fundingList.get(0));
+        Funding funding = fundingList.get(0);
+        funding.plusVisitCount();//조회수 증가
+        Creator creator = funding.getCreator();
+        List<Funding> creatorFundingList = creator.getFundingList();
+        List<SimpleFundingListDTO> simpleFundingList = new ArrayList<>();
+        for (Funding funding1 : creatorFundingList) {
+            if (funding1.getStatus().equals(Status.progress)) {
+                simpleFundingList.add(
+                        new SimpleFundingListDTO(
+                                funding1.getProjectUrl(), funding1.getThumbNailUrl()
+                        )
+                );
+            }
+        }
+        return Utils.fundingEToD(funding,simpleFundingList);
     }
 
     public void participation(Long fundingId, PaymentDTO paymentDTO, String email) throws Exception {

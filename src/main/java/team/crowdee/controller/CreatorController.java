@@ -5,23 +5,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import team.crowdee.domain.Creator;
 import team.crowdee.domain.Funding;
 import team.crowdee.domain.dto.*;
 import team.crowdee.jwt.CustomJWTFilter;
-import team.crowdee.jwt.CustomTokenProvider;
-import team.crowdee.jwt.JwtFilter;
 import team.crowdee.repository.FundingRepository;
-import team.crowdee.repository.MemberRepository;
 import team.crowdee.service.CreatorService;
-import team.crowdee.service.FundingService;
-import team.crowdee.service.MemberService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @CrossOrigin
@@ -82,7 +75,7 @@ public class CreatorController {
         }
 
         String email = customJWTFilter.findEmail(request);
-        FundingDTO tempFundingDTO = creatorService.tempFunding(projectUrl,email);
+        FundingViewDTO tempFundingDTO = creatorService.tempFunding(projectUrl,email);
         if (tempFundingDTO == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -103,11 +96,11 @@ public class CreatorController {
             return new ResponseEntity<>("크리에이터만 펀딩을 등록할 수 있습니다.",httpHeaders, HttpStatus.FORBIDDEN);
         }
 
-        FundingDTO fundingDTO = creatorService.tempThumbNail(thumbNailDTO,manageUrl);
-        if (fundingDTO == null) {
+        FundingViewDTO fundingViewDTO = creatorService.tempThumbNail(thumbNailDTO,manageUrl);
+        if (fundingViewDTO == null) {
             return new ResponseEntity<>(httpHeaders,HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(fundingDTO,httpHeaders,HttpStatus.OK);
+        return new ResponseEntity<>(fundingViewDTO,httpHeaders,HttpStatus.OK);
     }
 
     @PostMapping("/create/fundingPlan/{manageUrl}")
@@ -118,11 +111,11 @@ public class CreatorController {
         if (!flag) {
             return new ResponseEntity<>("크리에이터만 펀딩을 등록할 수 있습니다.", HttpStatus.FORBIDDEN);
         }
-        FundingDTO fundingDTO = creatorService.tempFundingPlan(fundingPlanDTO,manageUrl);
-        if (fundingDTO == null) {
+        FundingViewDTO fundingViewDTO = creatorService.tempFundingPlan(fundingPlanDTO,manageUrl);
+        if (fundingViewDTO == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(fundingDTO,HttpStatus.OK);
+        return new ResponseEntity<>(fundingViewDTO,HttpStatus.OK);
     }
 
     @PostMapping("/create/detail/{manageUrl}")
@@ -134,11 +127,11 @@ public class CreatorController {
             return new ResponseEntity<>("크리에이터만 펀딩을 등록할 수 있습니다.",HttpStatus.FORBIDDEN);
         }
 
-        FundingDTO fundingDTO = creatorService.tempDetail(detailDTO,manageUrl);
-        if (fundingDTO == null) {
+        FundingViewDTO fundingViewDTO = creatorService.tempDetail(detailDTO,manageUrl);
+        if (fundingViewDTO == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(fundingDTO,HttpStatus.OK);
+        return new ResponseEntity<>(fundingViewDTO,HttpStatus.OK);
     }
 
     @GetMapping("/create/{manageUrl}")
@@ -148,8 +141,8 @@ public class CreatorController {
         if (!flag) {
             return new ResponseEntity<>("크리에이터만 펀딩을 등록할 수 있습니다.",HttpStatus.FORBIDDEN);
         }
-        FundingDTO fundingDTO = creatorService.changeStatus(manageUrl);
-        return new ResponseEntity<>(fundingDTO,HttpStatus.OK);
+        FundingViewDTO fundingViewDTO = creatorService.changeStatus(manageUrl);
+        return new ResponseEntity<>(fundingViewDTO,HttpStatus.OK);
     }
 
 
