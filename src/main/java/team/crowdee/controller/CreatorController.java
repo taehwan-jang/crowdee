@@ -126,22 +126,14 @@ public class CreatorController {
     }
 
     @PostMapping("/create/detail/{manageUrl}")
-    public ResponseEntity<?> createTempDetail(@RequestBody AboutUsFormDTO aboutUsFormDTO,
-                                              @RequestBody ContentFormDTO contentFormDTO,
-                                              @RequestBody BudgetFormDTO budgetFormDTO,
-                                              @RequestBody ScheduleFormDTO scheduleFormDTO,
+    public ResponseEntity<?> createTempDetail(@RequestBody DetailDTO detailDTO,
                                               @PathVariable String manageUrl,
                                               HttpServletRequest request) {
         boolean flag = customJWTFilter.isCreator(request);
         if (!flag) {
             return new ResponseEntity<>("크리에이터만 펀딩을 등록할 수 있습니다.",HttpStatus.FORBIDDEN);
         }
-        DetailDTO detailDTO = new DetailDTO();
-        detailDTO.setContent(contentFormDTO.getContent());
-        detailDTO.setBudget(budgetFormDTO.getBudget());
-        detailDTO.setAboutUs(aboutUsFormDTO.getAboutUs());
-        detailDTO.setSchedule(scheduleFormDTO.getSchedule());
-        log.info("Tlqkf whssktlfgek ={}",detailDTO.toString());
+
         FundingDTO fundingDTO = creatorService.tempDetail(detailDTO,manageUrl);
         if (fundingDTO == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
