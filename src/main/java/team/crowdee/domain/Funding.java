@@ -81,15 +81,9 @@ public class Funding {
     private List<Order> orders = new ArrayList<>();
 
 
-    //=======펀딩 참여 로직=======//
-    public void addParticipants(Order order) {
-        if (restTicket <= 0) {
-            throw new IllegalStateException("남은 티켓이 없습니다.");
-        }
-        plusTotalFundraising(order.getPayment().getAmount());
-        orders.add(order);
-        order.addFunding(this);
-    }
+    private boolean result;
+
+
 
     public void acceptFunding(){
         status = Status.confirm;
@@ -203,12 +197,23 @@ public class Funding {
         visitCount += 1;
     }
 
+    //=======펀딩 참여 로직=======//
+    public void addParticipants(Order order) {
+        if (restTicket <= 0) {
+            throw new IllegalStateException("남은 티켓이 없습니다.");
+        }
+        plusTotalFundraising(order.getPayment().getAmount());
+        orders.add(order);
+        order.addFunding(this);
+    }
+
     //펀딩 참여시 총 펀딩금액 추가
     public void plusTotalFundraising(int amount) {
         totalFundraising += amount;
         restTicket -= 1;
         if (restTicket <= 0) {
             status = Status.end;
+            result = true;
         }
         increaseAchievement();
     }

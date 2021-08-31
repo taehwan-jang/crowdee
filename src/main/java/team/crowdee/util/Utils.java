@@ -7,6 +7,7 @@ import team.crowdee.domain.valuetype.AccountInfo;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -172,6 +173,31 @@ public class Utils {
         fundingAllDTO.setStatus(funding.getStatus());
 
         return fundingAllDTO;
+    }
+
+    public static List<ThumbNailDTO> fundingToThumbNail(List<Funding> fundingList1) {
+        List<ThumbNailDTO> thumbNailDTOList = new ArrayList<>();
+        for (Funding funding : fundingList1) {
+            thumbNailDTOList.add(
+                    ThumbNailDTO.builder()
+                            .fundingId(funding.getFundingId())
+                            .creatorId(funding.getCreator().getCreatorId())
+                            .projectUrl(funding.getProjectUrl())
+                            .tag(funding.getTag())
+                            .title(funding.getTitle())
+                            .goalFundraising(funding.getGoalFundraising())
+                            .totalFundraising(funding.getTotalFundraising())
+                            .thumbNailUrl(funding.getThumbNailUrl())
+                            .restDate(funding.getRestDays())
+                            .summary(funding.getSummary())
+                            .category(funding.getCategory())
+                            .rateOfAchievement(funding.getRateOfAchievement())
+                            .participant(funding.totalParticipant())
+                            .status(funding.getStatus())
+                            .build()
+            );
+        }
+        return thumbNailDTOList;
     }
 
 }

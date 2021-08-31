@@ -36,21 +36,17 @@ public class FundingService {
     public List<List<ThumbNailDTO>> mainThumbNail() {
         List<List<ThumbNailDTO>> thumbNailList = new ArrayList<>();
 
-        List<ThumbNailDTO> newThumbNail = new ArrayList<>();
-        List<Funding> fundingList1 = fundingRepository.findNewFunding(4);
-        fundingToThumbNail(newThumbNail, fundingList1);
+        List<Funding> fundingList1 = fundingRepository.findNewFunding(8);
+        List<ThumbNailDTO> newThumbNail = Utils.fundingToThumbNail(fundingList1);
 
-        List<ThumbNailDTO> underThumbNail = new ArrayList<>();
-        List<Funding> fundingList2 = fundingRepository.findVergeOfSuccess(4);
-        fundingToThumbNail(underThumbNail, fundingList2);
+        List<Funding> fundingList2 = fundingRepository.findVergeOfSuccess(8);
+        List<ThumbNailDTO> underThumbNail = Utils.fundingToThumbNail(fundingList2);
 
-        List<ThumbNailDTO> overThumbNail = new ArrayList<>();
-        List<Funding> fundingList3 = fundingRepository.findExcessFunding(4);
-        fundingToThumbNail(overThumbNail, fundingList3);
+        List<Funding> fundingList3 = fundingRepository.findExcessFunding(8);
+        List<ThumbNailDTO> overThumbNail = Utils.fundingToThumbNail(fundingList3);
 
-        List<ThumbNailDTO> popularThumbNail = new ArrayList<>();
-        List<Funding> fundingList4 = fundingRepository.findPopularFunding(4);
-        fundingToThumbNail(popularThumbNail, fundingList4);
+        List<Funding> fundingList4 = fundingRepository.findPopularFunding(8);
+        List<ThumbNailDTO> popularThumbNail = Utils.fundingToThumbNail(fundingList4);
 
         thumbNailList.add(newThumbNail);
         thumbNailList.add(underThumbNail);
@@ -64,17 +60,15 @@ public class FundingService {
     public List<ThumbNailDTO> tagView(String tag) {
 
         List<Funding> fundingList = fundingRepository.findByTag(tag);
-        List<ThumbNailDTO> tagThumbNail = new ArrayList<>();
-        fundingToThumbNail(tagThumbNail, fundingList);
-        return tagThumbNail;
+        return Utils.fundingToThumbNail(fundingList);
+
     }
 
     @Transactional(readOnly = true)
     public List<ThumbNailDTO> categoryView(String category) {
         List<Funding> fundingList = fundingRepository.findByParam("category",category);
-        List<ThumbNailDTO> categoryResult = new ArrayList<>();
-        fundingToThumbNail(categoryResult, fundingList);
-        return categoryResult;
+        return Utils.fundingToThumbNail(fundingList);
+
     }
 
     @Transactional(readOnly = true)
@@ -99,32 +93,11 @@ public class FundingService {
             default:
                 return null;
         }
-        List<ThumbNailDTO> thumbNailDTOList = new ArrayList<>();
-        fundingToThumbNail(thumbNailDTOList,fundingList);
-        return thumbNailDTOList;
+        return Utils.fundingToThumbNail(fundingList);
+
     }
 
-    private void fundingToThumbNail(List<ThumbNailDTO> thumbNailDTOList, List<Funding> fundingList1) {
-        for (Funding funding : fundingList1) {
-            thumbNailDTOList.add(
-                    ThumbNailDTO.builder()
-                            .fundingId(funding.getFundingId())
-                            .creatorId(funding.getCreator().getCreatorId())
-                            .projectUrl(funding.getProjectUrl())
-                            .tag(funding.getTag())
-                            .title(funding.getTitle())
-                            .goalFundraising(funding.getGoalFundraising())
-                            .totalFundraising(funding.getTotalFundraising())
-                            .thumbNailUrl(funding.getThumbNailUrl())
-                            .restDate(funding.getRestDays())
-                            .summary(funding.getSummary())
-                            .category(funding.getCategory())
-                            .rateOfAchievement(funding.getRateOfAchievement())
-                            .participant(funding.totalParticipant())
-                            .build()
-            );
-        }
-    }
+
 
     public FundingViewDTO findOneFunding(String projectUrl) {
         List<Funding> fundingList = fundingRepository.findByUrl(projectUrl);
@@ -148,7 +121,11 @@ public class FundingService {
 
     public void participation(Long fundingId, PaymentDTO paymentDTO, String email) throws Exception {
         //참여 했던 펀딩인지 어떻게 확인하는가.
-        Funding funding = fundingRepository.findById(fundingId);
+        List<Funding> fundingList = fundingRepository.findWithOrdersAndMember(fundingId);
+        if (fundingList.isEmpty()) {
+            throw new IllegalArgumentException("잘못된 펀딩번호 입니다.");
+        }
+        Funding funding = fundingList.get(0);
         List<Order> orders = funding.getOrders();
         for (Order order : orders) {
             if (order.getMember().getEmail().equals(email)) {

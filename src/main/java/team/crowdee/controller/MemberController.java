@@ -22,6 +22,7 @@ import team.crowdee.jwt.CustomTokenProvider;
 import team.crowdee.jwt.JwtFilter;
 import team.crowdee.jwt.TokenProvider;
 import team.crowdee.repository.MemberRepository;
+import team.crowdee.service.FundingService;
 import team.crowdee.service.MemberService;
 import team.crowdee.util.MimeEmailService;
 import team.crowdee.util.SendEmailService;
@@ -42,8 +43,10 @@ public class MemberController {
     private final SendEmailService sendEmailService;
     private final MimeEmailService mimeEmailService;
     private final MemberService memberService;
+    private final FundingService fundingService;
     private final MemberRepository memberRepository;
     private final CustomTokenProvider customTokenProvider;
+    private final CustomJWTFilter customJWTFilter;
 
     @PostMapping("/emailCert")
     public ResponseEntity<?> emailCert(@RequestParam String email) throws MessagingException {
@@ -125,5 +128,15 @@ public class MemberController {
         }
         return new ResponseEntity<>("탈퇴 되었습니다", HttpStatus.OK);
     }
+
+    //=========마이페이지=============//
+    //멤버소개 -> 필요없음
+    @GetMapping("/myPage/fundingList")
+    public ResponseEntity<?> myFundingHistory(HttpServletRequest request) {
+        String email = customJWTFilter.findEmail(request);
+        List<ThumbNailDTO> thumbNail = memberService.fundingHistory(email);
+        return new ResponseEntity<>(thumbNail, HttpStatus.OK);
+    }
+
 
 }

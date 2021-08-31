@@ -6,20 +6,16 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import team.crowdee.domain.Authority;
-import team.crowdee.domain.Status;
-import team.crowdee.domain.UserState;
-import team.crowdee.domain.Member;
-import team.crowdee.domain.dto.ChangePassDTO;
-import team.crowdee.domain.dto.FindMailDTO;
-import team.crowdee.domain.dto.LoginDTO;
-import team.crowdee.domain.dto.MemberDTO;
+import team.crowdee.domain.*;
+import team.crowdee.domain.dto.*;
+import team.crowdee.repository.FundingRepository;
 import team.crowdee.repository.MemberRepository;
 import team.crowdee.util.MimeEmailService;
 import team.crowdee.util.Utils;
 import javax.mail.MessagingException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -34,6 +30,7 @@ import java.util.regex.Pattern;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final FundingRepository fundingRepository;
     private final PasswordEncoder passwordEncoder;
     private final MimeEmailService mimeEmailService;
 
@@ -211,20 +208,21 @@ public class MemberService {
         return byEmail.get(0).getNickName();
     }
 
-//    public String getAdminLogin(String email){
-//        List<Member> byEmail = memberRepository.findByEmail(email);
-//
-//        String nickName = byEmail.get(0).getNickName();
-//        if (byEmail.isEmpty()) {
-//            throw new IllegalArgumentException("회원이아닙니다");
-//        }
-//        if (byEmail.get(0).getStatus().equals()) {
-//            nickName="관리자";
-//            return nickName;
-//        }
-//        return nickName;
-//
-//    }
+    public List<ThumbNailDTO> fundingHistory(String email) {
+        List<Member> memberList = memberRepository.findByEmailWithFunding(email);
+        if (memberList.isEmpty()) {
+            throw new IllegalArgumentException("회원 정보가 없습니다.");
+        }
+        Member member = memberList.get(0);
+        List<Order> orders = member.getOrders();
+        List<Funding> fundingList = new ArrayList<>();
+        for (Order order : orders) {
+            fundingList.add(order.getFunding());
+        }
+        return Utils.fundingToThumbNail(fundingList);
+    }
+
+
 
 }
 

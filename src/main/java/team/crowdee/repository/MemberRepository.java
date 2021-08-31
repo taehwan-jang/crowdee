@@ -121,4 +121,13 @@ public class MemberRepository {
     }
 
 
+    public List<Member> findByEmailWithFunding(String email) {
+        return em.createQuery("select m from Member m " +
+                "left join fetch m.orders o " +
+                "left join fetch o.funding f " +
+                "where m.email=:param ", Member.class)
+                .setParameter("param",email)
+                .getResultList();
+
+    }
 }

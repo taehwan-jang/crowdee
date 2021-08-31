@@ -168,4 +168,14 @@ public class FundingRepository {
                 .setParameter("param",creator)
                 .getResultList();
     }
+
+    public List<Funding> findWithOrdersAndMember(Long fundingId) {
+        return em.createQuery("select f from Funding f " +
+                "left join fetch f.orders o " +
+                "left join fetch o.member " +
+                "where f.fundingId=:param", Funding.class)
+                .setParameter("param", fundingId)
+                .getResultList();
+
+    }
 }

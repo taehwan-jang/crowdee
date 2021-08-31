@@ -34,7 +34,7 @@ public class CreatorService {
          */
         boolean result = validation(creatorDTO);
         if (!result) {
-            throw new IllegalArgumentException("빈값이 있다.");
+            throw new IllegalArgumentException("양식을 모두 채워주세요");
         }
         Member member = memberRepository.findById(creatorDTO.getMemberId());
         AccountInfo account = new AccountInfo();
@@ -89,6 +89,7 @@ public class CreatorService {
                 .projectUrl(projectUrl)
                 .manageUrl(manageUrl)
                 .status(Status.editing)
+                .result(false)
                 .build();
         findCreator.getFundingList().add(tempFunding);
         fundingRepository.save(tempFunding);

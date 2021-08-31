@@ -1,6 +1,7 @@
 package team.crowdee.domain.dto;
 
 import lombok.*;
+import team.crowdee.domain.Status;
 
 @Getter
 @Setter
@@ -23,6 +24,7 @@ public class ThumbNailDTO {
     private String category;
     private int restDate;
     private int participant;
+    private Status status;
 
     private boolean isWish;
 
