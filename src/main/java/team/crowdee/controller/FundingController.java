@@ -6,10 +6,12 @@ import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import team.crowdee.domain.dto.FundingViewDTO;
 import team.crowdee.domain.dto.PaymentDTO;
 import team.crowdee.domain.dto.ThumbNailDTO;
+import team.crowdee.domain.dto.WishDTO;
 import team.crowdee.jwt.CustomJWTFilter;
 import team.crowdee.service.FundingService;
 
@@ -43,17 +45,25 @@ public class FundingController {
     }
 
     @GetMapping("/{projectUrl}")
-    public ResponseEntity<?> showFundingDetail(@PathVariable String projectUrl) {
+    public ResponseEntity<?> showFundingDetail(@PathVariable String projectUrl, HttpServletRequest request) {
+        String email = customJWTFilter.findEmail(request);
         FundingViewDTO fundingViewDTO = fundingService.findOneFunding(projectUrl);
         if (fundingViewDTO == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+        if (!fundingViewDTO.getMemberList().isEmpty() && StringUtils.hasText(email)) {
+            if (fundingViewDTO.getMemberList().contains(email)) {
+                fundingViewDTO.setWish(true);
+            }
+        } else {
+            fundingViewDTO.setWish(false);
+        }
         return new ResponseEntity<>(fundingViewDTO, HttpStatus.OK);
     }
 
-    /**ㄴㅇㄹ
+    /**
      * 검색 가져오기
-     * 1.tag--okㅁㄴㅇㄹㅁㄴㅇㄹㅁㄴㅇㄹㅁㄴㅇㄹㅁ
+     * 1.tag--ok
      * 2.제목
      * 3.카테고리--ok
      * 4.creatorNickName
@@ -85,12 +95,19 @@ public class FundingController {
     }
 
 
-
-
-
     /**
      * 찜하기 로직
      */
+    @PostMapping("/wishOrUnWish")
+    public ResponseEntity<?> wishList(@RequestBody Long fundingId,HttpServletRequest request){
+        String email = customJWTFilter.findEmail(request);
+        if (!StringUtils.hasText(email)) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        boolean result = fundingService.addOrRemoveMemberToFunding(email, fundingId);
+        WishDTO wishDTO = new WishDTO(result);
+        return new ResponseEntity<>(wishDTO, HttpStatus.OK);
+    }
 
 
     /**

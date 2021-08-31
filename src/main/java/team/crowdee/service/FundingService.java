@@ -58,6 +58,7 @@ public class FundingService {
         return thumbNailList;
     }
 
+    @Transactional(readOnly = true)
     public List<ThumbNailDTO> tagView(String tag) {
 
         List<Funding> fundingList = fundingRepository.findByTag(tag);
@@ -66,6 +67,7 @@ public class FundingService {
         return tagThumbNail;
     }
 
+    @Transactional(readOnly = true)
     public List<ThumbNailDTO> categoryView(String category) {
         List<Funding> fundingList = fundingRepository.findByParam("category",category);
         List<ThumbNailDTO> categoryResult = new ArrayList<>();
@@ -73,6 +75,7 @@ public class FundingService {
         return categoryResult;
     }
 
+    @Transactional(readOnly = true)
     public List<ThumbNailDTO> selectedMenu(String menu) {
         List<Funding> fundingList =null;
         switch (menu) {
@@ -82,7 +85,7 @@ public class FundingService {
             case "visitCount"://조회수
                 fundingList=fundingRepository.findPopularFunding(100);
                 break;
-            case "outOfStock"://order.size+5 <= maxBacker
+            case "outOfStock"://0<restTicket <3 인 애
                 fundingList=fundingRepository.findOutOfStock(100);
                 break;
             case "vergeOfSuccess"://성공률 80~100사이
@@ -124,21 +127,19 @@ public class FundingService {
     public FundingViewDTO findOneFunding(String projectUrl) {
         List<Funding> fundingList = fundingRepository.findByUrl(projectUrl);
         if (fundingList.isEmpty()) {
-            return null;
+            throw new IllegalArgumentException("유효않은 ProjectUrl입니다.");
         }
         Funding funding = fundingList.get(0);
         funding.plusVisitCount();//조회수 증가
         Creator creator = funding.getCreator();
-        List<Funding> creatorFundingList = creator.getFundingList();
+        List<Funding> creatorFundingList = fundingRepository.findByCreatorForIntroduce(creator.getCreatorId());
         List<SimpleFundingListDTO> simpleFundingList = new ArrayList<>();
         for (Funding funding1 : creatorFundingList) {
-            if (funding1.getStatus().equals(Status.progress)) {
                 simpleFundingList.add(
                         new SimpleFundingListDTO(
                                 funding1.getProjectUrl(), funding1.getThumbNailUrl()
                         )
                 );
-            }
         }
         return Utils.fundingEToD(funding,simpleFundingList);
     }
@@ -182,6 +183,23 @@ public class FundingService {
         funding.addParticipants(order);
     }
 
-
-
+    public boolean addOrRemoveMemberToFunding(String email, Long fundingId) {
+        Funding funding = fundingRepository.findById(fundingId);
+        List<Member> findMemberList = memberRepository.findByEmail(email);
+        if (findMemberList.isEmpty()) {
+            throw new IllegalArgumentException("존재하지 않는 회원입니다.");
+        }
+        Member requestMember = findMemberList.get(0);
+        List<Member> memberList = funding.getMemberList();
+        for (Member member : memberList) {
+            if (member.getEmail().equals(email)) {
+                funding.getMemberList().remove(requestMember);
+                member.getFundingList().remove(funding);
+                return false;
+            }
+        }
+        funding.getMemberList().add(requestMember);
+        requestMember.getFundingList().add(funding);
+        return true;
+    }
 }

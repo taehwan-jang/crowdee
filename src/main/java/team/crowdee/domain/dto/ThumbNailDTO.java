@@ -14,6 +14,7 @@ public class ThumbNailDTO {
     private String projectUrl;
     private String thumbNailUrl;
     private String title;
+    private String subTitle;
     private String summary;
     private String tag;
     private int rateOfAchievement;
@@ -22,5 +23,7 @@ public class ThumbNailDTO {
     private String category;
     private int restDate;
     private int participant;
+
+    private boolean isWish;
 
 }

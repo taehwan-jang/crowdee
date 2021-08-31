@@ -30,13 +30,13 @@ public class Utils {
         fundingViewDTO.setBudget(funding.getBudget());
         fundingViewDTO.setSchedule(funding.getSchedule());
         fundingViewDTO.setAboutUs(funding.getAboutUs());
-        fundingViewDTO.setPostDate(funding.getPostDate());
         fundingViewDTO.setGoalFundraising(funding.getGoalFundraising());
         fundingViewDTO.setMinFundraising(funding.getMinFundraising());
         fundingViewDTO.setMaxBacker(funding.getMaxBacker());
         fundingViewDTO.setTotalBacker(funding.totalParticipant());
         fundingViewDTO.setStartDate(funding.getStartDate());
         fundingViewDTO.setEndDate(funding.getEndDate());
+        fundingViewDTO.setRestDate(funding.getRestDays());
         fundingViewDTO.setVisitCount(funding.getVisitCount());
         fundingViewDTO.setTotalFundraising(funding.getTotalFundraising());
         fundingViewDTO.setStatus(funding.getStatus());
@@ -46,6 +46,14 @@ public class Utils {
         fundingViewDTO.setCreatorNickName(funding.getCreator().getCreatorNickName());
         fundingViewDTO.setProfileImgUrl(funding.getCreator().getProfileImgUrl());
         fundingViewDTO.setFundingList(fundingList);
+        //=========찜한 사람들 목록========//
+        List<Member> memberList = funding.getMemberList();
+        StringBuffer memberEmailList = new StringBuffer();
+        for (Member member : memberList) {
+            memberEmailList.append(member.getEmail()+" ");
+        }
+        fundingViewDTO.setMemberList(memberEmailList.toString());
+
 
         return fundingViewDTO;
     }
@@ -63,7 +71,6 @@ public class Utils {
         fundingViewDTO.setBudget(funding.getBudget());
         fundingViewDTO.setSchedule(funding.getSchedule());
         fundingViewDTO.setAboutUs(funding.getAboutUs());
-        fundingViewDTO.setPostDate(funding.getPostDate());
         fundingViewDTO.setGoalFundraising(funding.getGoalFundraising());
         fundingViewDTO.setMinFundraising(funding.getMinFundraising());
         fundingViewDTO.setMaxBacker(funding.getMaxBacker());
