@@ -171,6 +171,7 @@ public class Utils {
         fundingAllDTO.setCategory(funding.getCategory());
         fundingAllDTO.setPostDate(funding.getPostDate());
         fundingAllDTO.setStatus(funding.getStatus());
+        fundingAllDTO.setManageUrl(funding.getManageUrl());
 
         return fundingAllDTO;
     }

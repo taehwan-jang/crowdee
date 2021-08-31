@@ -29,7 +29,7 @@ public class AdminService {
     //어드민로그인
     public String login(LoginDTO loginDTO) {
         List<Member> byEmail = memberRepository.findByEmail(loginDTO.getEmail());
-        if (byEmail.isEmpty() || !(byEmail.get(0).getSecessionDate() == null)) {
+        if (byEmail.isEmpty() && !(byEmail.get(0).getSecessionDate() == null)) {
             throw new IllegalArgumentException("존재하지않는 회원입니다.");
         }
         boolean matches = passwordEncoder.matches(loginDTO.getPassword(), byEmail.get(0).getPassword());
@@ -146,8 +146,10 @@ public class AdminService {
         }
         List<FundingAllDTO> list = new ArrayList<>();
         for (int i = 0; i < fundingList.size(); i++) {
-            FundingAllDTO fundingAllDTO = Utils.allFundingEToD(fundingList.get(i));
-            list.add(fundingAllDTO);
+            if(!(fundingList.get(i).getStatus().equals(Status.inspection))){
+                FundingAllDTO fundingAllDTO = Utils.allFundingEToD(fundingList.get(i));
+                list.add(fundingAllDTO);
+            }
         }
         return list;
     }
@@ -171,7 +173,7 @@ public class AdminService {
     @Transactional
     public Funding confirmFunding(Long fundingId) {
         Funding funding = fundingRepository.findById(fundingId);
-        if (!(funding.getStatus().equals(Status.inspection))) {
+        if (!(funding.getStatus().equals(Status.inspection) && funding.getCreator().getStatus().equals(Status.confirm))) {
             return null;
         }
 

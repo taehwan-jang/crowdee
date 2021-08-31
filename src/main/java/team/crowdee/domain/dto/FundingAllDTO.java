@@ -15,4 +15,5 @@ public class FundingAllDTO {
     private String category;
     private LocalDateTime postDate;
     private Status status;
+    private String manageUrl;
 }
