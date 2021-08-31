@@ -2,6 +2,7 @@ package team.crowdee.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team.crowdee.domain.*;
@@ -15,6 +16,7 @@ import team.crowdee.repository.OrderRepository;
 import team.crowdee.util.MimeEmailService;
 import team.crowdee.util.Utils;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -201,5 +203,17 @@ public class FundingService {
         funding.getMemberList().add(requestMember);
         requestMember.getFundingList().add(funding);
         return true;
+    }
+    @Scheduled(cron = "0 0 1 * * *") //0 0 1 * * *로 변경하면 하루마다 메소드 시작.
+    public void changeFundingStatus() {
+        String todayString = Utils.getTodayString();
+        List<Funding> confirmList = fundingRepository.findConfirmAndProgress(Status.confirm,Status.progress);
+        for (Funding funding : confirmList) {
+            if (funding.getStartDate().equals(todayString)) {
+                funding.changeStatus(Status.progress);
+            } else if (LocalDate.parse(funding.getEndDate()).compareTo(LocalDate.now()) >= 1) {
+                funding.changeStatus(Status.end);
+            }
+        }
     }
 }

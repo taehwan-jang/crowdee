@@ -12,6 +12,7 @@ import team.crowdee.repository.*;
 import team.crowdee.util.Utils;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -181,5 +182,27 @@ public class CreatorService {
         funding.changeStatus(Status.inspection);
         FundingViewDTO fundingViewDTO = Utils.fundingEToD(funding);
         return fundingViewDTO;
+    }
+
+    @Transactional(readOnly = true)
+    public List<EditingListDTO> findEditingList(String email) {
+
+        List<Creator> creatorList = creatorRepository.findByEmail(email);
+        if (creatorList.isEmpty()) {
+            throw new IllegalArgumentException("크리에이터가 아닙니다.");
+        }
+        List<EditingListDTO> editingList = new ArrayList<>();
+        Creator creator = creatorList.get(0);
+        List<Funding> fundingList = fundingRepository.findByCreatorForEditing(creator);
+        if (!fundingList.isEmpty()) {
+            for (Funding funding : fundingList) {
+                editingList.add(new EditingListDTO(
+                        funding.getTitle(),
+                        funding.getPostDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+                        funding.getManageUrl()));
+            }
+            return editingList;
+        }
+        return null;
     }
 }

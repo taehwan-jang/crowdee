@@ -2,6 +2,7 @@ package team.crowdee.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import team.crowdee.domain.Creator;
 import team.crowdee.domain.Funding;
 import team.crowdee.domain.Status;
 
@@ -130,6 +131,12 @@ public class FundingRepository {
                 .setParameter("status", status)
                 .getResultList();
     }
+    public List<Funding> findConfirmAndProgress(Status param1, Status param2) {
+        return em.createQuery("select f from Funding f where f.status in (:param1,:param2)", Funding.class)
+                .setParameter("param1", param1)
+                .setParameter("param2", param2)
+                .getResultList();
+    }
 
 
     public List<Funding> findByCreatorForIntroduce(Long creatorId) {
@@ -150,6 +157,15 @@ public class FundingRepository {
                 .setParameter("creatorId", creatorId)
                 .setFirstResult(0)
                 .setMaxResults(3)
+                .getResultList();
+    }
+
+    public List<Funding> findByCreatorForEditing(Creator creator) {
+       return em.createQuery("select f from Funding f " +
+                "where f.status='editing' " +
+                "and f.creator=:param " +
+                "order by f.postDate desc", Funding.class)
+                .setParameter("param",creator)
                 .getResultList();
     }
 }

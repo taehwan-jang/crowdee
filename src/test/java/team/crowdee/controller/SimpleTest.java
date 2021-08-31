@@ -95,25 +95,24 @@ public class SimpleTest {
 
 
     @Test
-    public void 상남자_어디갔노() throws Exception {
-        //given
-        String token = "eyJhbGciOiJub25lIn0.eyJzdWIiOiJjcm93ZGVlZnVuZGluZ0BnbWFpbC5jb20iLCJhdXRoIjoiIiwiZXhwIjoxNjI5NzEwOTU1fQ.aasdilfhasd";
-        String[] split = token.split("\\.");
-        for (String s : split) {
-            System.out.println("s = " + s);
-        }
-        //when
-
-        //then
-    }
-
-
-    @Test
     public void 문자열자르기() {
         String testString = "123.456.789";
         String[] split = testString.split("\\.");
         for (String s : split) {
             System.out.println("s = " + s);
         }
+    }
+
+    @Test
+    public void 날짜테스트() throws Exception {
+        //given
+        String a = "2021-08-31";
+        String b = "2021-09-01";
+        LocalDate c = LocalDate.parse(a);
+        LocalDate now = LocalDate.now();
+        LocalDate d = LocalDate.parse(b);
+        //when
+        System.out.println("a>b  "+(d.compareTo(now)));
+        //then
     }
 }

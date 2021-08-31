@@ -156,6 +156,17 @@ public class CreatorController {
         return new ResponseEntity<>(fundingViewDTO, HttpStatus.OK);
     }
 
+    @GetMapping("/create/editingList")
+    public ResponseEntity<?> editingFundingList(HttpServletRequest request) {
+        boolean flag = customJWTFilter.isCreator(request);
+        if (!flag) {
+            return new ResponseEntity<>("크리에이터만 펀딩을 등록할 수 있습니다.", HttpStatus.FORBIDDEN);
+        }
+        String email = customJWTFilter.findEmail(request);
+        List<EditingListDTO> editingList = creatorService.findEditingList(email);
+        return new ResponseEntity<>(editingList,HttpStatus.OK);
+    }
+
 
 //    @GetMapping("/edit")
 //    public ResponseEntity<?>

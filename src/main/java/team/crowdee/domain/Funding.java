@@ -92,7 +92,7 @@ public class Funding {
     }
 
     public void acceptFunding(){
-        this.status = Status.confirm;
+        status = Status.confirm;
     }
 
     //=======Setter 대용=======//
@@ -207,6 +207,9 @@ public class Funding {
     public void plusTotalFundraising(int amount) {
         totalFundraising += amount;
         restTicket -= 1;
+        if (restTicket <= 0) {
+            status = Status.end;
+        }
         increaseAchievement();
     }
 
