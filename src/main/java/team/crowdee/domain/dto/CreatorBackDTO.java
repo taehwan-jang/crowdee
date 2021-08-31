@@ -2,7 +2,6 @@ package team.crowdee.domain.dto;
 
 import lombok.*;
 import team.crowdee.domain.Authority;
-import team.crowdee.domain.UserState;
 import java.time.LocalDateTime;
 import java.util.Set;
 @Getter
@@ -17,7 +16,6 @@ public class CreatorBackDTO {
     private String emailCert; //이메일 인증 받았을때 //o
     private LocalDateTime registDate;
     private String secessionDate;
-    private UserState userState;
     private Set<Authority> authorities;
     private String creatorNickName;
     private String BusinessNumber;

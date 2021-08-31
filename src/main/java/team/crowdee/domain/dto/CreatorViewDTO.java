@@ -3,7 +3,6 @@ package team.crowdee.domain.dto;
 import lombok.*;
 import team.crowdee.domain.Authority;
 import team.crowdee.domain.Status;
-import team.crowdee.domain.UserState;
 import java.time.LocalDateTime;
 import java.util.Set;
 

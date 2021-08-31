@@ -21,8 +21,8 @@ public class CreatorRepository {
         em.persist(creator);
         return creator.getCreatorId();
     }
-    public Creator findById(Long id) {
-        return em.find(Creator.class, id);
+    public List<Creator> findByIdMember(Long id) {
+        return em.createQuery("select c from Creator c join fetch c.member", Creator.class).getResultList();
     }
 
     public List<Creator> findByEmail(String email) {

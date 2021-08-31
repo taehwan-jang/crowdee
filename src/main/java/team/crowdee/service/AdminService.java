@@ -91,12 +91,13 @@ public class AdminService {
 
     //크리에이터 상세조회
     public CreatorViewDTO oneCreator(Long createId) {
-        Creator creator = creatorRepository.findById(createId);
+        List<Creator> creatorList = creatorRepository.findByIdMember(createId);
 
-        if (creator == null) {
-            return null;
+        if (creatorList.isEmpty()) {
+            throw new IllegalArgumentException("존재하지 않는 크리에이터입니다.");
         }
-        return Utils.creatorViewEToD(creator);
+
+        return Utils.creatorViewEToD(creatorList.get(0));
 
     }
 
@@ -118,7 +119,12 @@ public class AdminService {
     //크리에이터심사 승인
     @Transactional
     public Member confirmChange(Long creatorId) {
-        Creator creator = creatorRepository.findById(creatorId);
+        //쿼리 수정 findById->findByIdWithMember
+        List<Creator> creatorList = creatorRepository.findByIdMember(creatorId);
+        if (creatorList.isEmpty()) {
+            throw new IllegalArgumentException("존재하지 않는 크리에이터 입니다.");
+        }
+        Creator creator = creatorList.get(0);
         if (!(creator.getStatus().equals(Status.inspection))) {
             return null;
         }

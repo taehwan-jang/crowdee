@@ -55,10 +55,6 @@ public class CreatorService {
         return creator;
     }
 
-    public Creator findCreator(Long creatorId) {
-        return creatorRepository.findById(creatorId);
-    }
-
     //검증은 한번에 진행
     public boolean validation(CreatorDTO creatorDTO) {
         if(!StringUtils.hasText(creatorDTO.getAccountNumber())){
