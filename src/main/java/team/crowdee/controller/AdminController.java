@@ -102,7 +102,7 @@ public class AdminController {
     }
 
     //크리에이터심사 승인
-    @GetMapping("/changeConfirm/{creatorId}")
+    @GetMapping("/creatorOK/{creatorId}")
     public ResponseEntity<?> changeConfirm(@PathVariable("creatorId") Long creatorId) {
         Member member = adminService.confirmChange(creatorId);
 
@@ -130,7 +130,7 @@ public class AdminController {
     }
 
     //펀딩 심사중 전체조회
-    @GetMapping("/funding/inspection")
+    @GetMapping("/fundingInspection")
     public ResponseEntity<?> fundingInspection() {
         List<FundingAllDTO> inspectionDTO = adminService.inspectionFunding();
 
@@ -141,7 +141,7 @@ public class AdminController {
     }
 
     //펀딩 승인
-    @GetMapping("/fundingConfirm/{fundingId}")
+    @GetMapping("/fundingOk/{fundingId}")
     public ResponseEntity<?> fundingConfirm(@PathVariable("fundingId") Long fundingId) {
         Funding funding = adminService.confirmFunding(fundingId);
 
