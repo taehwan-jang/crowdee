@@ -36,6 +36,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final MimeEmailService mimeEmailService;
+
     @Transactional
     public Long join(MemberDTO memberDTO) {
         //비밀번호검증:8-16자리 대문자소문자특수문자 포함 // 닉네임 중복검증 //이메일 중복검증 형식검증
@@ -44,7 +45,6 @@ public class MemberService {
         }
         Set<Authority> authorities = new HashSet<Authority>();
         authorities.add(Authority.builder().authorityName("backer").build());
-//        authorities.add(Authority.builder().authorityName("creator").build());
         Member member = Member.builder()
                 .password(passwordEncoder.encode(memberDTO.getPassword())) //패스워드암호화
                 .userName(memberDTO.getUserName())
@@ -56,8 +56,7 @@ public class MemberService {
                 .authorities(authorities)
                 .status(Status.member)
                 .build();
-        Long saveMember = memberRepository.save(member);
-        return member.getMemberId();
+        return memberRepository.save(member);
     }
 
     //로그인 -> 토큰 추가로 인해 코드 리뷰 이후 코드작성

@@ -32,7 +32,7 @@ public class FundingRepository {
     public List<Funding> findByParam(String target, String param) {
         String query = "select f from Funding f " +
                 "left join fetch f.orders " +
-                "where f."+target+"=:param ";
+                "where f." + target + "=:param ";
         return em.createQuery(query, Funding.class)
                 .setParameter("param", param)
                 .getResultList();
@@ -42,17 +42,17 @@ public class FundingRepository {
         String query = "select f from Funding f " +
                 "left join fetch f.orders " +
                 "where f.tag " +
-                "like '%"+tag+"%' " +
+                "like '%" + tag + "%' " +
                 "and f.status='progress'";
         return em.createQuery(query, Funding.class).getResultList();
     }
 
     public List<Funding> findByUrl(String projectUrl) {
         return em.createQuery("select f from Funding f " +
-                    "left join fetch f.creator " +
-                    "left join fetch f.memberList " +
-                    "where f.projectUrl =:projectUrl", Funding.class)
-                .setParameter("projectUrl",projectUrl)
+                "left join fetch f.creator " +
+                "left join fetch f.memberList " +
+                "where f.projectUrl =:projectUrl", Funding.class)
+                .setParameter("projectUrl", projectUrl)
                 .getResultList();
     }
 
@@ -61,19 +61,20 @@ public class FundingRepository {
                 "left join fetch f.orders " +
                 "where f.status='progress' " +
                 "order by f.startDate " +
-                "desc",Funding.class)
+                "desc", Funding.class)
                 .setFirstResult(0)
                 .setMaxResults(max)
                 .getResultList();
     }
+
     public List<Funding> findVergeOfSuccess(int max) {
         return em.createQuery("select f from Funding f " +
                 "left join fetch f.orders " +
                 "where f.status='progress' " +
                 "and f.rateOfAchievement < 100 " +
-                "and f.rateOfAchievement > 80 " +
+                "and f.rateOfAchievement >= 80 " +
                 "order by f.rateOfAchievement " +
-                "desc",Funding.class)
+                "desc", Funding.class)
                 .setFirstResult(0)
                 .setMaxResults(max)
                 .getResultList();
@@ -86,17 +87,18 @@ public class FundingRepository {
                 "and f.rateOfAchievement >= 100 " +
                 "and f.restTicket > 0 " +
                 "order by f.rateOfAchievement " +
-                "desc",Funding.class)
+                "desc", Funding.class)
                 .setFirstResult(0)
                 .setMaxResults(max)
                 .getResultList();
     }
+
     public List<Funding> findPopularFunding(int max) {
         return em.createQuery("select f from Funding f " +
                 "left join fetch f.orders " +
                 "where f.status='progress' " +
                 "order by f.visitCount " +
-                "desc",Funding.class)
+                "desc", Funding.class)
                 .setFirstResult(0)
                 .setMaxResults(max)
                 .getResultList();
@@ -109,7 +111,7 @@ public class FundingRepository {
                 "and f.restTicket < 3 " +
                 "and f.restTicket > 0 " +
                 "order by f.orders.size " +
-                "desc",Funding.class)
+                "desc", Funding.class)
                 .setFirstResult(0)
                 .setMaxResults(max)
                 .getResultList();
@@ -117,8 +119,8 @@ public class FundingRepository {
 
     public List<Funding> findToInspection() {
         return em.createQuery("select f from Funding f " +
-                "join fetch f.creator " +
-                "where f.status='inspection'",
+                        "join fetch f.creator " +
+                        "where f.status='inspection'",
                 Funding.class)
                 .getResultList();
     }
@@ -131,6 +133,16 @@ public class FundingRepository {
 
 
     public List<Funding> findByCreatorForIntroduce(Long creatorId) {
+        return em.createQuery("select f from Funding f " +
+                "where f.status='progress' " +
+                "and f.creator.creatorId=:creatorId " +
+                "order by f.rateOfAchievement desc", Funding.class)
+                .setParameter("creatorId", creatorId)
+                .setFirstResult(0)
+                .setMaxResults(3)
+                .getResultList();
+    }
+    public List<Funding> findByCreatorForPreview(Long creatorId) {
         return em.createQuery("select f from Funding f " +
                 "where f.status='progress' " +
                 "and f.creator.creatorId=:creatorId " +

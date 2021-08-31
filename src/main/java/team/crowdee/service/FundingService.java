@@ -85,7 +85,7 @@ public class FundingService {
             case "visitCount"://조회수
                 fundingList=fundingRepository.findPopularFunding(100);
                 break;
-            case "outOfStock"://order.size+5 <= maxBacker
+            case "outOfStock"://0<restTicket <3 인 애
                 fundingList=fundingRepository.findOutOfStock(100);
                 break;
             case "vergeOfSuccess"://성공률 80~100사이

@@ -12,6 +12,7 @@ import team.crowdee.repository.*;
 import team.crowdee.util.Utils;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -97,11 +98,15 @@ public class CreatorService {
 
 
     /**
-     * 검증 절차 필요없어~~ 나중에 한번에 등록 했을때 검수신청
+     * 검증 절차는 최종 심사단계에서 진행
+     * --transaction 단위 별 메서드 정의 되어있는데
+     * 2개 각각의 트랜잭션이 적용되어있다면
+     * 영속상태의 객체가 넘어갈까?
      */
     public FundingViewDTO tempThumbNail(ThumbNailDTO thumbNailDTO, String manageUrl) {
 
         Funding funding = getFunding(manageUrl);
+
         funding
                 .thumbTitle(thumbNailDTO.getTitle())
                 .thumbSubTitle(thumbNailDTO.getSubTitle())
@@ -141,6 +146,22 @@ public class CreatorService {
 
         FundingViewDTO fundingViewDTO = Utils.fundingEToD(funding);
         return fundingViewDTO;
+    }
+
+    @Transactional(readOnly = true)
+    public FundingViewDTO showPreview(String manageUrl) {
+        Funding funding = getFunding(manageUrl);
+        Creator creator = funding.getCreator();
+        List<Funding> creatorFundingList = fundingRepository.findByCreatorForPreview(creator.getCreatorId());
+        List<SimpleFundingListDTO> simpleFundingList = new ArrayList<>();
+        for (Funding funding1 : creatorFundingList) {
+            simpleFundingList.add(
+                    new SimpleFundingListDTO(
+                            funding1.getProjectUrl(), funding1.getThumbNailUrl()
+                    )
+            );
+        }
+        return Utils.fundingEToD(funding,simpleFundingList);
     }
 
     private Funding getFunding(String manageUrl) {

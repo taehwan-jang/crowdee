@@ -134,6 +134,17 @@ public class CreatorController {
         return new ResponseEntity<>(fundingViewDTO, HttpStatus.OK);
     }
 
+    @GetMapping("/create/preview/{manageUrl}")
+    public ResponseEntity<?> previewTempFunding(@PathVariable String manageUrl,
+                                                HttpServletRequest request) {
+        boolean flag = customJWTFilter.isCreator(request);
+        if (!flag) {
+            return new ResponseEntity<>("크리에이터만 펀딩을 등록할 수 있습니다.", HttpStatus.FORBIDDEN);
+        }
+        FundingViewDTO fundingViewDTO = creatorService.showPreview(manageUrl);
+        return new ResponseEntity<>(fundingViewDTO, HttpStatus.OK);
+    }
+
     @GetMapping("/create/{manageUrl}")
     public ResponseEntity<?> askInspection(@PathVariable String manageUrl,
                                            HttpServletRequest request) {
