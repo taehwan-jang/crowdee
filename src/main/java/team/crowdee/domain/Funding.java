@@ -85,8 +85,12 @@ public class Funding {
 
 
 
-    public void acceptFunding(){
+    public void acceptFunding() {
         status = Status.confirm;
+    }
+
+    public void rejectFunding() {
+        this.status = Status.reject;
     }
 
     //=======Setter 대용=======//

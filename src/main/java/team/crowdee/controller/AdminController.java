@@ -148,7 +148,18 @@ public class AdminController {
         if (funding == null) {
             return new ResponseEntity<>("심사 불가 상태입니다.", HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>("심사 완료되었습니다.", HttpStatus.OK);
+        return new ResponseEntity<>("심사 승인 완료되었습니다.", HttpStatus.OK);
+    }
+
+    //펀딩 거절
+    @GetMapping("/fundingNo/{fundingId}")
+    public ResponseEntity<?> fundingReject(@PathVariable("fundingId") Long fundingId) {
+        Funding funding = adminService.rejectFunding(fundingId);
+
+        if (funding == null) {
+            return new ResponseEntity<>("심사 불가 상태입니다.", HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>("심사 거절 완료되었습니다.", HttpStatus.OK);
     }
 
 

@@ -178,4 +178,16 @@ public class AdminService {
         funding.acceptFunding();
         return funding;
     }
+
+    //펀딩심사 거절
+    @Transactional
+    public Funding rejectFunding(Long fundingId) {
+        Funding funding = fundingRepository.findById(fundingId);
+        if (!(funding.getStatus().equals(Status.inspection))) {
+            return null;
+        }
+
+        funding.rejectFunding();
+        return funding;
+    }
 }
