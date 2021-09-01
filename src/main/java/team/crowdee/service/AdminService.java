@@ -11,6 +11,7 @@ import team.crowdee.domain.dto.*;
 import team.crowdee.repository.CreatorRepository;
 import team.crowdee.repository.FundingRepository;
 import team.crowdee.repository.MemberRepository;
+import team.crowdee.util.MimeEmailService;
 import team.crowdee.util.Utils;
 
 import java.util.*;
@@ -23,19 +24,12 @@ import java.util.*;
 public class AdminService {
     private final MemberRepository memberRepository;
     private final CreatorRepository creatorRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final MimeEmailService mimeEmailService;
     private final FundingRepository fundingRepository;
 
     //어드민로그인
     public String login(LoginDTO loginDTO) {
         List<Member> byEmail = memberRepository.findByEmail(loginDTO.getEmail());
-        if (byEmail.isEmpty() && !(byEmail.get(0).getSecessionDate() == null)) {
-            throw new IllegalArgumentException("존재하지않는 회원입니다.");
-        }
-        boolean matches = passwordEncoder.matches(loginDTO.getPassword(), byEmail.get(0).getPassword());
-        if (!matches) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
-        }
         Set<Authority> authorities = byEmail.get(0).getAuthorities();
         Iterator<Authority> iterator = authorities.iterator();
         String admin = null;
@@ -187,15 +181,19 @@ public class AdminService {
         return funding;
     }
 
-    //펀딩심사 거절
+    //펀딩심사 거절 수정중 미완성..
     @Transactional
     public Funding rejectFunding(Long fundingId) {
         Funding funding = fundingRepository.findById(fundingId);
         if (!(funding.getStatus().equals(Status.inspection))) {
             return null;
         }
-
         funding.rejectFunding();
+
+        String email = funding.getCreator().getMember().getEmail();
+        List<Member> memberList = memberRepository.findByEmail(email);
+        Member member = memberList.get(0);
+//        mimeEmailService.rejectFundingMail(funding, member)
         return funding;
     }
 }
