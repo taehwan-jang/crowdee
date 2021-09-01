@@ -5,11 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import team.crowdee.domain.*;
-import team.crowdee.domain.dto.FundingViewDTO;
-import team.crowdee.domain.dto.PaymentDTO;
-import team.crowdee.domain.dto.SimpleFundingListDTO;
-import team.crowdee.domain.dto.ThumbNailDTO;
+import team.crowdee.domain.dto.*;
 import team.crowdee.repository.FundingRepository;
 import team.crowdee.repository.MemberRepository;
 import team.crowdee.repository.OrderRepository;
@@ -57,16 +55,27 @@ public class FundingService {
     }
 
     @Transactional(readOnly = true)
-    public List<ThumbNailDTO> tagView(String tag) {
+    public List<ThumbNailDTO> searchFunding(SearchDTO searchDTO) {
 
-        List<Funding> fundingList = fundingRepository.findByTag(tag);
-        return Utils.fundingToThumbNail(fundingList);
+        String field = searchDTO.getField();
+        String value = searchDTO.getValue();
+        if (!(StringUtils.hasText(field) && StringUtils.hasText(value))) {
+            throw new IllegalArgumentException("검색어가 없습니다.");
+        }
+        List<Funding> fundingList;
+        switch (field) {
+            case "creatorNickName"://크리에이터 이름
+                fundingList=fundingRepository.findByCreatorNickName(value);
+                break;
+            case "tag":
+            case "title":
+            case "category":
+                fundingList=fundingRepository.findByLikeParam(field,value);
+                break;
+            default:
+                return null;
+        }
 
-    }
-
-    @Transactional(readOnly = true)
-    public List<ThumbNailDTO> categoryView(String category) {
-        List<Funding> fundingList = fundingRepository.findByParam("category",category);
         return Utils.fundingToThumbNail(fundingList);
 
     }

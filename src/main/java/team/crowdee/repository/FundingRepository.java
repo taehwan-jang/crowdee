@@ -39,11 +39,11 @@ public class FundingRepository {
                 .getResultList();
     }
 
-    public List<Funding> findByTag(String tag) {
+    public List<Funding> findByLikeParam(String target,String param) {
         String query = "select f from Funding f " +
                 "left join fetch f.orders " +
-                "where f.tag " +
-                "like '%" + tag + "%' " +
+                "where f."+target+" "+
+                "like '%" + param + "%' " +
                 "and f.status='progress'";
         return em.createQuery(query, Funding.class).getResultList();
     }
@@ -176,5 +176,15 @@ public class FundingRepository {
                 .setParameter("param", fundingId)
                 .getResultList();
 
+    }
+
+    public List<Funding> findByCreatorNickName(String creatorNickName) {
+        return em.createQuery("select f from Funding f " +
+                "left join fetch f.orders " +
+                "where f.status='progress' " +
+                "and f.creator.creatorNickName=:param " +
+                "order by f.startDate desc", Funding.class)
+                .setParameter("param", creatorNickName)
+                .getResultList();
     }
 }

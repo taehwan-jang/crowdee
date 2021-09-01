@@ -8,10 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import team.crowdee.domain.dto.FundingViewDTO;
-import team.crowdee.domain.dto.PaymentDTO;
-import team.crowdee.domain.dto.ThumbNailDTO;
-import team.crowdee.domain.dto.WishDTO;
+import team.crowdee.domain.dto.*;
 import team.crowdee.jwt.CustomJWTFilter;
 import team.crowdee.service.FundingService;
 
@@ -69,33 +66,9 @@ public class FundingController {
      * 3.카테고리--ok
      * 4.creatorNickName
      */
-    @PostMapping("/tag")
-    public ResponseEntity<?> searchTag(@RequestBody String tag) {
-        List<ThumbNailDTO> thumbNailDTO = fundingService.tagView(tag);
-        if (thumbNailDTO.isEmpty()) {
-            return new ResponseEntity<>("검색결과가 없습니다.", HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(thumbNailDTO, HttpStatus.OK);
-    }
-    @PostMapping("/title")
-    public ResponseEntity<?> searchTitle(@RequestBody String title) {
-        List<ThumbNailDTO> thumbNailDTO = fundingService.tagView(title);
-        if (thumbNailDTO.isEmpty()) {
-            return new ResponseEntity<>("검색결과가 없습니다.", HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(thumbNailDTO, HttpStatus.OK);
-    }
-    @PostMapping("/creatorNickName")
-    public ResponseEntity<?> searchNickName(@RequestBody String creatorNickName) {
-        List<ThumbNailDTO> thumbNailDTO = fundingService.tagView(creatorNickName);
-        if (thumbNailDTO.isEmpty()) {
-            return new ResponseEntity<>("검색결과가 없습니다.", HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(thumbNailDTO, HttpStatus.OK);
-    }
-    @PostMapping("/category")
-    public ResponseEntity<?> searchCategory(@RequestBody String category) {
-        List<ThumbNailDTO> thumbNailDTO = fundingService.categoryView(category);
+    @PostMapping("/search")
+    public ResponseEntity<?> searchTag(@RequestBody SearchDTO searchDTO) {
+        List<ThumbNailDTO> thumbNailDTO = fundingService.searchFunding(searchDTO);
         if (thumbNailDTO.isEmpty()) {
             return new ResponseEntity<>("검색결과가 없습니다.", HttpStatus.BAD_REQUEST);
         }
