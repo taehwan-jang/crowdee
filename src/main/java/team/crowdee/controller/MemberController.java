@@ -135,6 +135,9 @@ public class MemberController {
     public ResponseEntity<?> myFundingHistory(HttpServletRequest request) {
         String email = customJWTFilter.findEmail(request);
         List<ThumbNailDTO> thumbNail = memberService.fundingHistory(email);
+        if (thumbNail.isEmpty()) {
+            return new ResponseEntity<>("후원 펀딩이 없습니다.", HttpStatus.BAD_REQUEST);
+        }
         return new ResponseEntity<>(thumbNail, HttpStatus.OK);
     }
 
@@ -142,6 +145,9 @@ public class MemberController {
     public ResponseEntity<?> myWishList(HttpServletRequest request) {
         String email = customJWTFilter.findEmail(request);
         List<ThumbNailDTO> thumbNail = memberService.wishFunding(email);
+        if (thumbNail.isEmpty()) {
+            return new ResponseEntity<>("후원 펀딩이 없습니다.", HttpStatus.BAD_REQUEST);
+        }
         return new ResponseEntity<>(thumbNail, HttpStatus.OK);
     }
 
