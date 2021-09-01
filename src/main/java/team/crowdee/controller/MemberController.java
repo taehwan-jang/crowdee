@@ -138,5 +138,12 @@ public class MemberController {
         return new ResponseEntity<>(thumbNail, HttpStatus.OK);
     }
 
+    @GetMapping("/myPage/wishList")
+    public ResponseEntity<?> myWishList(HttpServletRequest request) {
+        String email = customJWTFilter.findEmail(request);
+        List<ThumbNailDTO> thumbNail = memberService.wishFunding(email);
+        return new ResponseEntity<>(thumbNail, HttpStatus.OK);
+    }
+
 
 }

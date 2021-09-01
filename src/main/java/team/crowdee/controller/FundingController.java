@@ -64,13 +64,30 @@ public class FundingController {
     /**
      * 검색 가져오기
      * 1.tag--ok
-     * 2.제목
+     * 2.제목 --ok
+     * 3.nickName--ok
      * 3.카테고리--ok
      * 4.creatorNickName
      */
     @PostMapping("/tag")
     public ResponseEntity<?> searchTag(@RequestBody String tag) {
         List<ThumbNailDTO> thumbNailDTO = fundingService.tagView(tag);
+        if (thumbNailDTO.isEmpty()) {
+            return new ResponseEntity<>("검색결과가 없습니다.", HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(thumbNailDTO, HttpStatus.OK);
+    }
+    @PostMapping("/title")
+    public ResponseEntity<?> searchTitle(@RequestBody String title) {
+        List<ThumbNailDTO> thumbNailDTO = fundingService.tagView(title);
+        if (thumbNailDTO.isEmpty()) {
+            return new ResponseEntity<>("검색결과가 없습니다.", HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(thumbNailDTO, HttpStatus.OK);
+    }
+    @PostMapping("/creatorNickName")
+    public ResponseEntity<?> searchNickName(@RequestBody String creatorNickName) {
+        List<ThumbNailDTO> thumbNailDTO = fundingService.tagView(creatorNickName);
         if (thumbNailDTO.isEmpty()) {
             return new ResponseEntity<>("검색결과가 없습니다.", HttpStatus.BAD_REQUEST);
         }

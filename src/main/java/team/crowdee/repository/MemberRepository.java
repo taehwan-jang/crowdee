@@ -128,6 +128,14 @@ public class MemberRepository {
                 "where m.email=:param ", Member.class)
                 .setParameter("param",email)
                 .getResultList();
+    }
+
+    public List<Member> findByEmailWithWishFunding(String email) {
+        return em.createQuery("select m from Member m " +
+                "left join fetch m.fundingList " +
+                "where m.email=:param ", Member.class)
+                .setParameter("param",email)
+                .getResultList();
 
     }
 }

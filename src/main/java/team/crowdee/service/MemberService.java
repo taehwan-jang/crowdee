@@ -223,7 +223,15 @@ public class MemberService {
     }
 
 
-
+    public List<ThumbNailDTO> wishFunding(String email) {
+        List<Member> memberList = memberRepository.findByEmailWithFunding(email);
+        if (memberList.isEmpty()) {
+            throw new IllegalArgumentException("회원 정보가 없습니다.");
+        }
+        Member member = memberList.get(0);
+        List<Funding> fundingList = member.getFundingList();
+        return Utils.fundingToThumbNail(fundingList);
+    }
 }
 
 

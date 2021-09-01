@@ -66,8 +66,6 @@ public class Funding {
 
     private LocalDateTime postDate;//등록일
 
-    @Embedded
-    private Address address;//공연장 주소
 
     /**
      * 펀딩의 상태
@@ -184,11 +182,6 @@ public class Funding {
         return this;
     }
 
-    //필요한지 다시 한번 확인할것
-    public Funding changeAddress(Address address) {
-        this.address = address;
-        return this;
-    }
     //==========조회용 로직 일부 추가===========//
     public int totalParticipant() {
 
