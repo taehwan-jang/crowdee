@@ -29,7 +29,7 @@ public class FundingViewDTO {
     private int minFundraising;//최소금액
     private String startDate;//시작일(yyyy-mm-dd)
     private String endDate;//종료일(yyyy-mm-dd)
-    private int restDate;
+    private Long restDate;
     private int maxBacker;//최대후원자수
     private int totalBacker;//현재후원자수
     private int visitCount;//방문횟수(조회수)

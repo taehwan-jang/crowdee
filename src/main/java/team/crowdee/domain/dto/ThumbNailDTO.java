@@ -22,7 +22,7 @@ public class ThumbNailDTO {
     private int goalFundraising;
     private int totalFundraising;
     private String category;
-    private int restDate;
+    private Long restDate;
     private int participant;
     private Status status;
 

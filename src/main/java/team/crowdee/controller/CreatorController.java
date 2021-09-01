@@ -149,6 +149,7 @@ public class CreatorController {
     public ResponseEntity<?> askInspection(@PathVariable String manageUrl,
                                            HttpServletRequest request) {
         boolean flag = customJWTFilter.isCreator(request);
+        log.warn("최종 등록 칸에 들어오니 확인해보자 새꺄");
         if (!flag) {
             return new ResponseEntity<>("크리에이터만 펀딩을 등록할 수 있습니다.", HttpStatus.FORBIDDEN);
         }

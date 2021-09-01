@@ -1,5 +1,6 @@
 package team.crowdee.domain;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import team.crowdee.domain.valuetype.Address;
 
 import javax.persistence.*;
@@ -7,6 +8,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 @Entity
@@ -14,6 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
+@Slf4j
 public class Funding {
     @Id
     @GeneratedValue
@@ -90,7 +93,11 @@ public class Funding {
 
 
     public void acceptFunding() {
-        status = Status.confirm;
+        if (ChronoUnit.DAYS.between(LocalDate.now(),LocalDate.parse(startDate, DateTimeFormatter.ISO_DATE)) <= 0) {
+            status = Status.progress;
+        } else {
+            status = Status.confirm;
+        }
     }
 
     public void rejectFunding() {
@@ -188,11 +195,11 @@ public class Funding {
         return getOrders().size();
     }
 
-    public int getRestDays() {
+    public Long getRestDays() {
         LocalDate start = LocalDate.now();
         LocalDate end = LocalDate.parse(this.endDate, DateTimeFormatter.ISO_DATE);
 
-        return Period.between(start, end).getDays();
+        return ChronoUnit.DAYS.between(start,end);
     }
 
     public void increaseAchievement() {

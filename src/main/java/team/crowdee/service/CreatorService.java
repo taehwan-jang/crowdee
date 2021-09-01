@@ -176,7 +176,9 @@ public class CreatorService {
             throw new IllegalArgumentException("존재하지 않는 펀딩입니다.");
         }
         Funding funding = fundingList.get(0);
+        log.warn("status 바뀌니???");
         funding.changeStatus(Status.inspection);
+        log.warn("status 바뀌니???2={}",funding.getStatus());
         FundingViewDTO fundingViewDTO = Utils.fundingEToD(funding);
         return fundingViewDTO;
     }

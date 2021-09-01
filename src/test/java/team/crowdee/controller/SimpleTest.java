@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
 import static java.util.Base64.*;
 
@@ -61,14 +62,16 @@ public class SimpleTest {
     @Test
     public void 문자열에서_날짜로변환_남은날짜() throws Exception {
         //given
-        String endDate = "2021-09-11";
+        String endDate = "2021-11-02";
 
         LocalDate start = LocalDate.now();
         LocalDate end = LocalDate.parse(endDate, DateTimeFormatter.ISO_DATE);
         //when
-        int days = Period.between(start, end).getDays();
+        Period.between(start, end).getDays();
+        int months= Period.between(start, end).getMonths();
+        long between = ChronoUnit.DAYS.between(end, start);
         //then
-        Assertions.assertEquals(20,days);
+        System.out.println("days = " + end);
     }
 
 
