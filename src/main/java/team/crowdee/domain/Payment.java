@@ -1,6 +1,7 @@
 package team.crowdee.domain;
 
 import lombok.*;
+import net.bytebuddy.implementation.bind.annotation.BindingPriority;
 import team.crowdee.domain.dto.ReceiptDTO;
 
 import javax.persistence.*;
@@ -42,9 +43,10 @@ public class Payment {
     private String buyer_postcode;//없을거같은데
 
     //=======결제가 완료된 후 값======//
-    private String imp_uid;
-    private String paid_amount;
-    private String apply_num;
+    @Builder.Default
+    private String imp_uid="none";//고유id
+    private String paid_amount;//결제금액
+    private String apply_num;//승인번호
 
     public void receipt(ReceiptDTO receiptDTO) {
         this.imp_uid = receiptDTO.getImp_uid();

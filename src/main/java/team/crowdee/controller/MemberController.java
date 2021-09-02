@@ -24,6 +24,7 @@ import team.crowdee.jwt.TokenProvider;
 import team.crowdee.repository.MemberRepository;
 import team.crowdee.service.FundingService;
 import team.crowdee.service.MemberService;
+import team.crowdee.service.OrderService;
 import team.crowdee.util.MimeEmailService;
 import team.crowdee.util.SendEmailService;
 import javax.mail.MessagingException;
@@ -43,7 +44,7 @@ public class MemberController {
     private final SendEmailService sendEmailService;
     private final MimeEmailService mimeEmailService;
     private final MemberService memberService;
-    private final FundingService fundingService;
+    private final OrderService orderService;
     private final MemberRepository memberRepository;
     private final CustomTokenProvider customTokenProvider;
     private final CustomJWTFilter customJWTFilter;
@@ -151,9 +152,18 @@ public class MemberController {
         return new ResponseEntity<>(thumbNail, HttpStatus.OK);
     }
 
-    @PostMapping("/myPage/waitingForPayment")
-    public ResponseEntity<?> waitingPaymentList() {
-        return null;
+    @GetMapping("/myPage/waitingForPayment")
+    public ResponseEntity<?> waitingPaymentList(HttpServletRequest request) {
+        boolean flag = customJWTFilter.isBacker(request);
+        if (!flag) {
+            return new ResponseEntity<>("로그인 후 이용해주세요", HttpStatus.BAD_REQUEST);
+        }
+        String email = customJWTFilter.findEmail(request);
+        List<WaitingPaymentDTO> paymentDTOList = orderService.listUpWaitingPayment(email);
+        if (paymentDTOList.isEmpty()) {
+            return new ResponseEntity<>("참여 내역이 없습니다.", HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(paymentDTOList,HttpStatus.OK);
     }
 
 

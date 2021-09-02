@@ -156,4 +156,18 @@ public class MemberRepository {
         }
         return findAdmin.get(0);
     }
+
+    public List<Member> findByEmailWithOrderAndFunding(String email) {
+        return em.createQuery("select m from Member m " +
+                "join fetch m.orders o " +
+                "join fetch o.funding f " +
+                "join fetch o.payment p " +
+                "where m.email=:param " +
+                "and f.status='end' " +
+                "and f.result=true " +
+                "and o.payment.imp_uid='none' ", Member.class)
+                .setParameter("param", email)
+                .getResultList();
+
+    }
 }
