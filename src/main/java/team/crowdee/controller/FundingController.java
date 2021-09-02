@@ -112,7 +112,7 @@ public class FundingController {
      * 3. fundingId 를 통해 funding 객체를 가져오고 Order 객체 생성
      * 5.
      */
-    @GetMapping("/participation")
+    @PostMapping("/preOrder")
     public ResponseEntity<?> responseBasicInfo(HttpServletRequest request) {
         boolean flag = customJWTFilter.isBacker(request);
         if (!flag) {
