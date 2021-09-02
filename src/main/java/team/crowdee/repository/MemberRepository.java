@@ -4,12 +4,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.stereotype.Repository;
+import team.crowdee.domain.Authority;
 import team.crowdee.domain.Creator;
 import team.crowdee.domain.Member;
 import team.crowdee.domain.Status;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 @Repository
@@ -82,9 +85,9 @@ public class MemberRepository {
                 .getResultList();
     }
 
-    public List<Member> findMemberWithFollow(Long id) {
-        return em.createQuery("select m from Member m join fetch m.following", Member.class).getResultList();
-    }
+//    public List<Member> findMemberWithFollow(Long id) {
+//        return em.createQuery("select m from Member m join fetch m.following", Member.class).getResultList();
+//    }
 
 //    public List<Member> findSecessionMember(LocalDateTime today) {
 //        return em.createQuery("select m from Member m where m.secessionDate=:today", Member.class)
@@ -137,5 +140,20 @@ public class MemberRepository {
                 .setParameter("param",email)
                 .getResultList();
 
+    }
+
+    //어드민로그인을위해 로직 추가
+    public Member findAdmin(String email) {
+        Set<Authority> authorities = new HashSet<>();
+        Authority authority = new Authority();
+        authority.setAuthorityName("admin");
+        authorities.add(authority);
+        List<Member> findAdmin = em.createQuery("select m from Member m where m.email=:param", Member.class)
+                .setParameter("param", email)
+                .getResultList();
+        if (findAdmin.isEmpty()) {
+            return null;
+        }
+        return findAdmin.get(0);
     }
 }

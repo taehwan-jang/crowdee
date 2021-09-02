@@ -6,7 +6,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import team.crowdee.domain.Authority;
 import team.crowdee.domain.Funding;
 import team.crowdee.domain.Member;
 import team.crowdee.domain.dto.*;
@@ -14,10 +16,12 @@ import team.crowdee.domain.dto.*;
 import team.crowdee.jwt.CustomJWTFilter;
 import team.crowdee.jwt.CustomTokenProvider;
 import team.crowdee.jwt.JwtFilter;
+import team.crowdee.repository.MemberRepository;
 import team.crowdee.service.AdminService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @Controller
@@ -29,15 +33,18 @@ public class AdminController {
      * admin 관련 로직
      */
     private final AdminService adminService;
+    private final MemberRepository memberRepository;
     private final CustomTokenProvider customTokenProvider;
     private final CustomJWTFilter customJWTFilter;
 
     //어드민 로그인
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO, HttpServletRequest request) {
-        boolean admin = customJWTFilter.isAdmin(request);
-        if (!admin) {
-            return new ResponseEntity<>("잘못된 접근입니다.", HttpStatus.FORBIDDEN);
+    public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO) {
+        Member member = memberRepository.findAdmin(loginDTO.getEmail());
+        Set<Authority> authorities = member.getAuthorities();
+        for (Authority authority : authorities) {
+            if(!(StringUtils.hasText(authority.getAuthorityName())&&authority.getAuthorityName().equals("admin")))
+                return new ResponseEntity<>("잘못된 접근입니다.", HttpStatus.BAD_REQUEST);
         }
         String adminLogin = adminService.login(loginDTO);
         String jwt = customTokenProvider.getToken(loginDTO);
@@ -49,7 +56,11 @@ public class AdminController {
 
     //백커 전체조회
     @GetMapping("/backer")
-    public ResponseEntity<?> backer() {
+    public ResponseEntity<?> backer(HttpServletRequest request) {
+        boolean flag = customJWTFilter.isAdmin(request);
+        if (!flag) {
+            return new ResponseEntity<>("잘못된 접근입니다.", HttpStatus.FORBIDDEN);
+        }
         List<BackerAllDTO> backerAllDTO = adminService.backerAll();
         if (backerAllDTO == null) {
             return new ResponseEntity<>("backer 전체 조회 실패", HttpStatus.BAD_REQUEST);
@@ -59,7 +70,11 @@ public class AdminController {
 
     //크리에이터 전체조회
     @GetMapping("/creator")
-    public ResponseEntity<?> creator() {
+    public ResponseEntity<?> creator(HttpServletRequest request) {
+        boolean flag = customJWTFilter.isAdmin(request);
+        if (!flag) {
+            return new ResponseEntity<>("잘못된 접근입니다.", HttpStatus.FORBIDDEN);
+        }
         List<CreatorAllDTO> creatorAllDTO = adminService.creatorAll();
 
         if (creatorAllDTO == null) {
@@ -70,7 +85,11 @@ public class AdminController {
 
     //백커 상세조회
     @GetMapping("/backerView/{memberId}")
-    public ResponseEntity<?> backerView(@PathVariable("memberId") Long backerId) { //주소에 파라미터값 추가
+    public ResponseEntity<?> backerView(@PathVariable("memberId") Long backerId, HttpServletRequest request) { //주소에 파라미터값 추가
+        boolean flag = customJWTFilter.isAdmin(request);
+        if (!flag) {
+            return new ResponseEntity<>("잘못된 접근입니다.", HttpStatus.FORBIDDEN);
+        }
         BackerViewDTO backerDTO = adminService.oneBacker(backerId);
 
         if (backerDTO == null) {
@@ -81,7 +100,11 @@ public class AdminController {
 
     //크리에이터 상세조회
     @GetMapping("/creatorView/{createId}")
-    public ResponseEntity<?> creatorView(@PathVariable("createId") Long createId) { //주소에 파라미터값 추가
+    public ResponseEntity<?> creatorView(@PathVariable("createId") Long createId, HttpServletRequest request) { //주소에 파라미터값 추가
+        boolean flag = customJWTFilter.isAdmin(request);
+        if (!flag) {
+            return new ResponseEntity<>("잘못된 접근입니다.", HttpStatus.FORBIDDEN);
+        }
         CreatorViewDTO creatorViewDTO = adminService.oneCreator(createId);
 
         if (creatorViewDTO == null) {
@@ -92,7 +115,11 @@ public class AdminController {
 
     //심사중 전체조회
     @GetMapping("/inspection")
-    public ResponseEntity<?> inspection() {
+    public ResponseEntity<?> inspection(HttpServletRequest request) {
+        boolean flag = customJWTFilter.isAdmin(request);
+        if (!flag) {
+            return new ResponseEntity<>("잘못된 접근입니다.", HttpStatus.FORBIDDEN);
+        }
         List<CreatorViewDTO> inspectionDTO = adminService.inspectionAll();
 
         if (inspectionDTO == null) {
@@ -103,7 +130,11 @@ public class AdminController {
 
     //크리에이터심사 승인
     @GetMapping("/creatorOK/{creatorId}")
-    public ResponseEntity<?> changeConfirm(@PathVariable("creatorId") Long creatorId) {
+    public ResponseEntity<?> changeConfirm(@PathVariable("creatorId") Long creatorId, HttpServletRequest request) {
+        boolean flag = customJWTFilter.isAdmin(request);
+        if (!flag) {
+            return new ResponseEntity<>("잘못된 접근입니다.", HttpStatus.FORBIDDEN);
+        }
         Member member = adminService.confirmChange(creatorId);
 
         if (member == null) {
@@ -114,14 +145,19 @@ public class AdminController {
 
     //크리에이터심사 거절(미완성)
     @GetMapping("/changeRefuse/{memberId}")
-    public ResponseEntity<?> changeRefuse(@PathVariable("memberId") Long memberId) {
+    public ResponseEntity<?> changeRefuse(@PathVariable("memberId") Long memberId, HttpServletRequest request) {
+
         adminService.refuseChange(memberId);
         return new ResponseEntity<>("심사 거절되었습니다.", HttpStatus.OK);
     }
 
     //펀딩전체조회
     @GetMapping("/funding")
-    public ResponseEntity<?> funding() {
+    public ResponseEntity<?> funding(HttpServletRequest request) {
+        boolean flag = customJWTFilter.isAdmin(request);
+        if (!flag) {
+            return new ResponseEntity<>("잘못된 접근입니다.", HttpStatus.FORBIDDEN);
+        }
         List<FundingAllDTO> fundingAllDTO = adminService.fundingAll();
         if (fundingAllDTO == null) {
             return new ResponseEntity<>("funding 전체 조회 실패", HttpStatus.BAD_REQUEST);
@@ -131,7 +167,11 @@ public class AdminController {
 
     //펀딩 심사중 전체조회
     @GetMapping("/fundingInspection")
-    public ResponseEntity<?> fundingInspection() {
+    public ResponseEntity<?> fundingInspection(HttpServletRequest request) {
+        boolean flag = customJWTFilter.isAdmin(request);
+        if (!flag) {
+            return new ResponseEntity<>("잘못된 접근입니다.", HttpStatus.FORBIDDEN);
+        }
         List<FundingAllDTO> inspectionDTO = adminService.inspectionFunding();
 
         if (inspectionDTO == null) {
@@ -142,7 +182,11 @@ public class AdminController {
 
     //펀딩 승인
     @GetMapping("/fundingOk/{fundingId}")
-    public ResponseEntity<?> fundingConfirm(@PathVariable("fundingId") Long fundingId) {
+    public ResponseEntity<?> fundingConfirm(@PathVariable("fundingId") Long fundingId, HttpServletRequest request) {
+        boolean flag = customJWTFilter.isAdmin(request);
+        if (!flag) {
+            return new ResponseEntity<>("잘못된 접근입니다.", HttpStatus.FORBIDDEN);
+        }
         Funding funding = adminService.confirmFunding(fundingId);
 
         if (funding == null) {
@@ -153,7 +197,11 @@ public class AdminController {
 
     //펀딩 거절
     @GetMapping("/fundingNo/{fundingId}")
-    public ResponseEntity<?> fundingReject(@PathVariable("fundingId") Long fundingId) {
+    public ResponseEntity<?> fundingReject(@PathVariable("fundingId") Long fundingId, HttpServletRequest request) {
+        boolean flag = customJWTFilter.isAdmin(request);
+        if (!flag) {
+            return new ResponseEntity<>("잘못된 접근입니다.", HttpStatus.FORBIDDEN);
+        }
         Funding funding = adminService.rejectFunding(fundingId);
 
         if (funding == null) {
