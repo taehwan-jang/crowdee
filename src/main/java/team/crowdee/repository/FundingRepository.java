@@ -161,6 +161,7 @@ public class FundingRepository {
 
     public List<Funding> findByCreatorForEditing(Creator creator) {
        return em.createQuery("select f from Funding f " +
+
                 "where f.status='editing' " +
                 "and f.creator=:param " +
                 "order by f.postDate desc", Funding.class)

@@ -151,5 +151,10 @@ public class MemberController {
         return new ResponseEntity<>(thumbNail, HttpStatus.OK);
     }
 
+    @PostMapping("/myPage/waitingForPayment")
+    public ResponseEntity<?> waitingPaymentList() {
+        return null;
+    }
+
 
 }

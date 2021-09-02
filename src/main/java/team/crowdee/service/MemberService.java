@@ -232,6 +232,7 @@ public class MemberService {
         List<Funding> fundingList = member.getFundingList();
         return Utils.fundingToThumbNail(fundingList);
     }
+
 }
 
 

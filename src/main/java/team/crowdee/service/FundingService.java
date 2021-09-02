@@ -129,7 +129,6 @@ public class FundingService {
     }
 
     public void participation(Long fundingId, PaymentDTO paymentDTO, String email) throws Exception {
-        //참여 했던 펀딩인지 어떻게 확인하는가.
         List<Funding> fundingList = fundingRepository.findWithOrdersAndMember(fundingId);
         if (fundingList.isEmpty()) {
             throw new IllegalArgumentException("잘못된 펀딩번호 입니다.");
@@ -149,15 +148,14 @@ public class FundingService {
             throw new IllegalArgumentException("회원 정보를 찾을 수 없습니다.");
         }
         Member member = memberList.get(0);
-        mimeEmailService.joinFundingMail(member, funding);
         Payment payment = Payment.builder()
                 .name(funding.getTitle())
                 .amount(paymentDTO.getAmount())
-                .buyer_email(paymentDTO.getBuyer_email())
-                .buyer_name(paymentDTO.getBuyer_name())
-                .buyer_tel(paymentDTO.getBuyer_tel())
-                .buyer_addr(paymentDTO.getBuyer_addr())
-                .buyer_postcode(paymentDTO.getBuyer_postcode())
+                .buyer_email(member.getEmail())
+                .buyer_name(member.getUserName())
+                .buyer_tel(member.getMobile())
+                .buyer_addr("주소")
+                .buyer_postcode("우편번호")
                 .build();
         orderRepository.paymentSave(payment);
         Order order = Order.builder()
@@ -169,6 +167,7 @@ public class FundingService {
 
         member.participationFunding(order);
         funding.addParticipants(order);
+        mimeEmailService.joinFundingMail(member, funding);
     }
 
     public boolean addOrRemoveMemberToFunding(String email, Long fundingId) {

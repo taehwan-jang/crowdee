@@ -24,7 +24,7 @@ public class Payment {
 
     //아임포트 가맹점 정보
     @Builder.Default
-    private String init = "INIpayTest";
+    private String init = "imp62492999";
     //default PG사 카카오페이
     @Builder.Default
     private String pg = "kakaopay";

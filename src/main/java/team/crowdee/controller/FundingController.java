@@ -8,8 +8,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import team.crowdee.domain.Member;
 import team.crowdee.domain.dto.*;
 import team.crowdee.jwt.CustomJWTFilter;
+import team.crowdee.repository.MemberRepository;
 import team.crowdee.service.FundingService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 public class FundingController {
 
     private final FundingService fundingService;
+    private final MemberRepository memberRepository;
     private final CustomJWTFilter customJWTFilter;
 
     /**
@@ -102,13 +105,31 @@ public class FundingController {
 
     /**
      * 참여하기 로직
-     *
+     * 0. 사용자가 입력했던 기존 정보들을 바탕으로 먼제 값을 내려준다?
      * 1. projectUrl? fundingId?인덱스로 찾는게 더 나으니 인덱스를 보내라 하자
      * 2. paymentDTO 통해 결제에 필요한 정보들 수집
      * 4. 결제금액 , 최소금액 비교
      * 3. fundingId 를 통해 funding 객체를 가져오고 Order 객체 생성
      * 5.
      */
+    @GetMapping("/participation")
+    public ResponseEntity<?> responseBasicInfo(HttpServletRequest request) {
+        boolean flag = customJWTFilter.isBacker(request);
+        if (!flag) {
+            return new ResponseEntity<>("로그인이 필요합니다.",HttpStatus.BAD_REQUEST);
+        }
+        String email = customJWTFilter.findEmail(request);
+        List<Member> memberList = memberRepository.findByEmail(email);
+        if (memberList.isEmpty()) {
+            return new ResponseEntity<>("로그인이 필요합니다.",HttpStatus.BAD_REQUEST);
+        }
+        Member member = memberList.get(0);
+        PaymentDTO paymentDTO = new PaymentDTO();
+        paymentDTO.setBuyer_email(member.getEmail());
+        paymentDTO.setBuyer_name(member.getUserName());
+        paymentDTO.setBuyer_tel(member.getMobile());
+        return new ResponseEntity<>(paymentDTO, HttpStatus.OK);
+    }
     @PostMapping("/participation")
     public ResponseEntity<?> participation(@RequestBody PaymentDTO paymentDTO,
                                            HttpServletRequest request) throws Exception {
@@ -117,8 +138,7 @@ public class FundingController {
         if (!flag) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        String email = customJWTFilter.findEmail(request);
-        fundingService.participation(paymentDTO.getFundingId(),paymentDTO,email);
+        fundingService.participation(paymentDTO.getFundingId(),paymentDTO,paymentDTO.getBuyer_email());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

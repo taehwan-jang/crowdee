@@ -90,17 +90,16 @@ public class CreatorController {
                                                  @PathVariable String manageUrl,
                                                  HttpServletRequest request) {
         boolean flag = customJWTFilter.isCreator(request);
-        HttpHeaders httpHeaders = customJWTFilter.getHeaders(request);
 
         if (!flag) {
-            return new ResponseEntity<>("크리에이터만 펀딩을 등록할 수 있습니다.", httpHeaders, HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>("크리에이터만 펀딩을 등록할 수 있습니다.", HttpStatus.FORBIDDEN);
         }
 
         FundingViewDTO fundingViewDTO = creatorService.tempThumbNail(thumbNailDTO, manageUrl);
         if (fundingViewDTO == null) {
-            return new ResponseEntity<>(httpHeaders, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(fundingViewDTO, httpHeaders, HttpStatus.OK);
+        return new ResponseEntity<>(fundingViewDTO, HttpStatus.OK);
     }
 
     @PostMapping("/create/fundingPlan/{manageUrl}")
