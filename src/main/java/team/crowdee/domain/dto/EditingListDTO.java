@@ -9,6 +9,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class EditingListDTO {
 
+    private Long creatorId;
     private String title;
     private String postDate;
     private String manageUrl;

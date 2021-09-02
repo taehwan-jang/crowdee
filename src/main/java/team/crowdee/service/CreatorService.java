@@ -196,6 +196,7 @@ public class CreatorService {
         if (!fundingList.isEmpty()) {
             for (Funding funding : fundingList) {
                 editingList.add(new EditingListDTO(
+                        creator.getCreatorId(),
                         funding.getTitle(),
                         funding.getPostDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
                         funding.getManageUrl()));
