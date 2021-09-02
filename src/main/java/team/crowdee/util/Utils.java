@@ -8,6 +8,7 @@ import team.crowdee.domain.valuetype.AccountInfo;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -87,15 +88,30 @@ public class Utils {
 
     //백커 전체조회
     public static BackerAllDTO allBackEToD(Member member) {
+        Set<Authority> authorities = member.getAuthorities();
+        Authority authority = new Authority();
+        Iterator<Authority> iterator = authorities.iterator();
+        String authorityValue = "";
+        while (iterator.hasNext()) {
+            String authorityName1 = iterator.next().getAuthorityName();
+            if(authorityName1.contains("admin")) {
+                authorityValue = "admin";
+            }
+            else if(authorityName1.contains("creator")){
+                authorityValue = "backer, creator";
+            }
+            else {
+                authorityValue = "backer";
+            }
+        }
 
         BackerAllDTO backerAllDTO = new BackerAllDTO();
         backerAllDTO.setMemberId(member.getMemberId());
         backerAllDTO.setUserName(member.getUserName());
         backerAllDTO.setEmail(member.getEmail());
         backerAllDTO.setRegistDate(member.getRegistDate());
-        backerAllDTO.setAuthorities("backer");
+        backerAllDTO.setAuthorities(authorityValue);
         backerAllDTO.setStatus(member.getStatus());
-
 
         return backerAllDTO;
     }

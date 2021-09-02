@@ -21,7 +21,9 @@ public class CreatorRepository {
         return creator.getCreatorId();
     }
     public List<Creator> findByIdMember(Long id) {
-        return em.createQuery("select c from Creator c join fetch c.member", Creator.class).getResultList();
+        return em.createQuery("select c from Creator c join fetch c.member where c.creatorId=:param", Creator.class)
+                .setParameter("param",id)
+                .getResultList();
     }
 
     public List<Creator> findByEmail(String email) {
@@ -39,7 +41,5 @@ public class CreatorRepository {
                 .setParameter("status", status)
                 .getResultList();
     }
-
-
 
 }

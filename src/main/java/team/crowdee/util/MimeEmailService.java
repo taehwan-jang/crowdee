@@ -7,6 +7,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import team.crowdee.domain.Funding;
 import team.crowdee.domain.Member;
+import team.crowdee.domain.dto.CreatorRejectDTO;
+import team.crowdee.domain.dto.FundingRejectDTO;
 import team.crowdee.domain.dto.FundingViewDTO;
 import team.crowdee.domain.dto.MemberDTO;
 
@@ -116,22 +118,20 @@ public class MimeEmailService {
         return buffer.toString();
     }
 
-    //펀딩거절 이메일 수정중미완성...
+    //크리에이터거절(프론트랑 같이 테스트했을때되면 OK)
     @Async
-    public String rejectFundingMail(Member member, Funding funding) throws MessagingException{
+    public String rejectCreatorMail(Member member, CreatorRejectDTO creatorRejectDTO) throws MessagingException{
 
         MimeMessage rejectMessage = javaMailSender.createMimeMessage();
         String mailContent =
                 "<img style='width:300px; display:block; margin-left:auto; margin-right:auto;' src= 'http://localhost:8081/api/image/img/crowdeeImg.png' />" +
                         "<div style='text-align:center;'>" +
-                        "<h1>[펀딩 참여 완료]</h1><br>" + member.getUserName() + "님 께서 참여하신 "+ funding.getTitle() + " 펀딩이 정상적으로 참여 완료되었습니다." +
-                        "<p><img style='width:300px;' src='"+funding.getThumbNailUrl()+"'/></p>" +
-                        "<p>펀딩 목표금액이 달성되거나, 펀딩 종료 시 추가로 안내메일 발송됩니다.</p>" +
-                        "<p>참여펀딩 바로가기 : http://localhost:8081/contents/" + funding.getProjectUrl()+ "</p>" +
+                        "<h1>[크리에이터 심사 부적합]</h1><br>" + member.getUserName() + "님의 크리에이터 승인이 거절 되었습니다." +
+                        "<p>사유:" + creatorRejectDTO.getReason() + "</p>" +
                         "<h3>Crowdee 펀딩에 참여해주셔서 감사합니다.</h3>" +
                         "<br></div>";
 
-        rejectMessage.setSubject("[Crowdee] " + funding.getTitle() + " 펀딩 참여가 완료되었습니다.");
+        rejectMessage.setSubject("[Crowdee] " + member.getUserName() + " 님의 크리에이터 신청이 거절되었습니다.");
         rejectMessage.setFrom("Crowdee.funding@gmail.com");
         rejectMessage.setText(mailContent, "UTF-8", "html");
         rejectMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(member.getEmail()));
@@ -140,5 +140,82 @@ public class MimeEmailService {
         return null;
     }
 
+    //펀딩거절(프론트랑 같이 테스트했을때되면 OK)
+    @Async
+    public String rejectFundingMail(Member member, Funding funding, FundingRejectDTO fundingRejectDTO) throws MessagingException{
+
+        MimeMessage rejectMessage = javaMailSender.createMimeMessage();
+        String mailContent =
+                "<img style='width:300px; display:block; margin-left:auto; margin-right:auto;' src= 'http://localhost:8081/api/image/img/crowdeeImg.png' />" +
+                        "<div style='text-align:center;'>" +
+                        "<h1>[펀딩 심사 부적합]</h1><br>" + member.getUserName() + "님 께서 참여하신 "+ funding.getTitle() + " 펀딩 승인이 거절 되었습니다." +
+                        "<p><img style='width:300px;' src='"+funding.getThumbNailUrl()+"'/></p>" +
+                        "<p>사유:" + fundingRejectDTO.getReason() + "</p>" +
+                        "<h3>Crowdee 펀딩에 참여해주셔서 감사합니다.</h3>" +
+                        "<br></div>";
+
+        rejectMessage.setSubject("[Crowdee] " + funding.getTitle() + " 펀딩 신청이 거절되었습니다.");
+        rejectMessage.setFrom("Crowdee.funding@gmail.com");
+        rejectMessage.setText(mailContent, "UTF-8", "html");
+        rejectMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(member.getEmail()));
+        javaMailSender.send(rejectMessage);
+
+        return null;
+    }
+
+
+
+
+
+
+    //////////////////아래는이메일테스트용
+
+
+
+
+    //크리에이터거절 이메일 테스트용
+    @Async
+    public String rejectFundingMailTest(Member member) throws MessagingException{
+
+        MimeMessage rejectMessage = javaMailSender.createMimeMessage();
+        String mailContent =
+                "<img style='width:300px; display:block; margin-left:auto; margin-right:auto;' src= 'http://localhost:8081/api/image/img/crowdeeImg.png' />" +
+                        "<div style='text-align:center;'>" +
+                        "<h1>[펀딩 심사 부적합]</h1><br>" + member.getUserName() + "님의 크리에이터 승인이 거절 되었습니다." +
+                        "<p>사유:호로로ㅗ롤ㄹ입니다...</p>" +
+                        "<h3>Crowdee 펀딩에 참여해주셔서 감사합니다.</h3>" +
+                        "<br></div>";
+
+        rejectMessage.setSubject("[Crowdee] " + member.getUserName() + " 크리에이터 신청이 거절되었습니다.");
+        rejectMessage.setFrom("Crowdee.funding@gmail.com");
+        rejectMessage.setText(mailContent, "UTF-8", "html");
+        rejectMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(member.getEmail()));
+        javaMailSender.send(rejectMessage);
+
+        return null;
+    }
+
+    //펀딩거절 이메일 테스트용
+    @Async
+    public String rejectFundingMailTest(Member member, Funding funding) throws MessagingException{
+
+        MimeMessage rejectMessage = javaMailSender.createMimeMessage();
+        String mailContent =
+                "<img style='width:300px; display:block; margin-left:auto; margin-right:auto;' src= 'http://localhost:8081/api/image/img/crowdeeImg.png' />" +
+                        "<div style='text-align:center;'>" +
+                        "<h1>[펀딩 심사 부적합]</h1><br>" + member.getUserName() + "님 께서 참여하신 "+ funding.getTitle() + " 펀딩 승인이 거절 되었습니다." +
+                        "<p><img style='width:300px;' src='"+funding.getThumbNailUrl()+"'/></p>" +
+                        "<p>사유:호로로ㅗ롤ㄹ입니다...</p>" +
+                        "<h3>Crowdee 펀딩에 참여해주셔서 감사합니다.</h3>" +
+                        "<br></div>";
+
+        rejectMessage.setSubject("[Crowdee] " + funding.getTitle() + " 펀딩 신청이 거절되었습니다.");
+        rejectMessage.setFrom("Crowdee.funding@gmail.com");
+        rejectMessage.setText(mailContent, "UTF-8", "html");
+        rejectMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(member.getEmail()));
+        javaMailSender.send(rejectMessage);
+
+        return null;
+    }
 
 }
