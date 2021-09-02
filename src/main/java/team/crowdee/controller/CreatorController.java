@@ -164,6 +164,9 @@ public class CreatorController {
         }
         String email = customJWTFilter.findEmail(request);
         List<EditingListDTO> editingList = creatorService.findEditingList(email);
+        if (editingList.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         return new ResponseEntity<>(editingList,HttpStatus.OK);
     }
 
