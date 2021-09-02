@@ -204,4 +204,10 @@ public class CreatorService {
         }
         return null;
     }
+
+    public FundingViewDTO findTempFunding(String email, String manageUrl) {
+        Funding funding = getFunding(manageUrl);
+        return Utils.fundingEToD(funding);
+
+    }
 }

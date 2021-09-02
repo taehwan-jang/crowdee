@@ -171,6 +171,19 @@ public class CreatorController {
     }
 
 
-//    @GetMapping("/edit")
-//    public ResponseEntity<?>
+    @GetMapping("/edit/{manageUrl}")
+    public ResponseEntity<?> editingFunding(@PathVariable String manageUrl,
+                                            HttpServletRequest request) {
+        boolean flag = customJWTFilter.isCreator(request);
+        if (!flag) {
+            return new ResponseEntity<>("잘못된 요청입니다.", HttpStatus.FORBIDDEN);
+        }
+        String email = customJWTFilter.findEmail(request);
+        FundingViewDTO fundingViewDTO = creatorService.findTempFunding(email,manageUrl);
+        if (fundingViewDTO == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(fundingViewDTO, HttpStatus.OK);
+
+    }
 }
