@@ -83,9 +83,11 @@ public class CustomJWTFilter {
         if (StringUtils.hasText(authority)) {
             if (!authority.contains("admin")) {
                 return false;
+            } else {
+                return true;
             }
         }
-        return true;
+        return false;
 
     }
 

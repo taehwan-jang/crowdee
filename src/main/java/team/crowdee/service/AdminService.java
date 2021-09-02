@@ -14,6 +14,7 @@ import team.crowdee.repository.MemberRepository;
 import team.crowdee.util.MimeEmailService;
 import team.crowdee.util.Utils;
 
+import javax.mail.MessagingException;
 import java.util.*;
 
 @Service
@@ -130,10 +131,19 @@ public class AdminService {
         return member;
     }
 
-    //거절 미완성
+    //크리에이터심사 거절
     @Transactional
-    public void refuseChange(Long memberId){
-        Member member = memberRepository.findById(memberId);
+    public Member rejectCreator(CreatorRejectDTO creatorRejectDTO) throws MessagingException {
+        List<Creator> creatorList = creatorRepository.findByIdMember(creatorRejectDTO.getCreatorId());
+        Creator creator = creatorList.get(0);
+        if (!(creator.getStatus().equals(Status.inspection))) {
+            return null;
+        }
+        Member member = creator.getMember();
+        mimeEmailService.rejectCreatorMail(member, creatorRejectDTO);
+        member.rejectCreator();
+        return member;
+
 
     }
 
@@ -181,19 +191,62 @@ public class AdminService {
         return funding;
     }
 
-    //펀딩심사 거절 수정중 미완성..
+    //펀딩심사 거절(프론트랑 같이 테스트했을때 되면 OK)
     @Transactional
-    public Funding rejectFunding(Long fundingId) {
-        Funding funding = fundingRepository.findById(fundingId);
+    public Funding rejectFunding(FundingRejectDTO fundingRejectDTO)
+            throws MessagingException {
+        Funding funding = fundingRepository.findById(fundingRejectDTO.getFundingId());
         if (!(funding.getStatus().equals(Status.inspection))) {
             return null;
         }
-        funding.rejectFunding();
 
         String email = funding.getCreator().getMember().getEmail();
         List<Member> memberList = memberRepository.findByEmail(email);
         Member member = memberList.get(0);
-//        mimeEmailService.rejectFundingMail(funding, member)
+        mimeEmailService.rejectFundingMail(member, funding, fundingRejectDTO);
+        funding.rejectFunding();
+        return funding;
+    }
+
+
+
+
+///////////////////////아래는이메일테스트
+
+
+
+    //크리에이터심사 거절테스트용
+    @Transactional
+    public Member rejectCreatorTest(Long creatorId) throws MessagingException {
+        List<Creator> creatorList = creatorRepository.findByIdMember(creatorId);
+        Creator creator = creatorList.get(0);
+        if (!(creator.getStatus().equals(Status.inspection))) {
+            return null;
+        }
+        Member member = creator.getMember();
+        mimeEmailService.rejectFundingMailTest(member);
+        member.rejectCreator();
+        return member;
+
+
+
+    }
+
+
+
+    //펀딩심사 거절 수정중 미완성..
+    @Transactional
+    public Funding rejectFundingTest(Long fundingId)
+            throws MessagingException {
+        Funding funding = fundingRepository.findById(fundingId);
+        if (!(funding.getStatus().equals(Status.inspection))) {
+            return null;
+        }
+        String email = funding.getCreator().getMember().getEmail();
+        List<Member> memberList = memberRepository.findByEmail(email);
+        Member member = memberList.get(0);
+        mimeEmailService.rejectFundingMailTest(member, funding);
+        funding.rejectFunding();
         return funding;
     }
 }

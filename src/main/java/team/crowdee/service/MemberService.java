@@ -91,6 +91,7 @@ public class MemberService {
         return false;
     }
 
+    //닉네임 검증
     public boolean validationNick(MemberDTO memberDTO) {
         if (memberDTO.getNickName() == null) {
             return false;
@@ -133,14 +134,15 @@ public class MemberService {
     //회원 정보 수정
     @Transactional
     public Member memberEdit(MemberDTO memberDTO) {
-        //닉네임 중복 검사
-        if(validationNick(memberDTO)==false) {
+        Member member = memberRepository.findById(memberDTO.getMemberId());
+        if(memberDTO.getNickName().equals(member.getNickName())){
+            return member.changeMobile(memberDTO.getMobile());
+        }
+        else if(validationNick(memberDTO) == false) {
             return null;
         }
-        Member member = memberRepository.findById(memberDTO.getMemberId());
-        member.changeNickName(memberDTO.getNickName())
+        return member.changeNickName(memberDTO.getNickName())
                 .changeMobile(memberDTO.getMobile());
-        return member;
     }
 
     //비밀번호 수정

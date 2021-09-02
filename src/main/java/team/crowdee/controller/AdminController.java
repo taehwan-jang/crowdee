@@ -19,6 +19,7 @@ import team.crowdee.jwt.JwtFilter;
 import team.crowdee.repository.MemberRepository;
 import team.crowdee.service.AdminService;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Set;
@@ -143,11 +144,14 @@ public class AdminController {
         return new ResponseEntity<>("심사 완료되었습니다.", HttpStatus.OK);
     }
 
-    //크리에이터심사 거절(미완성)
-    @GetMapping("/changeRefuse/{memberId}")
-    public ResponseEntity<?> changeRefuse(@PathVariable("memberId") Long memberId, HttpServletRequest request) {
+    //크리에이터심사 거절(프론트랑같이테스트성공하면 완료)
+    @GetMapping("/changeReject")
+    public ResponseEntity<?> changeReject(@RequestBody CreatorRejectDTO creatorRejectDTO, HttpServletRequest request) throws MessagingException {
 
-        adminService.refuseChange(memberId);
+        Member member = adminService.rejectCreator(creatorRejectDTO);
+        if (member == null) {
+            return new ResponseEntity<>("심사 불가 상태입니다.", HttpStatus.BAD_REQUEST);
+        }
         return new ResponseEntity<>("심사 거절되었습니다.", HttpStatus.OK);
     }
 
@@ -196,19 +200,18 @@ public class AdminController {
     }
 
     //펀딩 거절
-    @GetMapping("/fundingNo/{fundingId}")
-    public ResponseEntity<?> fundingReject(@PathVariable("fundingId") Long fundingId, HttpServletRequest request) {
+    @GetMapping("/fundingNo")
+    public ResponseEntity<?> fundingReject(@RequestBody FundingRejectDTO fundingRejectDTO, HttpServletRequest request) throws MessagingException {
         boolean flag = customJWTFilter.isAdmin(request);
         if (!flag) {
             return new ResponseEntity<>("잘못된 접근입니다.", HttpStatus.FORBIDDEN);
         }
-        Funding funding = adminService.rejectFunding(fundingId);
+        Funding funding = adminService.rejectFunding(fundingRejectDTO);
 
         if (funding == null) {
             return new ResponseEntity<>("심사 불가 상태입니다.", HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>("심사 거절 완료되었습니다.", HttpStatus.OK);
     }
-
 
 }

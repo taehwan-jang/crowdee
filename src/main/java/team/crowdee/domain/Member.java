@@ -46,7 +46,7 @@ public class Member {
     @Builder.Default
     private List<Order> orders = new ArrayList<>();
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "creator_id")
     private Creator creator;
 
@@ -56,6 +56,10 @@ public class Member {
             inverseJoinColumns = {@JoinColumn(name = "funding_id", referencedColumnName = "funding_id")})
     @Builder.Default
     private List<Funding> fundingList = new ArrayList<>();
+
+    public void rejectCreator() {
+        this.creator = null ;
+    }
 
     public void joinCreator(Creator creator) {
         this.creator = creator;
