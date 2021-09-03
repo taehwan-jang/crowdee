@@ -3,7 +3,6 @@ package team.crowdee.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team.crowdee.domain.*;
@@ -133,14 +132,14 @@ public class AdminService {
 
     //크리에이터심사 거절
     @Transactional
-    public Member rejectCreator(CreatorRejectDTO creatorRejectDTO) throws MessagingException {
-        List<Creator> creatorList = creatorRepository.findByIdMember(creatorRejectDTO.getCreatorId());
+    public Member rejectCreator(Long creatorId, RejectionDTO rejectionDTO) throws MessagingException {
+        List<Creator> creatorList = creatorRepository.findByIdMember(creatorId);
         Creator creator = creatorList.get(0);
         if (!(creator.getStatus().equals(Status.inspection))) {
             return null;
         }
         Member member = creator.getMember();
-        mimeEmailService.rejectCreatorMail(member, creatorRejectDTO);
+        mimeEmailService.rejectCreatorMail(member, rejectionDTO);
         member.rejectCreator();
         return member;
 
@@ -193,17 +192,18 @@ public class AdminService {
 
     //펀딩심사 거절(프론트랑 같이 테스트했을때 되면 OK)
     @Transactional
-    public Funding rejectFunding(FundingRejectDTO fundingRejectDTO)
+    public Funding rejectFunding(Long fundingId, RejectionDTO rejectionDTO)
             throws MessagingException {
-        Funding funding = fundingRepository.findById(fundingRejectDTO.getFundingId());
+        Funding funding = fundingRepository.findById(fundingId);
         if (!(funding.getStatus().equals(Status.inspection))) {
             return null;
+
         }
 
         String email = funding.getCreator().getMember().getEmail();
         List<Member> memberList = memberRepository.findByEmail(email);
         Member member = memberList.get(0);
-        mimeEmailService.rejectFundingMail(member, funding, fundingRejectDTO);
+        mimeEmailService.rejectFundingMail(member, funding, rejectionDTO);
         funding.rejectFunding();
         return funding;
     }

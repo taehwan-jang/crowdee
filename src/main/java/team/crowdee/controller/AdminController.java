@@ -12,13 +12,11 @@ import team.crowdee.domain.Authority;
 import team.crowdee.domain.Funding;
 import team.crowdee.domain.Member;
 import team.crowdee.domain.dto.*;
-
 import team.crowdee.jwt.CustomJWTFilter;
 import team.crowdee.jwt.CustomTokenProvider;
 import team.crowdee.jwt.JwtFilter;
 import team.crowdee.repository.MemberRepository;
 import team.crowdee.service.AdminService;
-
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -30,9 +28,6 @@ import java.util.Set;
 @CrossOrigin
 @RequestMapping("/admin")
 public class AdminController {
-    /**
-     * admin 관련 로직
-     */
     private final AdminService adminService;
     private final MemberRepository memberRepository;
     private final CustomTokenProvider customTokenProvider;
@@ -145,10 +140,14 @@ public class AdminController {
     }
 
     //크리에이터심사 거절(프론트랑같이테스트성공하면 완료)
-    @GetMapping("/changeReject")
-    public ResponseEntity<?> changeReject(@RequestBody CreatorRejectDTO creatorRejectDTO, HttpServletRequest request) throws MessagingException {
+    @PostMapping("/creatorNo/{creatorId}")
+    public ResponseEntity<?> changeReject(@PathVariable("creatorId") Long creatorId, @RequestBody RejectionDTO rejectionDTO, HttpServletRequest request) throws MessagingException {
+        boolean flag = customJWTFilter.isAdmin(request);
+        if (!flag) {
+            return new ResponseEntity<>("잘못된 접근입니다.", HttpStatus.FORBIDDEN);
+        }
 
-        Member member = adminService.rejectCreator(creatorRejectDTO);
+        Member member = adminService.rejectCreator(creatorId,rejectionDTO);
         if (member == null) {
             return new ResponseEntity<>("심사 불가 상태입니다.", HttpStatus.BAD_REQUEST);
         }
@@ -200,13 +199,13 @@ public class AdminController {
     }
 
     //펀딩 거절
-    @GetMapping("/fundingNo")
-    public ResponseEntity<?> fundingReject(@RequestBody FundingRejectDTO fundingRejectDTO, HttpServletRequest request) throws MessagingException {
+    @PostMapping("/FundingNo/{fundingId}")
+    public ResponseEntity<?> fundingReject(@PathVariable("fundingId") Long fundingId, @RequestBody RejectionDTO rejectionDTO, HttpServletRequest request) throws MessagingException {
         boolean flag = customJWTFilter.isAdmin(request);
         if (!flag) {
             return new ResponseEntity<>("잘못된 접근입니다.", HttpStatus.FORBIDDEN);
         }
-        Funding funding = adminService.rejectFunding(fundingRejectDTO);
+        Funding funding = adminService.rejectFunding(fundingId, rejectionDTO);
 
         if (funding == null) {
             return new ResponseEntity<>("심사 불가 상태입니다.", HttpStatus.BAD_REQUEST);

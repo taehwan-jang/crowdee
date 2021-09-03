@@ -7,8 +7,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import team.crowdee.domain.Funding;
 import team.crowdee.domain.Member;
-import team.crowdee.domain.dto.CreatorRejectDTO;
-import team.crowdee.domain.dto.FundingRejectDTO;
+import team.crowdee.domain.dto.RejectionDTO;
 import team.crowdee.domain.dto.FundingViewDTO;
 import team.crowdee.domain.dto.MemberDTO;
 
@@ -120,14 +119,14 @@ public class MimeEmailService {
 
     //크리에이터거절(프론트랑 같이 테스트했을때되면 OK)
     @Async
-    public String rejectCreatorMail(Member member, CreatorRejectDTO creatorRejectDTO) throws MessagingException{
+    public String rejectCreatorMail(Member member, RejectionDTO rejectionDTO) throws MessagingException{
 
         MimeMessage rejectMessage = javaMailSender.createMimeMessage();
         String mailContent =
                 "<img style='width:300px; display:block; margin-left:auto; margin-right:auto;' src= 'http://localhost:8081/api/image/img/crowdeeImg.png' />" +
                         "<div style='text-align:center;'>" +
                         "<h1>[크리에이터 심사 부적합]</h1><br>" + member.getUserName() + "님의 크리에이터 승인이 거절 되었습니다." +
-                        "<p>사유:" + creatorRejectDTO.getReason() + "</p>" +
+                        "<p>사유:" + rejectionDTO.getMailContents() + "</p>" +
                         "<h3>Crowdee 펀딩에 참여해주셔서 감사합니다.</h3>" +
                         "<br></div>";
 
@@ -142,7 +141,7 @@ public class MimeEmailService {
 
     //펀딩거절(프론트랑 같이 테스트했을때되면 OK)
     @Async
-    public String rejectFundingMail(Member member, Funding funding, FundingRejectDTO fundingRejectDTO) throws MessagingException{
+    public String rejectFundingMail(Member member, Funding funding, RejectionDTO rejectionDTO) throws MessagingException{
 
         MimeMessage rejectMessage = javaMailSender.createMimeMessage();
         String mailContent =
@@ -150,7 +149,7 @@ public class MimeEmailService {
                         "<div style='text-align:center;'>" +
                         "<h1>[펀딩 심사 부적합]</h1><br>" + member.getUserName() + "님 께서 참여하신 "+ funding.getTitle() + " 펀딩 승인이 거절 되었습니다." +
                         "<p><img style='width:300px;' src='"+funding.getThumbNailUrl()+"'/></p>" +
-                        "<p>사유:" + fundingRejectDTO.getReason() + "</p>" +
+                        "<p>사유:" + rejectionDTO.getMailContents() + "</p>" +
                         "<h3>Crowdee 펀딩에 참여해주셔서 감사합니다.</h3>" +
                         "<br></div>";
 

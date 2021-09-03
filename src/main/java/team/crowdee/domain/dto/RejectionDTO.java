@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-public class CreatorRejectDTO {
-    private Long CreatorId;
-    private String reason;
+public class RejectionDTO {
+    private String mailContents;
 }
