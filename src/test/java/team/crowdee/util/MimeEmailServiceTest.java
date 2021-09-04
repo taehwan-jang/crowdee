@@ -52,7 +52,8 @@ class MimeEmailServiceTest {
         fundingViewDTO.setThumbNailUrl("naver.com");
         fundingViewDTO.setProjectUrl("test");
 
-        mimeEmailService.successFundingMail(memberDTO, fundingViewDTO);
+//        mimeEmailService.successFundingMail(memberDTO, fundingViewDTO);
+
 
     }
 
@@ -70,7 +71,7 @@ class MimeEmailServiceTest {
         fundingViewDTO.setThumbNailUrl("naver.com");
         fundingViewDTO.setProjectUrl("test");
 
-        mimeEmailService.failFundingMail(memberDTO, fundingViewDTO);
+//        mimeEmailService.failFundingMail(memberDTO, fundingViewDTO);
 
     }
 }

@@ -7,10 +7,7 @@ import team.crowdee.domain.valuetype.AccountInfo;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class Utils {
 
@@ -215,6 +212,14 @@ public class Utils {
             );
         }
         return thumbNailDTOList;
+    }
+
+    public static String appendMemberEmail(Set<Member> memberList) {
+        StringBuffer sb = new StringBuffer();
+        for (Member member : memberList) {
+            sb.append(member.getEmail() + ",");
+        }
+        return sb.toString();
     }
 
 }

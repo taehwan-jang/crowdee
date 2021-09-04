@@ -97,7 +97,7 @@ public class FundingController {
         if (!StringUtils.hasText(email)) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        boolean result = fundingService.addOrRemoveMemberToFunding(email, fundingId);
+        boolean result = fundingService.addOrRemoveMemberToWishFunding(email, fundingId);
         WishDTO wishDTO = new WishDTO(result);
         return new ResponseEntity<>(wishDTO, HttpStatus.OK);
     }

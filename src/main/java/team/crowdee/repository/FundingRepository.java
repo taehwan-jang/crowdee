@@ -131,7 +131,10 @@ public class FundingRepository {
                 .getResultList();
     }
     public List<Funding> findConfirmAndProgress(Status param1, Status param2) {
-        return em.createQuery("select f from Funding f where f.status in (:param1,:param2)", Funding.class)
+        return em.createQuery("select f from Funding f " +
+                "join fetch f.orders o " +
+                "join fetch o.member m " +
+                "where f.status in (:param1,:param2)", Funding.class)
                 .setParameter("param1", param1)
                 .setParameter("param2", param2)
                 .getResultList();

@@ -15,6 +15,9 @@ import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -63,23 +66,24 @@ public class MimeEmailService {
 
     // 펀딩 100% 달성 시 발송되는 메일
     @Async
-    public String successFundingMail(MemberDTO memberDTO, FundingViewDTO fundingViewDTO) throws MessagingException{
-
+    public String sendAllBackerToSuccessMail(Set<Member> memberList, Funding funding) throws MessagingException{
+        String emailList = Utils.appendMemberEmail(memberList);
         MimeMessage successMessage = javaMailSender.createMimeMessage();
         String mailContent =
                 "<img style='width:300px; display:block; margin-left:auto; margin-right:auto;' src= 'http://localhost:8081/api/image/img/crowdeeImg.png' />" +
                 "<div style='text-align:center;'>" +
-                    "<h1>[펀딩 성공!]</h1><br>" + memberDTO.getUserName() + "님 께서 참여하신 "+ fundingViewDTO.getTitle() + " 펀딩이 100% 달성되었습니다." +
-                    "<p><img src='"+ fundingViewDTO.getThumbNailUrl()+"'/></p>" +
-                    "<p>참여펀딩 바로가기 : http://localhost:8081/contents/" + fundingViewDTO.getProjectUrl()+ "</p>" +
-                    "<br><p>아래 링크를 클릭하여 결제를 진행해주시기 바랍니다.</p>" +
-                    "결제URL : " + " http://https://github.com/taehwan-jang/crowdee" +
+                    "<h1>[펀딩 성공!]</h1><br> 회원님께서 참여하신 "+ funding.getTitle() + " 펀딩이 100% 달성되었습니다." +
+                    "<p><img src='"+ funding.getThumbNailUrl()+"'/></p>" +
+                    "<p>참여펀딩 바로가기 : http://localhost:3000/contents/" + funding.getProjectUrl()+ "</p>" +
+                    "<br><p>결제는 <h3>마이페이지</h3> -> <h3>결제요청 프로젝트</h3>에서 진행해주세요.</p>" +
+//                    "결제URL : " + " http://https://github.com/taehwan-jang/crowdee" +
                     "<h3>Crowdee 펀딩에 참여해주셔서 감사합니다.</h3>" +
                 "</div>";
-        successMessage.setSubject("[Crowdee] " + fundingViewDTO.getTitle() + " 펀딩이 100% 달성에 성공하였습니다.");
+        successMessage.setSubject("[Crowdee] " + funding.getTitle() + " 펀딩이 100% 달성에 성공하였습니다.");
         successMessage.setFrom("Crowdeefunding@gmail.com");
         successMessage.setText(mailContent, "UTF-8", "html");
-        successMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(memberDTO.getEmail()));
+        successMessage.setRecipients(Message.RecipientType.TO, emailList);
+//        successMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(memberDTO.getEmail()));
         javaMailSender.send(successMessage);
 
         return null;
@@ -87,21 +91,24 @@ public class MimeEmailService {
 
     // 펀딩 100% 미달성 시 발송되는 메일
     @Async
-    public String failFundingMail(MemberDTO memberDTO, FundingViewDTO fundingViewDTO) throws MessagingException{
-
+    public String sendAllBackerToFailMail(Set<Member> memberList, Funding funding) throws MessagingException{
+        String emailList = Utils.appendMemberEmail(memberList);
         MimeMessage failMessage = javaMailSender.createMimeMessage();
         String mailContent =
                 "<img style='width:300px; display:block; margin-left:auto; margin-right:auto;' src= 'http://localhost:8081/api/image/img/crowdeeImg.png' />" +
                 "<div style='text-align:center;'>" +
-                    "<h1>[펀딩 실패! ㅋㅋ]</h1><br>" + memberDTO.getUserName() + "님 께서 참여하신 " + fundingViewDTO.getTitle() + " 펀딩이 미달성되었습니다." +
-                    "<br><p>진행중인 펀딩 보러가기</p>" +
-                    "<p><img src='"+ fundingViewDTO.getThumbNailUrl()+"'/></p>" +
+                    "<h1>[펀딩 실패]</h1><br>회원님 께서 참여하신 " + funding.getTitle() + " 펀딩이 미달성되었습니다." +
+                    "<br><p>안타깝게도 참여하신 펀딩이 100% 모금에 실패했습니다. <br/></p>" +
+                    "<br><p>기다리시던 크리에이님의 공연을 보여드리지 못해 아쉬움이 큰만큼 <br/></p>" +
+                    "<br><p>더욱 더 좋은 서비스와 공연을 제공해드릴 수 있도록 지원하겠습니다.<br/></p>" +
+                    "<br><p>다음 만남을 기약하며 너른 양해 부탁드립니다. 감사합니다.<br/></p>" +
+                    "<p><img src='"+ funding.getThumbNailUrl()+"'/></p>" +
                     "<h3>Crowdee 펀딩에 참여해주셔서 감사합니다.</h3>" +
                 "</div>";
-        failMessage.setSubject("[Crowdee] " + fundingViewDTO.getTitle() + " 펀딩이 100% 달성에 실패하였습니다.");
+        failMessage.setSubject("[Crowdee] " + funding.getTitle() + " 펀딩이 100% 달성에 실패하였습니다.");
         failMessage.setFrom("Crowdeefunding@gmail.com");
         failMessage.setText(mailContent, "UTF-8", "html");
-        failMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(memberDTO.getEmail()));
+        failMessage.setRecipients(Message.RecipientType.TO,emailList);
         javaMailSender.send(failMessage);
 
         return null;

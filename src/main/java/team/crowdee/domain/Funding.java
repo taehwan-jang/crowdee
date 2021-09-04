@@ -86,7 +86,7 @@ public class Funding {
     private List<Order> orders = new ArrayList<>();
 
 
-    private boolean result;
+    private Boolean result;
 
 
 
@@ -226,4 +226,9 @@ public class Funding {
         increaseAchievement();
     }
 
+    public List<Order> endOfFunding() {
+        status = Status.end;
+        result = (totalFundraising >= goalFundraising);
+        return orders;
+    }
 }

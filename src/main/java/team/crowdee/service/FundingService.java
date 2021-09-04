@@ -14,10 +14,13 @@ import team.crowdee.repository.OrderRepository;
 import team.crowdee.util.MimeEmailService;
 import team.crowdee.util.Utils;
 
+import javax.mail.MessagingException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Slf4j
@@ -169,7 +172,7 @@ public class FundingService {
 //        mimeEmailService.joinFundingMail(member, funding);
     }
 
-    public boolean addOrRemoveMemberToFunding(String email, Long fundingId) {
+    public boolean addOrRemoveMemberToWishFunding(String email, Long fundingId) {
         Funding funding = fundingRepository.findById(fundingId);
         List<Member> findMemberList = memberRepository.findByEmail(email);
         if (findMemberList.isEmpty()) {
@@ -189,15 +192,30 @@ public class FundingService {
         return true;
     }
     @Scheduled(cron = "0 0 1 * * *") //0 0 1 * * *로 변경하면 하루마다 메소드 시작.
-    public void changeFundingStatus() {
+    public void changeFundingStatus() throws MessagingException {
         String todayString = Utils.getTodayString();
         List<Funding> confirmList = fundingRepository.findConfirmAndProgress(Status.confirm,Status.progress);
         for (Funding funding : confirmList) {
             if (funding.getStartDate().equals(todayString)) {
                 funding.changeStatus(Status.progress);
             } else if (LocalDate.parse(funding.getEndDate()).compareTo(LocalDate.now()) >= 1) {
-                funding.changeStatus(Status.end);
+                determineSuccessOrFail(funding);
             }
+        }
+    }
+
+    private void determineSuccessOrFail(Funding funding) throws MessagingException {
+        Set<Member> memberList = new HashSet();
+        List<Order> orderList = funding.endOfFunding();
+        for (Order order : orderList) {
+            memberList.add(order.getMember());
+        }
+        Boolean result = funding.getResult();
+
+        if (result) {
+            mimeEmailService.sendAllBackerToSuccessMail(memberList,funding);
+        } else {
+            mimeEmailService.sendAllBackerToFailMail(memberList,funding);
         }
     }
 }
