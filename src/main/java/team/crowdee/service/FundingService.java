@@ -164,10 +164,9 @@ public class FundingService {
                 .orderDate(LocalDateTime.now())
                 .payment(payment)
                 .build();
-
         member.participationFunding(order);
         funding.addParticipants(order);
-        mimeEmailService.joinFundingMail(member, funding);
+//        mimeEmailService.joinFundingMail(member, funding);
     }
 
     public boolean addOrRemoveMemberToFunding(String email, Long fundingId) {
