@@ -63,6 +63,7 @@ public class Utils {
         fundingViewDTO.setManageUrl(funding.getManageUrl());
         fundingViewDTO.setThumbNailUrl(funding.getThumbNailUrl());
         fundingViewDTO.setTitle(funding.getTitle());
+        fundingViewDTO.setSubTitle(funding.getSubTitle());
         fundingViewDTO.setSummary(funding.getSummary());
         fundingViewDTO.setCategory(funding.getCategory());
         fundingViewDTO.setTag(funding.getTag());
