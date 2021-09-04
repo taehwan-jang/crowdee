@@ -86,7 +86,8 @@ public class Funding {
     private List<Order> orders = new ArrayList<>();
 
 
-    private Boolean result;
+    private Boolean result=false;
+    private Boolean sendMail=false;
 
 
 
@@ -217,18 +218,22 @@ public class Funding {
 
     //펀딩 참여시 총 펀딩금액 추가
     public void plusTotalFundraising(int amount) {
+
         totalFundraising += amount;
         restTicket -= 1;
+        increaseAchievement();
+        //티켓이 없을 경우
         if (restTicket <= 0) {
             status = Status.end;
             result = true;
+            sendMail = false;
         }
-        increaseAchievement();
     }
 
     public List<Order> endOfFunding() {
         status = Status.end;
         result = (totalFundraising >= goalFundraising);
+        sendMail = true;
         return orders;
     }
 }

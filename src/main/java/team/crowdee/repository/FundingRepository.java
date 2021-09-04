@@ -130,13 +130,24 @@ public class FundingRepository {
                 .setParameter("status", status)
                 .getResultList();
     }
-    public List<Funding> findConfirmAndProgress(Status param1, Status param2) {
+    public List<Funding> findConfirmOrProgress(Status confirm,Status progress) {
         return em.createQuery("select f from Funding f " +
-                "join fetch f.orders o " +
-                "join fetch o.member m " +
-                "where f.status in (:param1,:param2)", Funding.class)
-                .setParameter("param1", param1)
-                .setParameter("param2", param2)
+                "left join fetch f.orders o " +
+                "left join fetch o.member m " +
+                "where f.status in(:confirm, :progress) ", Funding.class)
+                .setParameter("confirm", confirm)
+                .setParameter("progress",progress)
+                .getResultList();
+    }
+
+    public List<Funding> findEarlySuccess(boolean sendMail, Status end) {
+        return em.createQuery("select f from Funding f " +
+                "left join fetch f.orders o " +
+                "left join fetch o.member m " +
+                "where f.status =:end " +
+                "and f.sendMail =:sendMail ", Funding.class)
+                .setParameter("end", end)
+                .setParameter("sendMail",sendMail)
                 .getResultList();
     }
 
@@ -166,9 +177,9 @@ public class FundingRepository {
        return em.createQuery("select f from Funding f " +
 
                 "where f.status='editing' " +
-                "and f.creator=:param " +
+                "and f.creator=:creator " +
                 "order by f.postDate desc", Funding.class)
-                .setParameter("param",creator)
+                .setParameter("creator",creator)
                 .getResultList();
     }
 
@@ -176,8 +187,8 @@ public class FundingRepository {
         return em.createQuery("select f from Funding f " +
                 "left join fetch f.orders o " +
                 "left join fetch o.member " +
-                "where f.fundingId=:param", Funding.class)
-                .setParameter("param", fundingId)
+                "where f.fundingId=:fundingId", Funding.class)
+                .setParameter("fundingId", fundingId)
                 .getResultList();
 
     }
@@ -186,9 +197,10 @@ public class FundingRepository {
         return em.createQuery("select f from Funding f " +
                 "left join fetch f.orders " +
                 "where f.status='progress' " +
-                "and f.creator.creatorNickName=:param " +
+                "and f.creator.creatorNickName=:creatorNickName " +
                 "order by f.startDate desc", Funding.class)
-                .setParameter("param", creatorNickName)
+                .setParameter("creatorNickName", creatorNickName)
                 .getResultList();
     }
+
 }

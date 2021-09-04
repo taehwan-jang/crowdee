@@ -193,20 +193,29 @@ public class FundingService {
     }
     @Scheduled(cron = "0 0 1 * * *") //0 0 1 * * *로 변경하면 하루마다 메소드 시작.
     public void changeFundingStatus() throws MessagingException {
+        log.info("미시작/기한 종료 펀딩 상태변경 스케줄러");
         String todayString = Utils.getTodayString();
-        List<Funding> confirmList = fundingRepository.findConfirmAndProgress(Status.confirm,Status.progress);
-        for (Funding funding : confirmList) {
+        List<Funding> progressList = fundingRepository.findConfirmOrProgress(Status.confirm,Status.progress);
+        for (Funding funding : progressList) {
             if (funding.getStartDate().equals(todayString)) {
                 funding.changeStatus(Status.progress);
-            } else if (LocalDate.parse(funding.getEndDate()).compareTo(LocalDate.now()) >= 1) {
+            } else if (LocalDate.parse(funding.getEndDate()).compareTo(LocalDate.now()) < 0) {
+                log.info("종료 날짜 차이가 1 이상일때");
                 determineSuccessOrFail(funding);
             }
+        }
+        List<Funding> earlySuccessList = fundingRepository.findEarlySuccess(false,Status.end);
+        for (Funding funding : earlySuccessList) {
+            determineSuccessOrFail(funding);
         }
     }
 
     private void determineSuccessOrFail(Funding funding) throws MessagingException {
         Set<Member> memberList = new HashSet();
         List<Order> orderList = funding.endOfFunding();
+        if (orderList.isEmpty()) {
+            return;
+        }
         for (Order order : orderList) {
             memberList.add(order.getMember());
         }

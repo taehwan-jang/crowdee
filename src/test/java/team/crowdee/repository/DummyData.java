@@ -127,16 +127,17 @@ public class DummyData {
                 .schedule("<h1>프로젝트 일정에 관한 글</h1>")
                 .aboutUs("<h1>크리에이터 소개에 관한 글</h1>")
                 .goalFundraising(500000)
-                .minFundraising(100000)
+                .minFundraising(250000)
                 .rateOfAchievement(0)
                 .startDate("2021-08-28")
                 .endDate("2021-09-15")
-                .maxBacker(20)
-                .restTicket(20)
+                .maxBacker(2)
+                .restTicket(2)
                 .postDate(LocalDateTime.now())
                 .visitCount(4)
                 .totalFundraising(0)
                 .status(Status.progress)
+                .sendMail(false)
                 .build();
         fundingRepository.save(funding);
 
@@ -164,6 +165,7 @@ public class DummyData {
                 .totalFundraising(0)
                 .rateOfAchievement(0)
                 .status(Status.progress)
+                .sendMail(false)
                 .build();
         fundingRepository.save(funding1);
 
@@ -191,6 +193,7 @@ public class DummyData {
                 .totalFundraising(0)
                 .rateOfAchievement(0)
                 .status(Status.progress)
+                .sendMail(false)
                 .build();
         fundingRepository.save(funding3);
 
@@ -218,6 +221,7 @@ public class DummyData {
                 .totalFundraising(0)
                 .rateOfAchievement(0)
                 .status(Status.progress)
+                .sendMail(false)
                 .build();
         fundingRepository.save(funding4);
 
@@ -245,6 +249,7 @@ public class DummyData {
                 .totalFundraising(0)
                 .rateOfAchievement(0)
                 .status(Status.progress)
+                .sendMail(false)
                 .build();
         fundingRepository.save(funding5);
 
@@ -272,6 +277,7 @@ public class DummyData {
                 .totalFundraising(0)
                 .rateOfAchievement(0)
                 .status(Status.progress)
+                .sendMail(false)
                 .build();
         fundingRepository.save(funding6);
 
@@ -299,6 +305,7 @@ public class DummyData {
                 .totalFundraising(0)
                 .rateOfAchievement(0)
                 .status(Status.progress)
+                .sendMail(false)
                 .build();
         fundingRepository.save(funding7);
 
@@ -326,6 +333,7 @@ public class DummyData {
                 .totalFundraising(0)
                 .rateOfAchievement(0)
                 .status(Status.progress)
+                .sendMail(false)
                 .build();
         fundingRepository.save(funding8);
 
@@ -353,6 +361,7 @@ public class DummyData {
                 .totalFundraising(0)
                 .rateOfAchievement(0)
                 .status(Status.progress)
+                .sendMail(false)
                 .build();
         fundingRepository.save(funding9);
 
@@ -380,6 +389,7 @@ public class DummyData {
                 .totalFundraising(0)
                 .rateOfAchievement(0)
                 .status(Status.progress)
+                .sendMail(false)
                 .build();
         fundingRepository.save(funding10);
 
@@ -407,6 +417,7 @@ public class DummyData {
                 .totalFundraising(0)
                 .rateOfAchievement(0)
                 .status(Status.progress)
+                .sendMail(false)
                 .build();
         fundingRepository.save(funding11);
 
@@ -426,7 +437,7 @@ public class DummyData {
                 .goalFundraising(550000)
                 .minFundraising(14000)
                 .startDate("2021-08-30")
-                .endDate("2021-09-15")
+                .endDate("2021-09-01")
                 .maxBacker(150)
                 .restTicket(150)
                 .postDate(LocalDateTime.now())
@@ -434,6 +445,7 @@ public class DummyData {
                 .totalFundraising(0)
                 .rateOfAchievement(0)
                 .status(Status.progress)
+                .sendMail(false)
                 .build();
         fundingRepository.save(funding12);
 
@@ -461,6 +473,7 @@ public class DummyData {
                 .totalFundraising(0)
                 .rateOfAchievement(0)
                 .status(Status.progress)
+                .sendMail(false)
                 .build();
         fundingRepository.save(funding13);
 
@@ -474,6 +487,17 @@ public class DummyData {
         memberDTO6.setUserName("장태환");
 
         memberService.join(memberDTO6);
+
+        MemberDTO memberDTO7 = new MemberDTO();
+        memberDTO7.setEmail("taehwan_jang@naver.com");
+        memberDTO7.setPassword("1q2w3e4r!");
+        memberDTO7.setEmailCert("TAWOETHD");
+        memberDTO7.setMobile("010-2395-9602");
+        memberDTO7.setNickName("크라우디보스2");
+        memberDTO7.setRegistDate(LocalDateTime.now());
+        memberDTO7.setUserName("장태환2");
+
+        memberService.join(memberDTO7);
 
 
 

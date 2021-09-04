@@ -214,6 +214,7 @@ public class Utils {
         return thumbNailDTOList;
     }
 
+
     public static String appendMemberEmail(Set<Member> memberList) {
         StringBuffer sb = new StringBuffer();
         for (Member member : memberList) {
