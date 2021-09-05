@@ -39,15 +39,15 @@ public class AdminController {
         Member member = memberRepository.findAdmin(loginDTO.getEmail());
         Set<Authority> authorities = member.getAuthorities();
         for (Authority authority : authorities) {
-            if(!(StringUtils.hasText(authority.getAuthorityName())&&authority.getAuthorityName().equals("admin")))
-                return new ResponseEntity<>("잘못된 접근입니다.", HttpStatus.BAD_REQUEST);
+            if(!(StringUtils.hasText(authority.getAuthorityName())&&authority.getAuthorityName().equals("admin"))) {
+                return new ResponseEntity<>("잘못된 접근입니다.", HttpStatus.FORBIDDEN);
+            }
         }
-        String adminLogin = adminService.login(loginDTO);
         String jwt = customTokenProvider.getToken(loginDTO);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer" + jwt);
 
-        return new ResponseEntity<>(new AdminTokenDTO(jwt, adminLogin), httpHeaders, HttpStatus.OK);
+        return new ResponseEntity<>(new AdminTokenDTO(jwt), httpHeaders, HttpStatus.OK);
     }
 
     //백커 전체조회

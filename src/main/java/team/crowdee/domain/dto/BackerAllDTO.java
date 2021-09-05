@@ -13,7 +13,7 @@ public class BackerAllDTO {
     private Long memberId;
     private String userName;
     private String email;
-    private LocalDateTime registDate;
+    private String registDate;
     private String authorities;
     private Status status;
 }
