@@ -18,7 +18,7 @@ public class BackerViewDTO {
     private String mobile; //o
     private String email; //x --애매한 부분
     private String emailCert; //이메일 인증 받았을때 //o
-    private LocalDateTime registDate;
+    private String registDate;
     private String secessionDate;
     private String authorities;
     private Status status;

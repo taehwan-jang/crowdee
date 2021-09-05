@@ -3,8 +3,6 @@ package team.crowdee.util;
 
 import team.crowdee.domain.*;
 import team.crowdee.domain.dto.*;
-import team.crowdee.domain.valuetype.AccountInfo;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -103,11 +101,13 @@ public class Utils {
             }
         }
 
+        String RegistDate = member.getRegistDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
         BackerAllDTO backerAllDTO = new BackerAllDTO();
         backerAllDTO.setMemberId(member.getMemberId());
         backerAllDTO.setUserName(member.getUserName());
         backerAllDTO.setEmail(member.getEmail());
-        backerAllDTO.setRegistDate(member.getRegistDate());
+        backerAllDTO.setRegistDate(RegistDate);
         backerAllDTO.setAuthorities(authorityValue);
         backerAllDTO.setStatus(member.getStatus());
 
@@ -130,6 +130,7 @@ public class Utils {
 
     //백커 상세보기
     public static BackerViewDTO backViewEToD(Member member) {
+        String RegistDate = member.getRegistDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
         BackerViewDTO backerViewDTO = new BackerViewDTO();
         backerViewDTO.setMemberId(member.getMemberId());
@@ -138,7 +139,7 @@ public class Utils {
         backerViewDTO.setMobile(member.getMobile());
         backerViewDTO.setEmail(member.getEmail());
         backerViewDTO.setEmailCert(member.getEmailCert());
-        backerViewDTO.setRegistDate(member.getRegistDate());
+        backerViewDTO.setRegistDate(RegistDate);
         backerViewDTO.setSecessionDate(member.getSecessionDate());
         backerViewDTO.setAuthorities("backer");
         backerViewDTO.setStatus(member.getStatus());
@@ -177,13 +178,14 @@ public class Utils {
 
     //펀딩 전체, 심사조회
     public static FundingAllDTO allFundingEToD(Funding funding) {
+        String PostDate = funding.getPostDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
         FundingAllDTO fundingAllDTO = new FundingAllDTO();
         fundingAllDTO.setFundingId(funding.getFundingId());
         fundingAllDTO.setTitle(funding.getTitle());
         fundingAllDTO.setSummary(funding.getSummary());
         fundingAllDTO.setCategory(funding.getCategory());
-        fundingAllDTO.setPostDate(funding.getPostDate());
+        fundingAllDTO.setPostDate(PostDate);
         fundingAllDTO.setStatus(funding.getStatus());
         fundingAllDTO.setManageUrl(funding.getManageUrl());
 

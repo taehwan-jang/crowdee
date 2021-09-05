@@ -13,7 +13,7 @@ public class FundingAllDTO {
     private String title;
     private String summary;//요약
     private String category;
-    private LocalDateTime postDate;
+    private String postDate;
     private Status status;
     private String manageUrl;
 }

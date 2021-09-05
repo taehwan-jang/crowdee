@@ -27,32 +27,35 @@ public class AdminService {
     private final MimeEmailService mimeEmailService;
     private final FundingRepository fundingRepository;
 
-    //어드민로그인
-    public String login(LoginDTO loginDTO) {
-        List<Member> byEmail = memberRepository.findByEmail(loginDTO.getEmail());
-        Set<Authority> authorities = byEmail.get(0).getAuthorities();
-        Iterator<Authority> iterator = authorities.iterator();
-        String admin = null;
-        while (iterator.hasNext()) {
-            admin = iterator.next().getAuthorityName();
-        }
-        return admin;
-    }
+    //어드민로그인(필요없다 생각되어 주석)
+//    public String login(LoginDTO loginDTO) {
+//        List<Member> byEmail = memberRepository.findByEmail(loginDTO.getEmail());
+//        if (byEmail.isEmpty()){
+//            throw new IllegalArgumentException("회원이 아닙니다.");
+//        }
+//        Set<Authority> authorities = byEmail.get(0).getAuthorities();
+//        String authorityName = null;
+//        for(Authority authority : authorities) {
+//            authorityName = authority.getAuthorityName();
+//        }
+//        return authorityName;
+//    }
 
     //백커 전체조회
     public List<BackerAllDTO> backerAll() {
         List<Member> backer = memberRepository.findByStatus(Status.member);
         List<Member> creator = memberRepository.findByStatus(Status.confirm);
+
         if (backer.isEmpty()) {
             return null;
         }
         List<BackerAllDTO> list = new ArrayList<>();
-        for (int i = 0; i < backer.size(); i++) {
-            BackerAllDTO backerAllDTO = Utils.allBackEToD(backer.get(i));
+        for(Member member : backer) {
+            BackerAllDTO backerAllDTO = Utils.allBackEToD(member);
             list.add(backerAllDTO);
         }
-        for(int i=0; i<creator.size(); i++) {
-            BackerAllDTO backerAllDTO = Utils.allBackEToD(creator.get(i));
+        for(Member member : creator) {
+            BackerAllDTO backerAllDTO = Utils.allBackEToD(member);
             list.add(backerAllDTO);
         }
         return list;
@@ -66,8 +69,8 @@ public class AdminService {
             return null;
         }
         List<CreatorAllDTO> list = new ArrayList<>();
-        for (int i = 0; i < creator.size(); i++) {
-            CreatorAllDTO creatorAllDTO = Utils.allCreatorEToD(creator.get(i));
+        for(Creator creator1 : creator) {
+            CreatorAllDTO creatorAllDTO = Utils.allCreatorEToD(creator1);
             list.add(creatorAllDTO);
         }
         return list;
@@ -90,21 +93,19 @@ public class AdminService {
         if (creatorList.isEmpty()) {
             throw new IllegalArgumentException("존재하지 않는 크리에이터입니다.");
         }
-
         return Utils.creatorViewEToD(creatorList.get(0));
-
     }
 
-    //심사중 전체조회
+    //크리에이터 심사중 전체조회
     public List<CreatorViewDTO> inspectionAll() {
-        List<Creator> creator = creatorRepository.findByStatus(Status.inspection);
+        List<Creator> creatorList = creatorRepository.findByStatus(Status.inspection);
 
-        if(creator.isEmpty()){
+        if(creatorList.isEmpty()){
             return null;
         }
         List<CreatorViewDTO> list = new ArrayList<>();
-        for(int i=0; i<creator.size(); i++) {
-            CreatorViewDTO inspectionDTO = Utils.inspectionEToD(creator.get(i));
+        for(Creator creator : creatorList) {
+            CreatorViewDTO inspectionDTO = Utils.inspectionEToD(creator);
             list.add(inspectionDTO);
         }
         return list;
@@ -115,6 +116,7 @@ public class AdminService {
     public Member confirmChange(Long creatorId) {
         //쿼리 수정 findById->findByIdWithMember
         List<Creator> creatorList = creatorRepository.findByIdMember(creatorId);
+
         if (creatorList.isEmpty()) {
             throw new IllegalArgumentException("존재하지 않는 크리에이터 입니다.");
         }
@@ -134,6 +136,7 @@ public class AdminService {
     @Transactional
     public Member rejectCreator(Long creatorId, RejectionDTO rejectionDTO) throws MessagingException {
         List<Creator> creatorList = creatorRepository.findByIdMember(creatorId);
+
         Creator creator = creatorList.get(0);
         if (!(creator.getStatus().equals(Status.inspection))) {
             return null;
@@ -142,8 +145,6 @@ public class AdminService {
         mimeEmailService.rejectCreatorMail(member, rejectionDTO);
         member.rejectCreator();
         return member;
-
-
     }
 
     //펀딩 전체조회
@@ -154,25 +155,25 @@ public class AdminService {
             return null;
         }
         List<FundingAllDTO> list = new ArrayList<>();
-        for (int i = 0; i < fundingList.size(); i++) {
-            if(!(fundingList.get(i).getStatus().equals(Status.inspection))){
-                FundingAllDTO fundingAllDTO = Utils.allFundingEToD(fundingList.get(i));
+        for(Funding funding : fundingList) {
+            if(!(funding.getStatus().equals(Status.inspection))){
+                FundingAllDTO fundingAllDTO = Utils.allFundingEToD(funding);
                 list.add(fundingAllDTO);
             }
         }
         return list;
     }
 
-    //심사중 전체조회
+    //펀딩 심사중 전체조회
     public List<FundingAllDTO> inspectionFunding() {
-        List<Funding> inspectionList = fundingRepository.findByStatus(Status.inspection);
+        List<Funding> fundingList = fundingRepository.findByStatus(Status.inspection);
 
-        if(inspectionList.isEmpty()){
+        if(fundingList.isEmpty()){
             return null;
         }
         List<FundingAllDTO> list = new ArrayList<>();
-        for(int i=0; i<inspectionList.size(); i++) {
-            FundingAllDTO inspectionDTO = Utils.allFundingEToD(inspectionList.get(i));
+        for(Funding funding : fundingList) {
+            FundingAllDTO inspectionDTO = Utils.allFundingEToD(funding);
             list.add(inspectionDTO);
         }
         return list;
