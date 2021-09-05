@@ -102,6 +102,13 @@ public class FundingService {
             case "excess"://성공률 100% 초과
                 fundingList=fundingRepository.findExcessFunding(100);
                 break;
+            case "dance":
+            case "theater":
+            case "musical":
+            case "concert":
+            case "etc":
+                fundingList = fundingRepository.findByLikeParam("category", menu);
+                break;
             default:
                 return null;
         }
