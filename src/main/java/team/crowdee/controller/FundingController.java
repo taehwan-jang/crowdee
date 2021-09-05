@@ -13,6 +13,7 @@ import team.crowdee.domain.dto.*;
 import team.crowdee.jwt.CustomJWTFilter;
 import team.crowdee.repository.MemberRepository;
 import team.crowdee.service.FundingService;
+import team.crowdee.util.ETagHeaderFilter;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -35,15 +36,16 @@ public class FundingController {
     @GetMapping
     public ResponseEntity<?> showAllThumbNail() {
         //main 요청시 cache 사용 설정 추가
-        CacheControl cacheControl = CacheControl
-                .maxAge(60, TimeUnit.SECONDS)
-                .mustRevalidate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setCacheControl(cacheControl);
+//        CacheControl cacheControl = CacheControl
+//                .maxAge(60, TimeUnit.SECONDS)
+//                .mustRevalidate();
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setCacheControl(cacheControl);headers,
         List<List<ThumbNailDTO>> thumbNail = fundingService.mainThumbNail();
-        return new ResponseEntity<>(thumbNail,headers, HttpStatus.OK);
+        return new ResponseEntity<>(thumbNail, HttpStatus.OK);
     }
-
+//016ffff3e0f4bd83e8d659f418ff34e0f
+//0df1e444b1e6723f5d83ffa8f10410adb
     @GetMapping("/{projectUrl}")
     public ResponseEntity<?> showFundingDetail(@PathVariable String projectUrl, HttpServletRequest request) {
         String email = customJWTFilter.findEmail(request);
@@ -86,7 +88,6 @@ public class FundingController {
         }
         return new ResponseEntity<>(thumbNailDTOList,HttpStatus.OK);
     }
-
 
     /**
      * 찜하기 로직

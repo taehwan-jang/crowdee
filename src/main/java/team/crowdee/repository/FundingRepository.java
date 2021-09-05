@@ -131,7 +131,7 @@ public class FundingRepository {
                 .getResultList();
     }
     public List<Funding> findConfirmOrProgress(Status confirm,Status progress) {
-        return em.createQuery("select f from Funding f " +
+        return em.createQuery("select distinct f from Funding f " +
                 "left join fetch f.orders o " +
                 "left join fetch o.member m " +
                 "where f.status in(:confirm, :progress) ", Funding.class)
