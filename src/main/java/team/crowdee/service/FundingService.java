@@ -82,7 +82,6 @@ public class FundingService {
         return Utils.fundingToThumbNail(fundingList);
 
     }
-
     @Transactional(readOnly = true)
     public List<ThumbNailDTO> selectedMenu(String menu) {
         List<Funding> fundingList =null;

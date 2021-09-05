@@ -44,6 +44,7 @@ public class AdminController {
             }
         }
         String jwt = customTokenProvider.getToken(loginDTO);
+        log.info("관리자 로그인시 토큰발급여부 ={}",jwt);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer" + jwt);
 

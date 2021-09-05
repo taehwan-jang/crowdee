@@ -28,18 +28,13 @@ public class AdminService {
     private final FundingRepository fundingRepository;
 
     //어드민로그인(필요없다 생각되어 주석)
-//    public String login(LoginDTO loginDTO) {
-//        List<Member> byEmail = memberRepository.findByEmail(loginDTO.getEmail());
-//        if (byEmail.isEmpty()){
-//            throw new IllegalArgumentException("회원이 아닙니다.");
-//        }
-//        Set<Authority> authorities = byEmail.get(0).getAuthorities();
-//        String authorityName = null;
-//        for(Authority authority : authorities) {
-//            authorityName = authority.getAuthorityName();
-//        }
-//        return authorityName;
-//    }
+    public void makeAdmin(Long memberId) {
+        Member member = memberRepository.findById(memberId);
+        Set<Authority> authorities = new HashSet<>();
+        Authority admin = Authority.builder().authorityName("admin").build();
+        authorities.add(admin);
+        member.setAuthorities(authorities);
+    }
 
     //백커 전체조회
     public List<BackerAllDTO> backerAll() {

@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import team.crowdee.domain.*;
 import team.crowdee.domain.dto.CreatorDTO;
 import team.crowdee.domain.dto.MemberDTO;
+import team.crowdee.service.AdminService;
 import team.crowdee.service.CreatorService;
 import team.crowdee.service.MemberService;
 
@@ -26,29 +27,27 @@ public class DummyData {
     private MemberService memberService;
     @Autowired
     private CreatorService creatorService;
-
     @Autowired
-    private MemberRepository memberRepository;
+    private AdminService adminService;
+
     @Autowired
     private CreatorRepository creatorRepository;
     @Autowired
     private FundingRepository fundingRepository;
+
     @Test
     @Rollback(value = false)
-    public void 관리자더미데이터() throws Exception {
+    public void 더미데이터() throws Exception {
         MemberDTO memberDTO1 = new MemberDTO();
-        memberDTO1.setEmail("forMember@gmail.com");
+        memberDTO1.setEmail("admin@crowdee.com");
         memberDTO1.setPassword("1q2w3e4r!");
         memberDTO1.setEmailCert("TAWOETHD");
         memberDTO1.setMobile("010-1231-1231");
-        memberDTO1.setNickName("테스트닉네임");
+        memberDTO1.setNickName("크라우디관리자");
         memberDTO1.setRegistDate(LocalDateTime.now());
-        memberDTO1.setUserName("크라우디");
-        memberService.join(memberDTO1);
-    }
-    @Test
-    @Rollback(value = false)
-    public void 멤버_더미데이터() throws Exception {
+        memberDTO1.setUserName("크라우디관리자");
+        Long adminId = memberService.join(memberDTO1);
+        adminService.makeAdmin(adminId);
 
 
         MemberDTO memberDTO = new MemberDTO();
@@ -87,7 +86,7 @@ public class DummyData {
         creatorDTO.setAboutMe("안녕하세요 크리에이터입니다.");
         creatorDTO.setCareer("경력은 이러이러 저러저러 합니다.");
         creatorDTO.setBankBookImageUrl("none");
-        creatorDTO.setMemberId(3L);
+        creatorDTO.setMemberId(5L);
 
         Creator creator = creatorService.joinCreator(creatorDTO);
 
@@ -106,8 +105,20 @@ public class DummyData {
         memberDTO3.setUserName("창작자");
 
         memberService.join(memberDTO3);
-//    }
+
+        MemberDTO memberDTO6 = new MemberDTO();
+        memberDTO6.setEmail("jth0602@gmail.com");
+        memberDTO6.setPassword("1q2w3e4r!");
+        memberDTO6.setEmailCert("TAWOETHD");
+        memberDTO6.setMobile("010-2395-9602");
+        memberDTO6.setNickName("크라우디보스");
+        memberDTO6.setRegistDate(LocalDateTime.now());
+        memberDTO6.setUserName("문병욱");
+
+        memberService.join(memberDTO6);
 //
+//    }
+////
 //    @Test
 //    @Rollback(value = false)
 //    public void 펀딩더미데이터() {
@@ -477,27 +488,7 @@ public class DummyData {
                 .build();
         fundingRepository.save(funding13);
 
-        MemberDTO memberDTO6 = new MemberDTO();
-        memberDTO6.setEmail("jth0602@gmail.com");
-        memberDTO6.setPassword("1q2w3e4r!");
-        memberDTO6.setEmailCert("TAWOETHD");
-        memberDTO6.setMobile("010-2395-9602");
-        memberDTO6.setNickName("크라우디보스");
-        memberDTO6.setRegistDate(LocalDateTime.now());
-        memberDTO6.setUserName("장태환");
 
-        memberService.join(memberDTO6);
-
-        MemberDTO memberDTO7 = new MemberDTO();
-        memberDTO7.setEmail("taehwan_jang@naver.com");
-        memberDTO7.setPassword("1q2w3e4r!");
-        memberDTO7.setEmailCert("TAWOETHD");
-        memberDTO7.setMobile("010-2395-9602");
-        memberDTO7.setNickName("크라우디보스2");
-        memberDTO7.setRegistDate(LocalDateTime.now());
-        memberDTO7.setUserName("장태환2");
-
-        memberService.join(memberDTO7);
 
 
 

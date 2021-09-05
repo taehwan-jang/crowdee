@@ -1,5 +1,6 @@
 package team.crowdee.jwt;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -10,6 +11,7 @@ import java.util.Base64;
 import static java.util.Base64.getDecoder;
 
 @Component
+@Slf4j
 public class CustomJWTFilter {
 
     public String findEmail(HttpServletRequest request) {
@@ -80,6 +82,7 @@ public class CustomJWTFilter {
 
     public boolean isAdmin(HttpServletRequest request) {
         String authority = findAuthority(request);
+        log.info(authority);
         if (StringUtils.hasText(authority)) {
             if (!authority.contains("admin")) {
                 return false;

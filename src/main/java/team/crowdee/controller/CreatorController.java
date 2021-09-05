@@ -46,7 +46,8 @@ public class CreatorController {
     @GetMapping("/project-start")
     public ResponseEntity<?> checkAuthority(HttpServletRequest request) {
         boolean creator = customJWTFilter.isCreator(request);
-        if (creator) {
+        boolean admin = customJWTFilter.isAdmin(request);
+        if (creator||admin) {
             return new ResponseEntity<>(HttpStatus.OK);//200
         }
         boolean backer = customJWTFilter.isBacker(request);
@@ -70,8 +71,9 @@ public class CreatorController {
     @PostMapping("/create/funding/{projectUrl}")
     public ResponseEntity<?> createFunding(@PathVariable String projectUrl, HttpServletRequest request) {
         boolean flag = customJWTFilter.isCreator(request);
-        if (!flag) {
-            return new ResponseEntity<>("크리에이터만 펀딩을 등록할 수 있습니다.", HttpStatus.FORBIDDEN);
+        boolean flag2 = customJWTFilter.isAdmin(request);
+        if (!(flag||flag2)) {
+            return new ResponseEntity<>("잘못된 요청입니다.", HttpStatus.FORBIDDEN);
         }
 
         String email = customJWTFilter.findEmail(request);
@@ -90,9 +92,9 @@ public class CreatorController {
                                                  @PathVariable String manageUrl,
                                                  HttpServletRequest request) {
         boolean flag = customJWTFilter.isCreator(request);
-
-        if (!flag) {
-            return new ResponseEntity<>("크리에이터만 펀딩을 등록할 수 있습니다.", HttpStatus.FORBIDDEN);
+        boolean flag2 = customJWTFilter.isAdmin(request);
+        if (!(flag||flag2)) {
+            return new ResponseEntity<>("잘못된 요청입니다.", HttpStatus.FORBIDDEN);
         }
 
         FundingViewDTO fundingViewDTO = creatorService.tempThumbNail(thumbNailDTO, manageUrl);
@@ -107,8 +109,9 @@ public class CreatorController {
                                                    @PathVariable String manageUrl,
                                                    HttpServletRequest request) {
         boolean flag = customJWTFilter.isCreator(request);
-        if (!flag) {
-            return new ResponseEntity<>("크리에이터만 펀딩을 등록할 수 있습니다.", HttpStatus.FORBIDDEN);
+        boolean flag2 = customJWTFilter.isAdmin(request);
+        if (!(flag||flag2)) {
+            return new ResponseEntity<>("잘못된 요청입니다.", HttpStatus.FORBIDDEN);
         }
         FundingViewDTO fundingViewDTO = creatorService.tempFundingPlan(fundingPlanDTO, manageUrl);
         if (fundingViewDTO == null) {
@@ -122,8 +125,9 @@ public class CreatorController {
                                               @PathVariable String manageUrl,
                                               HttpServletRequest request) {
         boolean flag = customJWTFilter.isCreator(request);
-        if (!flag) {
-            return new ResponseEntity<>("크리에이터만 펀딩을 등록할 수 있습니다.", HttpStatus.FORBIDDEN);
+        boolean flag2 = customJWTFilter.isAdmin(request);
+        if (!(flag||flag2)) {
+            return new ResponseEntity<>("잘못된 요청입니다.", HttpStatus.FORBIDDEN);
         }
 
         FundingViewDTO fundingViewDTO = creatorService.tempDetail(detailDTO, manageUrl);
@@ -137,8 +141,9 @@ public class CreatorController {
     public ResponseEntity<?> previewTempFunding(@PathVariable String manageUrl,
                                                 HttpServletRequest request) {
         boolean flag = customJWTFilter.isCreator(request);
-        if (!flag) {
-            return new ResponseEntity<>("크리에이터만 펀딩을 등록할 수 있습니다.", HttpStatus.FORBIDDEN);
+        boolean flag2 = customJWTFilter.isAdmin(request);
+        if (!(flag||flag2)) {
+            return new ResponseEntity<>("잘못된 요청입니다.", HttpStatus.FORBIDDEN);
         }
         FundingViewDTO fundingViewDTO = creatorService.showPreview(manageUrl);
         return new ResponseEntity<>(fundingViewDTO, HttpStatus.OK);
@@ -148,9 +153,9 @@ public class CreatorController {
     public ResponseEntity<?> askInspection(@PathVariable String manageUrl,
                                            HttpServletRequest request) {
         boolean flag = customJWTFilter.isCreator(request);
-        log.warn("최종 등록 칸에 들어오니 확인해보자 새꺄");
-        if (!flag) {
-            return new ResponseEntity<>("크리에이터만 펀딩을 등록할 수 있습니다.", HttpStatus.FORBIDDEN);
+        boolean flag2 = customJWTFilter.isAdmin(request);
+        if (!(flag||flag2)) {
+            return new ResponseEntity<>("잘못된 요청입니다.", HttpStatus.FORBIDDEN);
         }
         FundingViewDTO fundingViewDTO = creatorService.changeStatus(manageUrl);
         return new ResponseEntity<>(fundingViewDTO, HttpStatus.OK);
@@ -159,8 +164,9 @@ public class CreatorController {
     @GetMapping("/create/editingList")
     public ResponseEntity<?> editingFundingList(HttpServletRequest request) {
         boolean flag = customJWTFilter.isCreator(request);
-        if (!flag) {
-            return new ResponseEntity<>("크리에이터만 펀딩을 등록할 수 있습니다.", HttpStatus.FORBIDDEN);
+        boolean flag2 = customJWTFilter.isAdmin(request);
+        if (!(flag||flag2)) {
+            return new ResponseEntity<>("잘못된 요청입니다.", HttpStatus.FORBIDDEN);
         }
         String email = customJWTFilter.findEmail(request);
         List<EditingListDTO> editingList = creatorService.findEditingList(email);
@@ -175,7 +181,8 @@ public class CreatorController {
     public ResponseEntity<?> editingFunding(@PathVariable String manageUrl,
                                             HttpServletRequest request) {
         boolean flag = customJWTFilter.isCreator(request);
-        if (!flag) {
+        boolean flag2 = customJWTFilter.isAdmin(request);
+        if (!(flag||flag2)) {
             return new ResponseEntity<>("잘못된 요청입니다.", HttpStatus.FORBIDDEN);
         }
         String email = customJWTFilter.findEmail(request);

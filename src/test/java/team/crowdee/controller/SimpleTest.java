@@ -119,7 +119,16 @@ public class SimpleTest {
         //then
     }
 
+    @Test
+    public void 불리언테스트() throws Exception {
+        //given
+        System.out.println("true||false="+(true||false));
+        System.out.println("false||false="+(false||false));
+        System.out.println("true||true="+(true||true));
+        //when
 
+        //then
+    }
 
 
 

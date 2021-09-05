@@ -116,7 +116,8 @@ public class FundingController {
     @PostMapping("/preOrder")
     public ResponseEntity<?> responseBasicInfo(HttpServletRequest request) {
         boolean flag = customJWTFilter.isBacker(request);
-        if (!flag) {
+        boolean flag2 = customJWTFilter.isCreator(request);
+        if (!(flag||flag2)) {
             return new ResponseEntity<>("로그인이 필요합니다.",HttpStatus.BAD_REQUEST);
         }
         String email = customJWTFilter.findEmail(request);
@@ -136,8 +137,9 @@ public class FundingController {
                                            HttpServletRequest request) throws Exception {
         //https://smujihoon.tistory.com/103 결제 관련 참고 로직
         boolean flag = customJWTFilter.isBacker(request);
-        if (!flag) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        boolean flag2 = customJWTFilter.isCreator(request);
+        if (!(flag||flag2)) {
+            return new ResponseEntity<>("로그인이 필요합니다.",HttpStatus.BAD_REQUEST);
         }
         fundingService.participation(paymentDTO.getFundingId(),paymentDTO,paymentDTO.getBuyer_email());
         return new ResponseEntity<>(HttpStatus.OK);
