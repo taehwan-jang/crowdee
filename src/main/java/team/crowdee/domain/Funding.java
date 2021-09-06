@@ -37,6 +37,7 @@ public class Funding {
     private String title;
     private String subTitle;
     private String summary;//요약
+    @Column(length = 2000)
     private String thumbNailUrl;//file이름 -> 여러건일경우 리스트?
     private String category;//카테고리
     private String tag;

@@ -20,7 +20,9 @@ public class Creator {
     private Long creatorId;
     private String creatorNickName;
     private String profileImgUrl;
+    @Column(length = 2000)
     private String aboutMe;
+    @Column(length = 2000)
     private String career;
     private String BusinessNumber;
 

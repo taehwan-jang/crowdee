@@ -72,7 +72,7 @@ public class DummyData {
 
         memberService.join(memberDTO2);
 
-
+//
 //    }
 //
 //    @Test
@@ -82,10 +82,11 @@ public class DummyData {
         creatorDTO.setAccountNumber("123-123123-123");
         creatorDTO.setBankName("신한");
         creatorDTO.setBusinessNumber("122-11122-11222");
-        creatorDTO.setCreatorNickName("몹시졸림");
-        creatorDTO.setAboutMe("안녕하세요 크리에이터입니다.");
-        creatorDTO.setCareer("경력은 이러이러 저러저러 합니다.");
+        creatorDTO.setCreatorNickName("Berioza");
+        creatorDTO.setAboutMe("피아노 듀오 베리오자(Berioza)는 피아니스트 전현주, 전희진 두 자매가 결성한 팀으로, 1997년 팀 결성 후, 2005년 St.Petersburg 피아노 듀오 협회에 회원으로 등록되었으며, 협회에 소속된 최연소이자 첫 외국인 연주자이다.");
+        creatorDTO.setCareer("독일 뮌헨 Herkulessaal 에서 Bavarian Symphony Orchestra (지휘: Christoph Poppen)과 협연했으며, 체코 Smetana Hall, 독일 Leipzig Gewandhaus, Weimar, Dortmund, 러시아에서 다수의 리사이틀과 협연을 가졌다. 우리나라에서는 2011년 금호문화재단의 초청으로 금호아트홀에서 첫 리사이틀을 가졌으며, 2011-2012 독일 모차르트 협회 최초 한국인 장학생으로 선정되었다. 이들 듀오는 바로크 음악부터 현대음악까지 폭넓은 레파토리로 활동 중이며, 2014년에는 의 음악파트너로 선정되어 “러시안 로망스”라는 주제로 차이코프스키, 라흐마니노프, 쇼스타코비치, 아렌스키 등의 프로그램을 선보였으며 2014년 클래식FM라디오 “2014 한국의 클래식 내일의 주역들”에 선정되어 2015년 1월 음반이 발매되었다.");
         creatorDTO.setBankBookImageUrl("none");
+        creatorDTO.setProfileImgUrl("https://www.jnilbo.com//2019/09/09/2019090916395293988_l.jpg");
         creatorDTO.setMemberId(5L);
 
         Creator creator = creatorService.joinCreator(creatorDTO);
@@ -111,7 +112,7 @@ public class DummyData {
         memberDTO6.setPassword("1q2w3e4r!");
         memberDTO6.setEmailCert("TAWOETHD");
         memberDTO6.setMobile("010-2395-9602");
-        memberDTO6.setNickName("크라우디보스");
+        memberDTO6.setNickName("부팀장");
         memberDTO6.setRegistDate(LocalDateTime.now());
         memberDTO6.setUserName("문병욱");
 
@@ -131,7 +132,7 @@ public class DummyData {
                 .title("한여름밤의 꿈")
                 .summary("서울예술대학교 공연 포스터")
                 .thumbNailUrl("https://cdn.notefolio.net/img/5a/af/5aaf36082b60a519aac5db918f67fabd809ee35def6cfd2020855da5e6565db0_v1.jpg")
-                .category("piano")
+                .category("concert")
                 .tag("#공연,#연주,#졸업,#음대")
                 .content("<h1>프로젝트 소개에 관한 글</h1>")
                 .budget("<h1>예산 계획에 관한 글</h1>")
@@ -149,6 +150,7 @@ public class DummyData {
                 .totalFundraising(0)
                 .status(Status.progress)
                 .sendMail(false)
+                .result(false)
                 .build();
         fundingRepository.save(funding);
 
@@ -156,9 +158,13 @@ public class DummyData {
                 .creator(byEmail.get(0))
                 .projectUrl("dummyProject")
                 .manageUrl(UUID.randomUUID().toString().replaceAll("-", ""))
-                .title("3월의 눈")
-                .summary("우리 연극사의 살아있는 전설. 장민호, 백성희의 연기세계를 만나다.")
-                .thumbNailUrl("https://t1.daumcdn.net/cfile/tistory/124A07364DD4826C2E")
+                .title("창작집단 시파티만99번째의 창작뮤지컬<JUST ALICE>")
+                .summary("“다 너를 위해서”\n" +
+                        "\n" +
+                        "“아름쁜한 꽃이 흩날리는 기분을 느낄 수 있을거야.”\n" +
+                        "\n" +
+                        "“내 기분은 내가 정해”")
+                .thumbNailUrl("https://tumblbug-pci.imgix.net/f85c7e07d406f25fd3ea73c668eaa69a8712eaa8/8623a894f67815de2d3c823a7335ff4fea53a174/5fad5278aa1a8048437e7dfa7c849c532142c8d5/8e10d7d6-598c-4eac-9398-c9ecfb9bc472.jpeg?ixlib=rb-1.1.0&w=1240&h=930&auto=format%2Ccompress&lossless=true&fit=crop&s=5377c034ec7618d2e3b479fb3113c2b5")
                 .category("theater")
                 .tag("#연극,#연기,#공연")
                 .content("<h1>프로젝트 소개에 관한 글</h1>")
@@ -177,6 +183,7 @@ public class DummyData {
                 .rateOfAchievement(0)
                 .status(Status.progress)
                 .sendMail(false)
+                .result(false)
                 .build();
         fundingRepository.save(funding1);
 
@@ -205,6 +212,7 @@ public class DummyData {
                 .rateOfAchievement(0)
                 .status(Status.progress)
                 .sendMail(false)
+                .result(false)
                 .build();
         fundingRepository.save(funding3);
 
@@ -233,6 +241,7 @@ public class DummyData {
                 .rateOfAchievement(0)
                 .status(Status.progress)
                 .sendMail(false)
+                .result(false)
                 .build();
         fundingRepository.save(funding4);
 
@@ -261,6 +270,7 @@ public class DummyData {
                 .rateOfAchievement(0)
                 .status(Status.progress)
                 .sendMail(false)
+                .result(false)
                 .build();
         fundingRepository.save(funding5);
 
@@ -271,7 +281,7 @@ public class DummyData {
                 .title("유니버설발레단")
                 .summary("해설이 있는 발레 갈라")
                 .thumbNailUrl("https://m.upinews.kr/data/upi/image/20190716/p1065593685838068_776_thum.jpg")
-                .category("ballet")
+                .category("dance")
                 .tag("#발레,#해설,#예술의전당")
                 .content("<h1>프로젝트 소개에 관한 글</h1>")
                 .budget("<h1>예산 계획에 관한 글</h1>")
@@ -289,6 +299,7 @@ public class DummyData {
                 .rateOfAchievement(0)
                 .status(Status.progress)
                 .sendMail(false)
+                .result(false)
                 .build();
         fundingRepository.save(funding6);
 
@@ -317,6 +328,7 @@ public class DummyData {
                 .rateOfAchievement(0)
                 .status(Status.progress)
                 .sendMail(false)
+                .result(false)
                 .build();
         fundingRepository.save(funding7);
 
@@ -345,6 +357,7 @@ public class DummyData {
                 .rateOfAchievement(0)
                 .status(Status.progress)
                 .sendMail(false)
+                .result(false)
                 .build();
         fundingRepository.save(funding8);
 
@@ -373,6 +386,7 @@ public class DummyData {
                 .rateOfAchievement(0)
                 .status(Status.progress)
                 .sendMail(false)
+                .result(false)
                 .build();
         fundingRepository.save(funding9);
 
@@ -401,6 +415,7 @@ public class DummyData {
                 .rateOfAchievement(0)
                 .status(Status.progress)
                 .sendMail(false)
+                .result(false)
                 .build();
         fundingRepository.save(funding10);
 
@@ -429,6 +444,7 @@ public class DummyData {
                 .rateOfAchievement(0)
                 .status(Status.progress)
                 .sendMail(false)
+                .result(false)
                 .build();
         fundingRepository.save(funding11);
 
@@ -457,6 +473,7 @@ public class DummyData {
                 .rateOfAchievement(0)
                 .status(Status.progress)
                 .sendMail(false)
+                .result(false)
                 .build();
         fundingRepository.save(funding12);
 
@@ -485,6 +502,7 @@ public class DummyData {
                 .rateOfAchievement(0)
                 .status(Status.progress)
                 .sendMail(false)
+                .result(false)
                 .build();
         fundingRepository.save(funding13);
 
