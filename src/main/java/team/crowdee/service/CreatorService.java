@@ -27,7 +27,7 @@ public class CreatorService {
     private final CreatorRepository creatorRepository;
     private final FundingRepository fundingRepository;
 
-    public Creator joinCreator(CreatorDTO creatorDTO){
+    public Creator joinCreator(CreatorDTO creatorDTO,String email){
         /**
          * 검증 시작
          * 소셜 가입 회원인 경우 추가 정보를 입력하게만들기~
@@ -36,7 +36,11 @@ public class CreatorService {
         if (!result) {
             throw new IllegalArgumentException("양식을 모두 채워주세요");
         }
-        Member member = memberRepository.findById(creatorDTO.getMemberId());
+        List<Member> memberList = memberRepository.findByEmail(email);
+        if (memberList.isEmpty()) {
+            throw new IllegalArgumentException("회원정보가 없습니다.");
+        }
+        Member member = memberList.get(0);
         AccountInfo account = new AccountInfo();
         account.setAccountNumber(creatorDTO.getAccountNumber());
         account.setBankBookImageUrl(creatorDTO.getBankBookImageUrl());

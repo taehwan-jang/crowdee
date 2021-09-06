@@ -89,7 +89,7 @@ public class DummyData {
         creatorDTO.setProfileImgUrl("https://www.jnilbo.com//2019/09/09/2019090916395293988_l.jpg");
         creatorDTO.setMemberId(5L);
 
-        Creator creator = creatorService.joinCreator(creatorDTO);
+        Creator creator = creatorService.joinCreator(creatorDTO,"forCreator@gmail.com");
 
 //    }
 //

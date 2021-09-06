@@ -60,16 +60,16 @@ public class CreatorController {
     @PostMapping("/signCreator")
     public ResponseEntity<?> creatorMember(@RequestBody CreatorDTO creatorDTO, HttpServletRequest request) {
         boolean flag = customJWTFilter.isBacker(request);
-        HttpHeaders httpHeaders = customJWTFilter.getHeaders(request);
 
         if (!flag) {
-            return new ResponseEntity<>("일반회원만 신청할 수 있습니다.", httpHeaders, HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>("일반회원만 신청할 수 있습니다.", HttpStatus.FORBIDDEN);
         }
-        Creator joinCreator = creatorService.joinCreator(creatorDTO);
+        String email = customJWTFilter.findEmail(request);
+        Creator joinCreator = creatorService.joinCreator(creatorDTO,email);
         if (joinCreator == null) {
-            return new ResponseEntity<>("크리에이터 등록에 실패했습니다.", httpHeaders, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("크리에이터 등록에 실패했습니다.", HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>("심사목록에 추가되었습니다.", httpHeaders, HttpStatus.OK);
+        return new ResponseEntity<>("심사목록에 추가되었습니다.", HttpStatus.OK);
     }
 
     @GetMapping("/project-start")
