@@ -10,6 +10,7 @@ import team.crowdee.domain.Creator;
 import team.crowdee.domain.Funding;
 import team.crowdee.domain.dto.*;
 import team.crowdee.jwt.CustomJWTFilter;
+import team.crowdee.repository.CreatorRepository;
 import team.crowdee.repository.FundingRepository;
 import team.crowdee.service.CreatorService;
 
@@ -24,8 +25,36 @@ import java.util.List;
 public class CreatorController {
 
     private final CreatorService creatorService;
+    private final CreatorRepository creatorRepository;
     private final FundingRepository fundingRepository;
     private final CustomJWTFilter customJWTFilter;
+
+    @GetMapping("/isBacker")
+    public ResponseEntity<?> isBacker(HttpServletRequest request) {
+        boolean creator = customJWTFilter.isCreator(request);
+        if (creator) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+        boolean backer = customJWTFilter.isBacker(request);
+        if (backer) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+    }
+
+    @PostMapping("/validationNickName")
+    public ResponseEntity<?> validationNickName(HttpServletRequest request,@RequestBody String nickName) {
+        boolean creator = customJWTFilter.isCreator(request);
+        if (!creator) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+        List<Creator> creatorList = creatorRepository.findByNickName(nickName);
+        if (creatorList.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+    }
 
     //크리에이터 등록
     @PostMapping("/signCreator")

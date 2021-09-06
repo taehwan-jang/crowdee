@@ -32,8 +32,10 @@ public class CreatorRepository {
                 .getResultList();
     }
 
-    public List<Creator> findAll() {
-        return em.createQuery("select c from Creator c", Creator.class).getResultList();
+    public List<Creator> findByNickName(String nickName) {
+        return em.createQuery("select c from Creator c where c.creatorNickName=:param", Creator.class)
+                .setParameter("param",nickName)
+                .getResultList();
     }
 
     public List<Creator> findByStatus(Status status) {
