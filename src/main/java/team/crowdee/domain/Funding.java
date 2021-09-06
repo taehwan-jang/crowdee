@@ -46,13 +46,13 @@ public class Funding {
     /**
      * 메인 컨텐츠 (Detail)
      */
-    @Column(length = 2000)
+    @Column(length = 10000)
     private String content;
-    @Column(length = 2000)
+    @Column(length = 10000)
     private String budget;
-    @Column(length = 2000)
+    @Column(length = 10000)
     private String schedule;
-    @Column(length = 2000)
+    @Column(length = 10000)
     private String aboutUs;
 
     /**
