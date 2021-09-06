@@ -47,7 +47,7 @@ public class CreatorService {
                 .profileImgUrl(creatorDTO.getProfileImgUrl())
                 .status(Status.inspection)
                 .creatorNickName(creatorDTO.getCreatorNickName())
-                .BusinessNumber(creatorDTO.getBusinessNumber())
+                .businessNumber(creatorDTO.getBusinessNumber())
                 .accountInfo(account)
                 .build();
         creatorRepository.save(creator);

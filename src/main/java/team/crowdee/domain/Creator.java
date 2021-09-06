@@ -24,7 +24,7 @@ public class Creator {
     private String aboutMe;
     @Column(length = 2000)
     private String career;
-    private String BusinessNumber;
+    private String businessNumber;
 
     @Enumerated(EnumType.STRING)
     private Status status;
