@@ -68,8 +68,8 @@ public class FundingController {
      * 4.creatorNickName
      */
     @PostMapping("/search")
-    public ResponseEntity<?> searchTag(@RequestBody SearchDTO searchDTO) {
-        List<ThumbNailDTO> thumbNailDTO = fundingService.searchFunding(searchDTO);
+    public ResponseEntity<?> searchValue(@RequestBody String searchValue) {
+        List<ThumbNailDTO> thumbNailDTO = fundingService.searchFunding(searchValue);
         if (thumbNailDTO.isEmpty()) {
             return new ResponseEntity<>("검색결과가 없습니다.", HttpStatus.BAD_REQUEST);
         }

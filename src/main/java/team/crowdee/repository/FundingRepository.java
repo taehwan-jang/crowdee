@@ -48,6 +48,17 @@ public class FundingRepository {
         return em.createQuery(query, Funding.class).getResultList();
     }
 
+    public List<Funding> findBySearchValue(String searchValue) {
+        String query = "select f from Funding f " +
+                "left join fetch f.orders " +
+                "where f.status='progress' " +
+                "and (f.title like '%"+searchValue+"%' " +
+                "or f.category like '%"+searchValue+"%' " +
+                "or f.tag like  '%"+searchValue+"%'  )" +
+                "order by f.startDate desc";
+        return em.createQuery(query, Funding.class).getResultList();
+    }
+
     public List<Funding> findByUrl(String projectUrl) {
         return em.createQuery("select f from Funding f " +
                 "left join fetch f.creator " +
@@ -193,14 +204,6 @@ public class FundingRepository {
 
     }
 
-    public List<Funding> findByCreatorNickName(String creatorNickName) {
-        return em.createQuery("select f from Funding f " +
-                "left join fetch f.orders " +
-                "where f.status='progress' " +
-                "and f.creator.creatorNickName=:creatorNickName " +
-                "order by f.startDate desc", Funding.class)
-                .setParameter("creatorNickName", creatorNickName)
-                .getResultList();
-    }
+
 
 }

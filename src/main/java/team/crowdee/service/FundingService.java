@@ -58,26 +58,13 @@ public class FundingService {
     }
 
     @Transactional(readOnly = true)
-    public List<ThumbNailDTO> searchFunding(SearchDTO searchDTO) {
+    public List<ThumbNailDTO> searchFunding(String searchValue) {
 
-        String field = searchDTO.getField();
-        String value = searchDTO.getValue();
-        if (!(StringUtils.hasText(field) && StringUtils.hasText(value))) {
+        if (!(StringUtils.hasText(searchValue))) {
             throw new IllegalArgumentException("검색어가 없습니다.");
         }
-        List<Funding> fundingList;
-        switch (field) {
-            case "creatorNickName"://크리에이터 이름
-                fundingList=fundingRepository.findByCreatorNickName(value);
-                break;
-            case "tag":
-            case "title":
-            case "category":
-                fundingList=fundingRepository.findByLikeParam(field,value);
-                break;
-            default:
-                return null;
-        }
+        List<Funding> fundingList = fundingRepository.findBySearchValue(searchValue);
+
 
         return Utils.fundingToThumbNail(fundingList);
 
