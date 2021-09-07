@@ -55,7 +55,7 @@ public class DummyData {
         memberDTO.setPassword("1q2w3e4r!");
         memberDTO.setEmailCert("TAWOETHD");
         memberDTO.setMobile("010-1231-1231");
-        memberDTO.setNickName("테스트닉네임");
+        memberDTO.setNickName("크라우디짱");
         memberDTO.setRegistDate(LocalDateTime.now());
         memberDTO.setUserName("크라우디");
 
@@ -68,7 +68,7 @@ public class DummyData {
         memberDTO2.setMobile("010-1231-1231");
         memberDTO2.setNickName("Berioza");
         memberDTO2.setRegistDate(LocalDateTime.now());
-        memberDTO2.setUserName("창작자");
+        memberDTO2.setUserName("장태환");
 
         memberService.join(memberDTO2);
 
@@ -91,6 +91,53 @@ public class DummyData {
 
         Creator creator = creatorService.joinCreator(creatorDTO,"forCreator@gmail.com");
 
+        MemberDTO memberDTO10 = new MemberDTO();
+        memberDTO10.setEmail("bold@gmail.com");
+        memberDTO10.setPassword("1q2w3e4r!");
+        memberDTO10.setEmailCert("WEFADFWE");
+        memberDTO10.setMobile("010-1231-1231");
+        memberDTO10.setNickName("과감한인생");
+        memberDTO10.setRegistDate(LocalDateTime.now());
+        memberDTO10.setUserName("과감한인생");
+        memberService.join(memberDTO10);
+
+        CreatorDTO creatorDTO2 = new CreatorDTO();
+        creatorDTO2.setAccountNumber("123-123123-123");
+        creatorDTO2.setBankName("신한");
+        creatorDTO2.setBusinessNumber("122-11122-11222");
+        creatorDTO2.setCreatorNickName("과감한인생");
+        creatorDTO2.setAboutMe("안녕하세요. 과정에서 감동이오는 과감한인생입니다. 저희는 문화예술 기획 팀으로 사람들의 버킷리스트와 꿈을 함께 이뤄나가는 팀 입니다. 그리고 그 과정을 영상과 다른 콘텐츠로 제작하여 유튜브, 인스타그램, 페이스북을 통해 공유하며, 이를 통해 보다 더 많은 사람들에게 도전할 수 있는 용기와 동기를 주는것을 목표로 하고 있습니다. 많은 응원 부탁드립니다. 인생뭐있어? 과감하게!");
+        creatorDTO2.setCareer(" ");
+        creatorDTO2.setBankBookImageUrl("none");
+        creatorDTO2.setProfileImgUrl("https://tumblbug-upi.imgix.net/61f43bc9-3ddd-4e4a-a740-611a8586cce5.jpg?auto=format%2Ccompress&ch=Save-Data&facepad=2.0&fit=facearea&h=250&mask=ellipse&w=200&s=9bfedccda212de266bcec796829aec10");
+        creatorDTO2.setMemberId(9L);
+
+        Creator creator2 = creatorService.joinCreator(creatorDTO2,"bold@gmail.com");
+
+        MemberDTO memberDTO9 = new MemberDTO();
+        memberDTO9.setEmail("wood@gmail.com");
+        memberDTO9.setPassword("1q2w3e4r!");
+        memberDTO9.setEmailCert("WEFADFWE");
+        memberDTO9.setMobile("010-1231-1231");
+        memberDTO9.setNickName("나무_무용단");
+        memberDTO9.setRegistDate(LocalDateTime.now());
+        memberDTO9.setUserName("나무_무용단");
+        memberService.join(memberDTO9);
+
+        CreatorDTO creatorDTO3 = new CreatorDTO();
+        creatorDTO3.setAccountNumber("123-123123-123");
+        creatorDTO3.setBankName("신한");
+        creatorDTO3.setBusinessNumber("122-11122-11222");
+        creatorDTO3.setCreatorNickName("나무_무용단");
+        creatorDTO3.setAboutMe("안녕하세요. 과정에서 감동이오는 과감한인생입니다. 저희는 문화예술 기획 팀으로 사람들의 버킷리스트와 꿈을 함께 이뤄나가는 팀 입니다. 그리고 그 과정을 영상과 다른 콘텐츠로 제작하여 유튜브, 인스타그램, 페이스북을 통해 공유하며, 이를 통해 보다 더 많은 사람들에게 도전할 수 있는 용기와 동기를 주는것을 목표로 하고 있습니다. 많은 응원 부탁드립니다. 인생뭐있어? 과감하게!");
+        creatorDTO3.setCareer(" ");
+        creatorDTO3.setBankBookImageUrl("none");
+        creatorDTO3.setProfileImgUrl("https://tumblbug-upi.imgix.net/3f25ed38-5a33-4d0c-b1cb-f06d7593a4b6.jpg?auto=format%2Ccompress&ch=Save-Data&facepad=2.0&fit=facearea&h=250&mask=ellipse&w=200&s=5eb487769983054967739e268a78ce9e");
+        creatorDTO3.setMemberId(12L);
+
+        Creator creator3 = creatorService.joinCreator(creatorDTO3,"wood@gmail.com");
+
+
 //    }
 //
 //    @Test
@@ -107,26 +154,28 @@ public class DummyData {
 
         memberService.join(memberDTO3);
 
-        MemberDTO memberDTO6 = new MemberDTO();
-        memberDTO6.setEmail("jth0602@gmail.com");
-        memberDTO6.setPassword("1q2w3e4r!");
-        memberDTO6.setEmailCert("TAWOETHD");
-        memberDTO6.setMobile("010-2395-9602");
-        memberDTO6.setNickName("부팀장");
-        memberDTO6.setRegistDate(LocalDateTime.now());
-        memberDTO6.setUserName("문병욱");
-
-        memberService.join(memberDTO6);
+//        MemberDTO memberDTO6 = new MemberDTO();
+//        memberDTO6.setEmail("jth0602@gmail.com");
+//        memberDTO6.setPassword("1q2w3e4r!");
+//        memberDTO6.setEmailCert("TAWOETHD");
+//        memberDTO6.setMobile("010-2395-9602");
+//        memberDTO6.setNickName("부팀장");
+//        memberDTO6.setRegistDate(LocalDateTime.now());
+//        memberDTO6.setUserName("문병욱");
+//
+//        memberService.join(memberDTO6);
 //
 //    }
-////
+//////
 //    @Test
 //    @Rollback(value = false)
 //    public void 펀딩더미데이터() {
         List<Creator> byEmail = creatorRepository.findByEmail("forCreator@gmail.com");
+        List<Creator> byEmail2 = creatorRepository.findByEmail("bold@gmail.com");
+        List<Creator> byEmail3 = creatorRepository.findByEmail("wood@gmail.com");
 
         Funding funding = Funding.builder()
-                .creator(byEmail.get(0))
+                .creator(byEmail3.get(0))
                 .projectUrl("namoo")
                 .manageUrl(UUID.randomUUID().toString().replaceAll("-", ""))
                 .title("Project namoo, 나무뎐 근본")
@@ -155,7 +204,7 @@ public class DummyData {
         fundingRepository.save(funding);
 
         Funding funding1 = Funding.builder()
-                .creator(byEmail.get(0))
+                .creator(byEmail2.get(0))
                 .projectUrl("kickthebucket")
                 .manageUrl(UUID.randomUUID().toString().replaceAll("-", ""))
                 .title("과감한뮤지컬 : Kick The Bucket")

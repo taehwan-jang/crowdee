@@ -28,10 +28,7 @@ public class CreatorService {
     private final FundingRepository fundingRepository;
 
     public Creator joinCreator(CreatorDTO creatorDTO,String email){
-        /**
-         * 검증 시작
-         * 소셜 가입 회원인 경우 추가 정보를 입력하게만들기~
-         */
+
         boolean result = validation(creatorDTO);
         if (!result) {
             throw new IllegalArgumentException("양식을 모두 채워주세요");

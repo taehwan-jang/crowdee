@@ -124,11 +124,8 @@ public class FundingService {
         return Utils.fundingEToD(funding,simpleFundingList);
     }
 
-    public void participation(Long fundingId, PaymentDTO paymentDTO, String email) throws Exception {
+    public void participation(Long fundingId, PaymentDTO paymentDTO, String email) {
         List<Funding> fundingList = fundingRepository.findWithOrdersAndMember(fundingId);
-        if (fundingList.isEmpty()) {
-            throw new IllegalArgumentException("잘못된 펀딩번호 입니다.");
-        }
         Funding funding = fundingList.get(0);
         List<Order> orders = funding.getOrders();
         for (Order order : orders) {
@@ -162,7 +159,6 @@ public class FundingService {
                 .build();
         member.participationFunding(order);
         funding.addParticipants(order);
-//        mimeEmailService.joinFundingMail(member, funding);
     }
 
     public boolean addOrRemoveMemberToWishFunding(String email, Long fundingId) {
@@ -184,16 +180,15 @@ public class FundingService {
         requestMember.getFundingList().add(funding);
         return true;
     }
-    @Scheduled(cron = "0 0 1 * * *") //0 0 1 * * *로 변경하면 하루마다 메소드 시작.
+    @Scheduled(cron = "0 0 1 * * *")
     public void changeFundingStatus() throws MessagingException {
-        log.info("미시작/기한 종료 펀딩 상태변경 스케줄러");
+        log.info("미시작/기한 종료 펀딩 상태변경 스케줄러 실행");
         String todayString = Utils.getTodayString();
         List<Funding> progressList = fundingRepository.findConfirmOrProgress(Status.confirm,Status.progress);
         for (Funding funding : progressList) {
             if (funding.getStartDate().equals(todayString)) {
                 funding.changeStatus(Status.progress);
             } else if (LocalDate.parse(funding.getEndDate()).compareTo(LocalDate.now()) < 0) {
-                log.info("종료 날짜 차이가 1 이상일때");
                 determineSuccessOrFail(funding);
             }
         }

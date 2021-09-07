@@ -76,7 +76,7 @@ class MemberControllerTest {
         //given
         Member member5 = memberRepository.findById(5L);
         Creator creator1 = Creator.builder()
-                .BusinessNumber("123-1231-1231")
+                .businessNumber("123-1231-1231")
                 .build();
         memberRepository.saveCreator(creator1);
         member5.joinCreator(creator1);
