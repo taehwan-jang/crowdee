@@ -32,29 +32,7 @@ public class MemberRepository {
         return em.find(Member.class, id);
     }
 
-    public List<Member> findAll() {
-        return em.createQuery("select m from Member m", Member.class).getResultList();
-    }
-
-    public Member login(String email) {
-        List<Member> resultList = em.createQuery("select m from Member m where m.email=:email", Member.class)
-                .setParameter("email",email)
-                .getResultList();
-        System.out.println(resultList);
-        if (resultList.isEmpty()) {
-
-            return null;
-        }
-        return resultList.get(0);
-    }
-
     public void delete(Member member) {
-        /*
-        Member deleteMember = findById(memberId);
-        String userId = deleteMember.getUserId();
-        em.createQuery("delete from Member m where m.userId=:userId")
-                .setParameter("userId", userId);
-         */
         em.remove(member);
     }
 
@@ -78,35 +56,11 @@ public class MemberRepository {
                 .getResultList();
     }
 
-    public List<Member> findToConfirm(String email, String emailCert) {
-        return em.createQuery("select m from Member m where m.email=:email and m.emailCert=:emailCert", Member.class)
-                .setParameter("email",email)
-                .setParameter("emailCert",emailCert)
-                .getResultList();
-    }
-
-//    public List<Member> findMemberWithFollow(Long id) {
-//        return em.createQuery("select m from Member m join fetch m.following", Member.class).getResultList();
-//    }
-
-//    public List<Member> findSecessionMember(LocalDateTime today) {
-//        return em.createQuery("select m from Member m where m.secessionDate=:today", Member.class)
-//                .setParameter("today", today)
-//                .getResultList();
-//    }
-
     public Long saveCreator(Creator creator) {
         em.persist(creator);
         return creator.getCreatorId();
     }
 
-    public Creator findCreator(Long id) {
-        return em.find(Creator.class, id);
-    }
-
-    public void flush() {
-        em.flush();
-    }
 
     @EntityGraph(attributePaths = "authorities")
     public List<Member> findOneWithAuthoritiesByEmail(String email) {
@@ -114,15 +68,6 @@ public class MemberRepository {
                 .setParameter("email", email)
                 .getResultList();
     }
-
-    public List<Member> findToInspection() {
-        return em.createQuery("select m from Member m " +
-                        "join fetch m.creator " +
-                        "where m.status='inspection'",
-                Member.class)
-                .getResultList();
-    }
-
 
     public List<Member> findByEmailWithFunding(String email) {
         return em.createQuery("select m from Member m " +
@@ -133,14 +78,6 @@ public class MemberRepository {
                 .getResultList();
     }
 
-    public List<Member> findByEmailWithWishFunding(String email) {
-        return em.createQuery("select m from Member m " +
-                "left join fetch m.fundingList " +
-                "where m.email=:param ", Member.class)
-                .setParameter("param",email)
-                .getResultList();
-
-    }
 
     //어드민로그인을위해 로직 추가
     public Member findAdmin(String email) {

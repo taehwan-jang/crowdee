@@ -38,9 +38,4 @@ public class Creator {
     @Embedded
     private AccountInfo accountInfo;
 
-    //푸쉬테스트
-    //커밋, 푸쉬테스트
-//    @OneToOne
-//    @JoinColumn(name = "creator_inspection_id")
-//    private CreatorInspection creatorInspection; //크리에이터 심사 기준 필요
 }

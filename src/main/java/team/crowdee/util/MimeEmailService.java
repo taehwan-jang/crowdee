@@ -70,13 +70,11 @@ public class MimeEmailService {
         String emailList = Utils.appendMemberEmail(memberList);
         MimeMessage successMessage = javaMailSender.createMimeMessage();
         String mailContent =
-                "<img style='width:300px; display:block; margin-left:auto; margin-right:auto;' src= 'http://localhost:8081/api/image/img/crowdeeImg.png' />" +
                 "<div style='text-align:center;'>" +
                     "<h1>[펀딩 성공!]</h1><br> 회원님께서 참여하신 "+ funding.getTitle() + " 펀딩이 100% 달성되었습니다." +
                     "<p><img src='"+ funding.getThumbNailUrl()+"'/></p>" +
-                    "<p>참여펀딩 바로가기 : http://localhost:3000/contents/" + funding.getProjectUrl()+ "</p>" +
-                    "<br><p>결제는 <h3>마이페이지</h3> -> <h3>결제요청 프로젝트</h3>에서 진행해주세요.</p>" +
-//                    "결제URL : " + " http://https://github.com/taehwan-jang/crowdee" +
+                    "<p><a src='http://localhost:3000/contents/" + funding.getProjectUrl()+ "'>참여펀딩 바로가기</a></p>" +
+                    "<br><p>결제는 <h3>마이페이지 -> 결제요청 프로젝트 진행해주세요.</h3></p>" +
                     "<h3>Crowdee 펀딩에 참여해주셔서 감사합니다.</h3>" +
                 "</div>";
         successMessage.setSubject("[Crowdee] " + funding.getTitle() + " 펀딩이 100% 달성에 성공하였습니다.");
@@ -95,7 +93,6 @@ public class MimeEmailService {
         String emailList = Utils.appendMemberEmail(memberList);
         MimeMessage failMessage = javaMailSender.createMimeMessage();
         String mailContent =
-                "<img style='width:300px; display:block; margin-left:auto; margin-right:auto;' src= 'http://localhost:8081/api/image/img/crowdeeImg.png' />" +
                 "<div style='text-align:center;'>" +
                     "<h1>[펀딩 실패]</h1><br>회원님 께서 참여하신 " + funding.getTitle() + " 펀딩이 미달성되었습니다." +
                     "<br><p>안타깝게도 참여하신 펀딩이 100% 모금에 실패했습니다. <br/></p>" +

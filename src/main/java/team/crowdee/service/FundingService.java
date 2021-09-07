@@ -180,7 +180,7 @@ public class FundingService {
         requestMember.getFundingList().add(funding);
         return true;
     }
-    @Scheduled(cron = "0 0 1 * * *")
+    @Scheduled(cron = "0/20 * * * * *")
     public void changeFundingStatus() throws MessagingException {
         log.info("미시작/기한 종료 펀딩 상태변경 스케줄러 실행");
         String todayString = Utils.getTodayString();
