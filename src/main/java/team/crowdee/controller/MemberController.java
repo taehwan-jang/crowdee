@@ -1,39 +1,24 @@
 package team.crowdee.controller;
 
-import antlr.Token;
-import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import team.crowdee.domain.Member;
 import team.crowdee.domain.dto.*;
-import team.crowdee.jwt.CustomJWTFilter;
-import team.crowdee.jwt.CustomTokenProvider;
-import team.crowdee.jwt.JwtFilter;
-import team.crowdee.jwt.TokenProvider;
+import team.crowdee.security.CustomJWTFilter;
+import team.crowdee.security.CustomTokenProvider;
+import team.crowdee.security.JwtFilter;
 import team.crowdee.repository.MemberRepository;
-import team.crowdee.service.FundingService;
 import team.crowdee.service.MemberService;
 import team.crowdee.service.OrderService;
 import team.crowdee.util.MimeEmailService;
 import team.crowdee.util.SendEmailService;
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
-
-import static java.util.Base64.getDecoder;
 
 @RestController
 @CrossOrigin

@@ -1,4 +1,4 @@
-package team.crowdee.jwt;
+package team.crowdee.security;
 
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;

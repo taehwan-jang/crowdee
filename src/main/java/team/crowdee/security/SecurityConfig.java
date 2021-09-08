@@ -20,10 +20,6 @@ import org.springframework.security.oauth2.client.registration.InMemoryClientReg
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import team.crowdee.jwt.JwtAccessDeniedHandler;
-import team.crowdee.jwt.JwtAuthenticationEntryPoint;
-import team.crowdee.jwt.JwtSecurityConfig;
-import team.crowdee.jwt.TokenProvider;
 
 import java.util.List;
 import java.util.Objects;

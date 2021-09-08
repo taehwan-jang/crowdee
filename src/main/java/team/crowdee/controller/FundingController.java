@@ -8,7 +8,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import team.crowdee.domain.Member;
 import team.crowdee.domain.dto.*;
-import team.crowdee.jwt.CustomJWTFilter;
+import team.crowdee.security.CustomJWTFilter;
 import team.crowdee.repository.MemberRepository;
 import team.crowdee.service.FundingService;
 

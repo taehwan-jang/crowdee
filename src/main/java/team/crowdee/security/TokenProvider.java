@@ -1,4 +1,4 @@
-package team.crowdee.jwt;
+package team.crowdee.security;
 
 import com.sun.mail.util.BASE64DecoderStream;
 import io.jsonwebtoken.*;
