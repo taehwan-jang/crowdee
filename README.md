@@ -6,6 +6,38 @@
 * Creator는 간단한 신청과 심사를 거쳐 등록할 수 있습니다. 
 
 
+# Project Structure
+> React(SPA) + Spring Boot(API Server) 구조로 개발하였으며, API Server / 비즈니스로직 / 기획 / 설계 / 일정관리 등을 담당했습니다. 프로젝트에 사용할 기술목록을 사전에 정의하고 요구사항을 정리했습니다.
+> ### 사용한 기술스택은 다음과 같습니다.
+>> ## Back-end
+>> * SpringBoot 2.5.3
+>> * JDK 11
+>> * Gradle
+>> * JPA/Hibernate
+>> * SpringSecurity
+>> * JWT(Json Web Token)
+>> * Swagger
+>> * Lombok
+>> * Oracle / H2
+
+
+
+# Spring Boot(API Server)
+>React에서 요청한 데이터를 JSON으로 response합니다. 구조는 아래와 같습니다.
+* controller : API 요청 / 응답을 처리합니다.
+* domain : 요구사항에 관한 domain를 관리합니다.
+* dto : request/response dto를 관리합니다.
+* repository : domain + JPA를 관리합니다.
+* service : domain에 정의한 business logic 호출 순서를 관리합니다.
+* util : 로직에 필요한 유틸을 관리합니다.
+
+비즈니스로직은 최대한 domain에 작성하도록 했습니다.
+
+## Blog
+
+* [Notion](https://www.notion.so/39f818016eff40f0ba0c5e52af4d859a)
+
+
 
 
 
@@ -80,35 +112,5 @@
 
 
 ***
-# Project Structure
-> React(SPA) + Spring Boot(API Server) 구조로 개발하였으며, API Server / 비즈니스로직 / 기획 / 설계 / 일정관리 등을 담당했습니다. 프로젝트에 사용할 기술목록을 사전에 정의하고 요구사항을 정리했습니다.
-> ### 사용한 기술스택은 다음과 같습니다.
->> ## Back-end
->> * SpringBoot 2.5.3
->> * JDK 11
->> * Gradle
->> * JPA/Hibernate
->> * SpringSecurity
->> * JWT(Json Web Token)
->> * Swagger
->> * Lombok
->> * Oracle / H2
-
-
-
-# Spring Boot(API Server)
->React에서 요청한 데이터를 JSON으로 response합니다. 구조는 아래와 같습니다.
-* controller : API 요청 / 응답을 처리합니다.
-* domain : 요구사항에 관한 domain를 관리합니다.
-* dto : request/response dto를 관리합니다.
-* repository : domain + JPA를 관리합니다.
-* service : domain에 정의한 business logic 호출 순서를 관리합니다. 
-* util : 로직에 필요한 유틸을 관리합니다.
-
-비즈니스로직은 최대한 domain에 작성하도록 했습니다. 
-
-## Blog
-
-* [Notion](https://www.notion.so/39f818016eff40f0ba0c5e52af4d859a)
 
 
