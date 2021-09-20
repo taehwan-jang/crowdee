@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import team.crowdee.customAnnotation.MemberAOP;
 import team.crowdee.domain.Member;
 import team.crowdee.domain.dto.*;
 import team.crowdee.security.CustomJWTFilter;
@@ -81,6 +82,7 @@ public class FundingController {
      * 찜하기 로직
      */
     @PostMapping("/wishOrUnWish")
+    @MemberAOP
     public ResponseEntity<?> wishList(@RequestBody Long fundingId,HttpServletRequest request){
         String email = customJWTFilter.findEmail(request);
         if (!StringUtils.hasText(email)) {
@@ -102,12 +104,8 @@ public class FundingController {
      * 5.
      */
     @PostMapping("/preOrder")
+    @MemberAOP
     public ResponseEntity<?> responseBasicInfo(HttpServletRequest request) {
-        boolean flag = customJWTFilter.isBacker(request);
-        boolean flag2 = customJWTFilter.isCreator(request);
-        if (!(flag||flag2)) {
-            return new ResponseEntity<>("로그인이 필요합니다.",HttpStatus.BAD_REQUEST);
-        }
         String email = customJWTFilter.findEmail(request);
         List<Member> memberList = memberRepository.findByEmail(email);
         if (memberList.isEmpty()) {
@@ -121,14 +119,9 @@ public class FundingController {
         return new ResponseEntity<>(paymentDTO, HttpStatus.OK);
     }
     @PostMapping("/participation")
-    public ResponseEntity<?> participation(@RequestBody PaymentDTO paymentDTO,
-                                           HttpServletRequest request) throws Exception {
+    @MemberAOP
+    public ResponseEntity<?> participation(@RequestBody PaymentDTO paymentDTO) {
         //https://smujihoon.tistory.com/103 결제 관련 참고 로직
-        boolean flag = customJWTFilter.isBacker(request);
-        boolean flag2 = customJWTFilter.isCreator(request);
-        if (!(flag||flag2)) {
-            return new ResponseEntity<>("로그인이 필요합니다.",HttpStatus.BAD_REQUEST);
-        }
         fundingService.participation(paymentDTO.getFundingId(),paymentDTO,paymentDTO.getBuyer_email());
         return new ResponseEntity<>(HttpStatus.OK);
     }

@@ -6,6 +6,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import team.crowdee.customAnnotation.MemberAOP;
 import team.crowdee.domain.Member;
 import team.crowdee.domain.dto.*;
 import team.crowdee.security.CustomJWTFilter;
@@ -107,7 +108,6 @@ public class MemberController {
     //회원탈퇴
     @PostMapping("/delete")
     public ResponseEntity<?> delete(@RequestBody MemberDTO memberDTO) {
-
         Member member = memberService.deleteMember(memberDTO);
         if(member == null){
             return new ResponseEntity<>("탈퇴에 실패했습니다.", HttpStatus.BAD_REQUEST);
@@ -118,6 +118,7 @@ public class MemberController {
     //=========마이페이지=============//
     //멤버소개 -> 필요없음
     @GetMapping("/myPage/fundingList")
+    @MemberAOP
     public ResponseEntity<?> myFundingHistory(HttpServletRequest request) {
         String email = customJWTFilter.findEmail(request);
         List<ThumbNailDTO> thumbNail = memberService.fundingHistory(email);
@@ -128,6 +129,7 @@ public class MemberController {
     }
 
     @GetMapping("/myPage/wishList")
+    @MemberAOP
     public ResponseEntity<?> myWishList(HttpServletRequest request) {
         String email = customJWTFilter.findEmail(request);
         List<ThumbNailDTO> thumbNail = memberService.wishFunding(email);
@@ -138,11 +140,8 @@ public class MemberController {
     }
 
     @GetMapping("/myPage/waitingForPayment")
+    @MemberAOP
     public ResponseEntity<?> waitingPaymentList(HttpServletRequest request) {
-        boolean flag = customJWTFilter.isBacker(request);
-        if (!flag) {
-            return new ResponseEntity<>("로그인 후 이용해주세요", HttpStatus.BAD_REQUEST);
-        }
         String email = customJWTFilter.findEmail(request);
         List<WaitingPaymentDTO> paymentDTOList = orderService.listUpWaitingPayment(email);
         if (paymentDTOList.isEmpty()) {

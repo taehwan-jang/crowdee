@@ -15,25 +15,23 @@ import javax.servlet.http.HttpServletRequest;
 @Component
 @Aspect
 @RequiredArgsConstructor
-public class MemberAuthAop {
+public class AdminAuthAop {
 
     private final CustomJWTFilter customJWTFilter;
 
-    @Around("@annotation(team.crowdee.customAnnotation.MemberAOP)")
-    public Object confirmMemberAuth(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
+    @Around("@annotation(team.crowdee.customAnnotation.AdminAOP)")
+    public Object findAdminAuth(ProceedingJoinPoint proceedingJoinPoint) throws Throwable{
         Object result = null;
         for (Object object : proceedingJoinPoint.getArgs()) {
             if (object instanceof HttpServletRequest || object instanceof MultipartHttpServletRequest) {
                 HttpServletRequest request = (HttpServletRequest) object;
-                boolean flag = customJWTFilter.isBacker(request);
-                boolean flag2 = customJWTFilter.isCreator(request);
-                if (!(flag || flag2)) {
-                    return new ResponseEntity<>("로그인 후 이용해주세요", HttpStatus.BAD_REQUEST);
+                boolean flag = customJWTFilter.isAdmin(request);
+                if (!flag) {
+                    return new ResponseEntity<>("잘못된 접근입니다.", HttpStatus.FORBIDDEN);
                 }
             }
         }
-        result = proceedingJoinPoint.proceed();
+
         return result;
     }
-
 }
