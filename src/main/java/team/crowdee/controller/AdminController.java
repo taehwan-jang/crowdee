@@ -8,18 +8,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import team.crowdee.customAnnotation.AdminAOP;
+import team.crowdee.customAnnotation.AdminAuth;
 import team.crowdee.domain.Authority;
 import team.crowdee.domain.Funding;
 import team.crowdee.domain.Member;
 import team.crowdee.domain.dto.*;
-import team.crowdee.security.CustomJWTFilter;
 import team.crowdee.security.CustomTokenProvider;
 import team.crowdee.security.JwtFilter;
 import team.crowdee.repository.MemberRepository;
 import team.crowdee.service.AdminService;
 import javax.mail.MessagingException;
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Set;
 
@@ -51,7 +49,7 @@ public class AdminController {
         return new ResponseEntity<>(new AdminTokenDTO(jwt), httpHeaders, HttpStatus.OK);
     }
 
-    //백커 전체조회
+    //backer 전체조회
     @GetMapping("/backer")
     public ResponseEntity<?> backer() {
         List<BackerAllDTO> backerAllDTO = adminService.backerAll();
@@ -61,12 +59,11 @@ public class AdminController {
         return new ResponseEntity<>(backerAllDTO, HttpStatus.OK);
     }
 
-    //크리에이터 전체조회
+    //creator 전체조회
     @GetMapping("/creator")
-    @AdminAOP
+    @AdminAuth
     public ResponseEntity<?> creator() {
         List<CreatorAllDTO> creatorAllDTO = adminService.creatorAll();
-
         if (creatorAllDTO == null) {
             return new ResponseEntity<>("creator 전체 조회 실패", HttpStatus.BAD_REQUEST);
         }
@@ -75,10 +72,9 @@ public class AdminController {
 
     //백커 상세조회
     @GetMapping("/backerView/{memberId}")
-    @AdminAOP
+    @AdminAuth
     public ResponseEntity<?> backerView(@PathVariable("memberId") Long backerId) { //주소에 파라미터값 추가
         BackerViewDTO backerDTO = adminService.oneBacker(backerId);
-
         if (backerDTO == null) {
             return new ResponseEntity<>("백커 상세보기 조회 실패", HttpStatus.BAD_REQUEST);
         }
@@ -87,10 +83,9 @@ public class AdminController {
 
     //크리에이터 상세조회
     @GetMapping("/creatorView/{createId}")
-    @AdminAOP
+    @AdminAuth
     public ResponseEntity<?> creatorView(@PathVariable("createId") Long createId) { //주소에 파라미터값 추가
         CreatorViewDTO creatorViewDTO = adminService.oneCreator(createId);
-
         if (creatorViewDTO == null) {
             return new ResponseEntity<>("크리에이터 상세보기 조회 실패", HttpStatus.BAD_REQUEST);
         }
@@ -99,7 +94,7 @@ public class AdminController {
 
     //심사중 전체조회
     @GetMapping("/inspection")
-    @AdminAOP
+    @AdminAuth
     public ResponseEntity<?> inspection() {
         List<CreatorViewDTO> inspectionDTO = adminService.inspectionAll();
 
@@ -111,7 +106,7 @@ public class AdminController {
 
     //크리에이터심사 승인
     @GetMapping("/creatorOK/{creatorId}")
-    @AdminAOP
+    @AdminAuth
     public ResponseEntity<?> changeConfirm(@PathVariable("creatorId") Long creatorId) {
         Member member = adminService.confirmChange(creatorId);
 
@@ -123,8 +118,9 @@ public class AdminController {
 
     //크리에이터심사 거절(프론트랑같이테스트성공하면 완료)
     @PostMapping("/creatorNo/{creatorId}")
-    @AdminAOP
-    public ResponseEntity<?> changeReject(@PathVariable("creatorId") Long creatorId, @RequestBody RejectionDTO rejectionDTO) throws MessagingException {
+    @AdminAuth
+    public ResponseEntity<?> changeReject(@PathVariable("creatorId") Long creatorId,
+                                          @RequestBody RejectionDTO rejectionDTO) throws MessagingException {
         Member member = adminService.rejectCreator(creatorId,rejectionDTO);
         if (member == null) {
             return new ResponseEntity<>("심사 불가 상태입니다.", HttpStatus.BAD_REQUEST);
@@ -134,7 +130,7 @@ public class AdminController {
 
     //펀딩전체조회
     @GetMapping("/funding")
-    @AdminAOP
+    @AdminAuth
     public ResponseEntity<?> funding() {
         List<FundingAllDTO> fundingAllDTO = adminService.fundingAll();
         if (fundingAllDTO == null) {
@@ -145,7 +141,7 @@ public class AdminController {
 
     //펀딩 심사중 전체조회
     @GetMapping("/fundingInspection")
-    @AdminAOP
+    @AdminAuth
     public ResponseEntity<?> fundingInspection() {
         List<FundingAllDTO> inspectionDTO = adminService.inspectionFunding();
         if (inspectionDTO == null) {
@@ -156,7 +152,7 @@ public class AdminController {
 
     //펀딩 승인
     @GetMapping("/fundingOk/{fundingId}")
-    @AdminAOP
+    @AdminAuth
     public ResponseEntity<?> fundingConfirm(@PathVariable("fundingId") Long fundingId) {
         Funding funding = adminService.confirmFunding(fundingId);
 
@@ -168,7 +164,7 @@ public class AdminController {
 
     //펀딩 거절
     @PostMapping("/FundingNo/{fundingId}")
-    @AdminAOP
+    @AdminAuth
     public ResponseEntity<?> fundingReject(@PathVariable("fundingId") Long fundingId, @RequestBody RejectionDTO rejectionDTO) throws MessagingException {
         Funding funding = adminService.rejectFunding(fundingId, rejectionDTO);
 

@@ -2,11 +2,10 @@ package team.crowdee.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.annotations.Target;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import team.crowdee.customAnnotation.CreatorAOP;
+import team.crowdee.customAnnotation.CreatorAuth;
 import team.crowdee.domain.Creator;
 import team.crowdee.domain.Funding;
 import team.crowdee.domain.dto.*;
@@ -98,7 +97,7 @@ public class CreatorController {
     }
 
     @PostMapping("/create/funding/{projectUrl}")
-    @CreatorAOP
+    @CreatorAuth
     public ResponseEntity<?> createFunding(@PathVariable String projectUrl, HttpServletRequest request) {
         String email = customJWTFilter.findEmail(request);
         FundingViewDTO tempFundingDTO = creatorService.tempFunding(projectUrl, email);
@@ -112,7 +111,7 @@ public class CreatorController {
      * manageUrl을 통한 funding 객체 찾기
      */
     @PostMapping("/create/thumbNail/{manageUrl}")
-    @CreatorAOP
+    @CreatorAuth
     public ResponseEntity<?> createTempThumbNail(@RequestBody ThumbNailDTO thumbNailDTO,
                                                  @PathVariable String manageUrl) {
         FundingViewDTO fundingViewDTO = creatorService.tempThumbNail(thumbNailDTO, manageUrl);
@@ -123,7 +122,7 @@ public class CreatorController {
     }
 
     @PostMapping("/create/fundingPlan/{manageUrl}")
-    @CreatorAOP
+    @CreatorAuth
     public ResponseEntity<?> createTempFundingPlan(@RequestBody FundingPlanDTO fundingPlanDTO,
                                                    @PathVariable String manageUrl) {
         FundingViewDTO fundingViewDTO = creatorService.tempFundingPlan(fundingPlanDTO, manageUrl);
@@ -134,7 +133,7 @@ public class CreatorController {
     }
 
     @PostMapping("/create/detail/{manageUrl}")
-    @CreatorAOP
+    @CreatorAuth
     public ResponseEntity<?> createTempDetail(@RequestBody DetailDTO detailDTO,
                                               @PathVariable String manageUrl) {
 
@@ -146,21 +145,21 @@ public class CreatorController {
     }
 
     @GetMapping("/create/preview/{manageUrl}")
-    @CreatorAOP
+    @CreatorAuth
     public ResponseEntity<?> previewTempFunding(@PathVariable String manageUrl) {
         FundingViewDTO fundingViewDTO = creatorService.showPreview(manageUrl);
         return new ResponseEntity<>(fundingViewDTO, HttpStatus.OK);
     }
 
     @GetMapping("/create/{manageUrl}")
-    @CreatorAOP
+    @CreatorAuth
     public ResponseEntity<?> askInspection(@PathVariable String manageUrl) {
         FundingViewDTO fundingViewDTO = creatorService.changeStatus(manageUrl);
         return new ResponseEntity<>(fundingViewDTO, HttpStatus.OK);
     }
 
     @GetMapping("/create/editingList")
-    @CreatorAOP
+    @CreatorAuth
     public ResponseEntity<?> editingFundingList(HttpServletRequest request) {
         String email = customJWTFilter.findEmail(request);
         List<EditingListDTO> editingList = creatorService.findEditingList(email);
@@ -172,7 +171,7 @@ public class CreatorController {
 
 
     @GetMapping("/edit/{manageUrl}")
-    @CreatorAOP
+    @CreatorAuth
     public ResponseEntity<?> editingFunding(@PathVariable String manageUrl,HttpServletRequest request) {
         String email = customJWTFilter.findEmail(request);
         FundingViewDTO fundingViewDTO = creatorService.findTempFunding(email,manageUrl);

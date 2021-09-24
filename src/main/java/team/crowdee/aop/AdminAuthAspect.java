@@ -1,9 +1,11 @@
 package team.crowdee.aop;
 
 import lombok.RequiredArgsConstructor;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -15,23 +17,20 @@ import javax.servlet.http.HttpServletRequest;
 @Component
 @Aspect
 @RequiredArgsConstructor
-public class AdminAuthAop {
+public class AdminAuthAspect {
 
     private final CustomJWTFilter customJWTFilter;
 
-    @Around("@annotation(team.crowdee.customAnnotation.AdminAOP)")
-    public Object findAdminAuth(ProceedingJoinPoint proceedingJoinPoint) throws Throwable{
-        Object result = null;
-        for (Object object : proceedingJoinPoint.getArgs()) {
+    @Before("@annotation(team.crowdee.customAnnotation.AdminAuth)")
+    public void findAdminAuth(JoinPoint joinPoint) {
+        for (Object object : joinPoint.getArgs()) {
             if (object instanceof HttpServletRequest || object instanceof MultipartHttpServletRequest) {
                 HttpServletRequest request = (HttpServletRequest) object;
                 boolean flag = customJWTFilter.isAdmin(request);
                 if (!flag) {
-                    return new ResponseEntity<>("잘못된 접근입니다.", HttpStatus.FORBIDDEN);
+                    throw new IllegalStateException("권한이 없습니다.");
                 }
             }
         }
-
-        return result;
     }
 }

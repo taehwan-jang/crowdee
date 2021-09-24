@@ -6,7 +6,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import team.crowdee.customAnnotation.MemberAOP;
+import team.crowdee.customAnnotation.MemberAuth;
 import team.crowdee.domain.Member;
 import team.crowdee.domain.dto.*;
 import team.crowdee.security.CustomJWTFilter;
@@ -118,7 +118,7 @@ public class MemberController {
     //=========마이페이지=============//
     //멤버소개 -> 필요없음
     @GetMapping("/myPage/fundingList")
-    @MemberAOP
+    @MemberAuth
     public ResponseEntity<?> myFundingHistory(HttpServletRequest request) {
         String email = customJWTFilter.findEmail(request);
         List<ThumbNailDTO> thumbNail = memberService.fundingHistory(email);
@@ -129,7 +129,7 @@ public class MemberController {
     }
 
     @GetMapping("/myPage/wishList")
-    @MemberAOP
+    @MemberAuth
     public ResponseEntity<?> myWishList(HttpServletRequest request) {
         String email = customJWTFilter.findEmail(request);
         List<ThumbNailDTO> thumbNail = memberService.wishFunding(email);
@@ -140,7 +140,7 @@ public class MemberController {
     }
 
     @GetMapping("/myPage/waitingForPayment")
-    @MemberAOP
+    @MemberAuth
     public ResponseEntity<?> waitingPaymentList(HttpServletRequest request) {
         String email = customJWTFilter.findEmail(request);
         List<WaitingPaymentDTO> paymentDTOList = orderService.listUpWaitingPayment(email);

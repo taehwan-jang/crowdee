@@ -38,7 +38,7 @@ public class MemberService {
     public Long join(MemberDTO memberDTO) {
         //비밀번호검증:8-16자리 대문자소문자특수문자 포함 // 닉네임 중복검증 //이메일 중복검증 형식검증
         if (validationPw(memberDTO) == false && validationNick(memberDTO) == false && validationEmail(memberDTO) == false) {
-            return null;
+            throw new IllegalArgumentException("형식 불일치");
         }
         Set<Authority> authorities = new HashSet<Authority>();
         authorities.add(Authority.builder().authorityName("backer").build());
@@ -58,11 +58,9 @@ public class MemberService {
 
     //로그인 -> 토큰 추가로 인해 코드 리뷰 이후 코드작성
     public Member memberLogin(LoginDTO loginDTO) {
-        log.info("로그인비밀번호 ={}", loginDTO.getEmail());
-        log.info("로그인비밀번호 ={}", loginDTO.getPassword());
         List<Member> findMember = memberRepository.findByEmail(loginDTO.getEmail());
         if (findMember.isEmpty()) {
-            return null;
+            throw new IllegalArgumentException("잘못된 아이디 입력");
         }
         if(findMember.get(0).getSecessionDate()==null ) {
             boolean matches = passwordEncoder.matches(loginDTO.getPassword(), findMember.get(0).getPassword());
@@ -160,7 +158,6 @@ public class MemberService {
         if(matches) {
             String encodePass = passwordEncoder.encode(changePassDTO.getNewPassword());
             member.changePassword(encodePass);
-            log.info("암호화비밀번호 ={}", encodePass);
             return member;
 
         }

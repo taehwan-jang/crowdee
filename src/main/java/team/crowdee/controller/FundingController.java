@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import team.crowdee.customAnnotation.MemberAOP;
+import team.crowdee.customAnnotation.MemberAuth;
 import team.crowdee.domain.Member;
 import team.crowdee.domain.dto.*;
 import team.crowdee.security.CustomJWTFilter;
@@ -82,7 +82,7 @@ public class FundingController {
      * 찜하기 로직
      */
     @PostMapping("/wishOrUnWish")
-    @MemberAOP
+    @MemberAuth
     public ResponseEntity<?> wishList(@RequestBody Long fundingId,HttpServletRequest request){
         String email = customJWTFilter.findEmail(request);
         if (!StringUtils.hasText(email)) {
@@ -104,7 +104,7 @@ public class FundingController {
      * 5.
      */
     @PostMapping("/preOrder")
-    @MemberAOP
+    @MemberAuth
     public ResponseEntity<?> responseBasicInfo(HttpServletRequest request) {
         String email = customJWTFilter.findEmail(request);
         List<Member> memberList = memberRepository.findByEmail(email);
@@ -119,7 +119,7 @@ public class FundingController {
         return new ResponseEntity<>(paymentDTO, HttpStatus.OK);
     }
     @PostMapping("/participation")
-    @MemberAOP
+    @MemberAuth
     public ResponseEntity<?> participation(@RequestBody PaymentDTO paymentDTO) {
         //https://smujihoon.tistory.com/103 결제 관련 참고 로직
         fundingService.participation(paymentDTO.getFundingId(),paymentDTO,paymentDTO.getBuyer_email());
