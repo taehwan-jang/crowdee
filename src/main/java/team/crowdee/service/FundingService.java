@@ -111,8 +111,8 @@ public class FundingService {
         }
         Funding funding = fundingList.get(0);
         funding.plusVisitCount();//조회수 증가
-        Creator creator = funding.getCreator();
-        List<Funding> creatorFundingList = fundingRepository.findByCreatorForIntroduce(creator.getCreatorId());
+        List<Funding> creatorFundingList = fundingRepository.findByCreatorForIntroduce(funding.getCreator().getCreatorId());
+
         List<SimpleFundingListDTO> simpleFundingList = new ArrayList<>();
         for (Funding funding1 : creatorFundingList) {
                 simpleFundingList.add(
@@ -180,7 +180,7 @@ public class FundingService {
         requestMember.getFundingList().add(funding);
         return true;
     }
-    @Scheduled(cron = "0/20 * * * * *")
+    @Scheduled(cron = "0 0 1 * * *")
     public void changeFundingStatus() throws MessagingException {
         log.info("미시작/기한 종료 펀딩 상태변경 스케줄러 실행");
         String todayString = Utils.getTodayString();
